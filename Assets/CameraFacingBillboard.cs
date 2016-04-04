@@ -7,7 +7,7 @@ public class CameraFacingBillboard : MonoBehaviour
 
 	void Start()
 	{
-		m_Camera = Camera.main;
+		
 	}
 
 	void Update()
