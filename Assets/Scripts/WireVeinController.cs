@@ -40,19 +40,25 @@ public class WireVeinController : MonoBehaviour {
 		{
 			foreach(Vector3 v in gatheredNodes)
 			{
-				Debug.Log("punch");
+				//Debug.Log("punch");
 			}
 
 		}
 
 	}
 
+	//
 	void GatherAvaliableNodes()
 	{
 		nodes = GameObject.FindGameObjectsWithTag("djNode");
 		GameObject lastNode;
 		forkList = new List<List<Vector3>>();
 		gatheredNodes = new List<Vector3>();
+
+		for(int i = 1; i < gatheredNodes.Count; i++)
+		{
+			
+		}
 
 		foreach(GameObject go in sampledNodes)
 		{
@@ -67,11 +73,20 @@ public class WireVeinController : MonoBehaviour {
 				{
 					gatheredNodes.Add(g.transform.position);
 				}
-			}
+
 			forkList.Add(gatheredNodes);
+			}
+
 		}
 
-		//print(forkList.Count);
+//		foreach(List<Vector3> list in forkList)
+//		{
+//			Debug.Log(list.ToString());
+//			foreach(Vector3 list2 in gatheredNodes)
+//			{
+//				Debug.Log("Here's list 2" + list2.ToString());
+//			}
+//		}
 
 	}
 }
