@@ -28,7 +28,7 @@ public class LinesGraphicRender : MonoBehaviour {
 	//private float speed = 5.0f;
 
 	public WireVeinController wireController;
-	private GameObject[] nodes;
+	private List<Vector3> nodes;
 	private GameObject fT;
 
 	void Awake()
@@ -40,7 +40,7 @@ public class LinesGraphicRender : MonoBehaviour {
 
 	void Start () {
 
-		nodes = wireController.nodes;
+		//nodes = wireController;
 		fT = wireController.finalTarget;
 
 
@@ -225,11 +225,11 @@ public class LinesGraphicRender : MonoBehaviour {
 		Vector3 e;
 		s = transform.InverseTransformPoint(fT.transform.position);
 
-		foreach(GameObject go in nodes)
+		foreach(Vector3 go in nodes)
 		{
-			e = go.transform.position;
+			//e = go.transform.position;
 
-			AddLine(ml, MakeQuad(go.transform.TransformPoint(e), s, lineSize), false);
+			//AddLine(ml, MakeQuad(go.transform.TransformPoint(e), s, lineSize), false);
 
 		}
 
