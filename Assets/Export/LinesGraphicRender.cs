@@ -24,88 +24,28 @@ public class LinesGraphicRender : MonoBehaviour {
 	private GUIStyle linkStyle;
 	
 	private Point first;
-	
-	//private float speed = 5.0f;
 
-	public WireVeinController wireController;
-	private List<Vector3> nodes;
-	private GameObject fT;
+	private float speed = 5.0f;
 
-	void Awake()
-	{
-		//sammoh initialize my wireController
-		//wireController = GameObject.GetComponent<WireVeinController>();
-
-	}
 
 	void Start () {
-
-		//nodes = wireController;
-		fT = wireController.finalTarget;
-
-
-		//sammoh this is where the debug information comes from.
 		labelStyle = new GUIStyle();
 		labelStyle.normal.textColor = Color.black;
 		
 		linkStyle = new GUIStyle();
 		linkStyle.normal.textColor = Color.blue;
 
-		//initialize new meshes
 		ml = new Mesh();
 		lmat = new Material(shader);
-		lmat.color = new Color(0,0,0,1f);
+		lmat.color = new Color(0,0,0,0.3f);
 		
 		ms = new Mesh();
 		smat = new Material(shader);
 		smat.color = new Color(0,0,0,0.1f);
-
-		CreateLines();
-	}
-
-//
-//	void Update1() {
-//
-//		//sammoh This is where the mouse controls are
-//		if(Input.GetMouseButton(0)) {
-//			
-//			Vector3 e = GetNewPoint();
-//			
-//			if(first == null) {
-//				first = new Point();
-//				first.p = transform.InverseTransformPoint(e);
-//			}
-//			
-//			if(s != Vector3.zero) {
-//				Vector3 ls = transform.TransformPoint(s);
-//				AddLine(ml, MakeQuad(ls, e, lineSize), false);
-//				
-//				Point points = first;
-//				while(points.next != null) {
-//					Vector3 next = transform.TransformPoint(points.p);
-//					float d = Vector3.Distance(next, ls);
-//					if(d < 1 && Random.value > 0.9f) {
-//						AddLine(ms, MakeQuad(next, ls, lineSize), false);
-//					}
-//					points = points.next;
-//				}
-//				
-//				Point np = new Point();
-//				np.p = transform.InverseTransformPoint(e);
-//				points.next = np;
-//
-//			}
-//			
-//			s = transform.InverseTransformPoint(e);
-//		} else {
-//			s = Vector3.zero;
-//		}
-//		
-//		Draw();
-//		processInput();
-//	}
 	
-	void Draw() {
+	}
+	
+	public void Draw() {
 		Graphics.DrawMesh(ml, transform.localToWorldMatrix, lmat, 0);
 		Graphics.DrawMesh(ms, transform.localToWorldMatrix, smat, 0);
 	}
@@ -172,9 +112,9 @@ public class LinesGraphicRender : MonoBehaviour {
 //		}
 //	}
 	
-	Vector3 GetNewPoint() {
-		return Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1.0f));
-	}
+//	Vector3 GetNewPoint() {
+//		return Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1.0f));
+//	}
 	
 	Vector3[] resizeVertices(Vector3[] ovs, int ns) {
 		Vector3[] nvs = new Vector3[ovs.Length + ns];
@@ -196,44 +136,40 @@ public class LinesGraphicRender : MonoBehaviour {
 	}
 	
 	/** Replace the Update function with this one for a click&drag drawing option */
-	void Update() {
-		
-		//processInput();
-		
-		Vector3 e;
-		
-		if(Input.GetMouseButtonDown(0)) {
-			s = transform.InverseTransformPoint(GetNewPoint());
-		}
-		
-		if(Input.GetMouseButton(0)) {
-			e = GetNewPoint();
-			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), true);
-		}
+//	void Update() {
+//		
+//		//processInput();
+//		
+//		Vector3 e;
+//		
+//		if(Input.GetMouseButtonDown(0)) {
+//			s = transform.InverseTransformPoint(GetNewPoint());
+//		}
+//		
+//		if(Input.GetMouseButton(0)) {
+//			e = GetNewPoint();
+//			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), true);
+//		}
+//
+//		if(Input.GetMouseButtonUp(0)) {
+//			e = GetNewPoint();
+//			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), false);
+//		}
+//		
+//		Draw();
+//	}
 
-		if(Input.GetMouseButtonUp(0)) {
-			e = GetNewPoint();
-			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), false);
-		}
-		
-		Draw();
-	}
 
-
-	void CreateLines()
+	public void CreateLines(Vector3 startPoint ,Vector3 finalPoint)
 	{
-		Vector3 e;
-		s = transform.InverseTransformPoint(fT.transform.position);
+		Mesh m = new Mesh();
+		Mesh m2 = new Mesh();
 
-		foreach(Vector3 go in nodes)
-		{
-			//e = go.transform.position;
+		Vector3 ws;
+		ws = transform.InverseTransformPoint(finalPoint);
 
-			//AddLine(ml, MakeQuad(go.transform.TransformPoint(e), s, lineSize), false);
-
-		}
-
-		Draw();
+		AddLine(m, MakeQuad(transform.InverseTransformPoint(startPoint), finalPoint, lineSize), false);
+		//Draw();
 	}
 }
 
