@@ -45,7 +45,7 @@ public class LinesGraphicRender : MonoBehaviour {
 	
 	}
 	
-	public void Draw() {
+	void Draw() {
 		Graphics.DrawMesh(ml, transform.localToWorldMatrix, lmat, 0);
 		Graphics.DrawMesh(ms, transform.localToWorldMatrix, smat, 0);
 	}
@@ -96,25 +96,25 @@ public class LinesGraphicRender : MonoBehaviour {
 			m.RecalculateBounds();
 	}
 	
-//	void processInput() {
-//		float s = speed * Time.deltaTime;
-//		if(Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) s = s * 10;
-//		if(Input.GetKey(KeyCode.UpArrow)) transform.Rotate(-s, 0, 0);
-//		if(Input.GetKey(KeyCode.DownArrow)) transform.Rotate(s, 0, 0);
-//		if(Input.GetKey(KeyCode.LeftArrow)) transform.Rotate(0, -s, 0);
-//		if(Input.GetKey(KeyCode.RightArrow)) transform.Rotate(0, s, 0);
-//		
-//		if(Input.GetKeyDown(KeyCode.C)) {
-//			ml = new Mesh();
-//			ms = new Mesh();
-//			transform.rotation = Quaternion.identity;
-//			first = null;
-//		}
-//	}
+	void processInput() {
+		float s = speed * Time.deltaTime;
+		if(Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) s = s * 10;
+		if(Input.GetKey(KeyCode.UpArrow)) transform.Rotate(-s, 0, 0);
+		if(Input.GetKey(KeyCode.DownArrow)) transform.Rotate(s, 0, 0);
+		if(Input.GetKey(KeyCode.LeftArrow)) transform.Rotate(0, -s, 0);
+		if(Input.GetKey(KeyCode.RightArrow)) transform.Rotate(0, s, 0);
+		
+		if(Input.GetKeyDown(KeyCode.C)) {
+			ml = new Mesh();
+			ms = new Mesh();
+			transform.rotation = Quaternion.identity;
+			first = null;
+		}
+	}
 	
-//	Vector3 GetNewPoint() {
-//		return Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1.0f));
-//	}
+	Vector3 GetNewPoint() {
+		return Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1.0f));
+	}
 	
 	Vector3[] resizeVertices(Vector3[] ovs, int ns) {
 		Vector3[] nvs = new Vector3[ovs.Length + ns];
@@ -136,40 +136,39 @@ public class LinesGraphicRender : MonoBehaviour {
 	}
 	
 	/** Replace the Update function with this one for a click&drag drawing option */
-//	void Update() {
-//		
-//		//processInput();
-//		
-//		Vector3 e;
-//		
-//		if(Input.GetMouseButtonDown(0)) {
-//			s = transform.InverseTransformPoint(GetNewPoint());
-//		}
-//		
-//		if(Input.GetMouseButton(0)) {
-//			e = GetNewPoint();
-//			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), true);
-//		}
-//
-//		if(Input.GetMouseButtonUp(0)) {
-//			e = GetNewPoint();
-//			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), false);
-//		}
-//		
-//		Draw();
-//	}
+	void Update() {
+		
+		//processInput();
+		
+		Vector3 e;
+		
+		if(Input.GetMouseButtonDown(0)) {
+			s = transform.InverseTransformPoint(GetNewPoint());
+		}
+		
+		if(Input.GetMouseButton(0)) {
+			e = GetNewPoint();
+			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), true);
+		}
+
+		if(Input.GetMouseButtonUp(0)) {
+			e = GetNewPoint();
+			AddLine(ml, MakeQuad(transform.TransformPoint(s), e, lineSize), false);
+		}
+		
+		Draw();
+	}
 
 
 	public void CreateLines(Vector3 startPoint ,Vector3 finalPoint)
 	{
 		Mesh m = new Mesh();
-		Mesh m2 = new Mesh();
 
 		Vector3 ws;
-		ws = transform.InverseTransformPoint(finalPoint);
+		ws = transform.InverseTransformPoint(startPoint);
 
 		AddLine(m, MakeQuad(transform.InverseTransformPoint(startPoint), finalPoint, lineSize), false);
-		//Draw();
+		Draw();
 	}
 }
 

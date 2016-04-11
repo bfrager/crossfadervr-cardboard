@@ -13,6 +13,7 @@ public class WireVeinController : MonoBehaviour {
 //	public int sampleRange_max;
 	public float distanceBuffer = 3;
 	public GameObject finalTarget;
+	public GameObject testTarget;
 
 	//public List<GameObject>  testNode = new List<GameObject>();
 
@@ -47,6 +48,11 @@ public class WireVeinController : MonoBehaviour {
 		lGR = gameObject.GetComponent<LinesGraphicRender>();
 		initialNodes = GameObject.FindGameObjectsWithTag("djNode");
 
+
+		//this is where I'm calling the other script
+		//only part that doesn't work....
+		lGR.CreateLines(testTarget.transform.position, finalTarget.transform.position);
+
 		foreach(GameObject go in initialNodes)
 		{
 			sampledNodes.Add(go.transform.position);
@@ -72,7 +78,7 @@ public class WireVeinController : MonoBehaviour {
 		gatheredNodes.Add(sampledNodes[3]);
 		gatheredNodes.Add(sampledNodes[9]);
 
-		for(int i = 1; i < sampledNodes.Count; i++)
+		for(int i = 0; i < sampledNodes.Count; i++)
 		{
 			//Get a random listing of nodes via distance distrubtion
 			//Add selected list to gatheredNodes
@@ -82,7 +88,7 @@ public class WireVeinController : MonoBehaviour {
 			//print("Sample Vectors Cached");
 		}
 
-		for(int i = 1; i < gatheredNodes.Count; i++)
+		for(int i = 0; i < gatheredNodes.Count; i++)
 		{
 			Vector3 average =  Vector3.zero;
 			RaycastHit[] hit = new RaycastHit[gatheredNodes.Count];
@@ -101,15 +107,15 @@ public class WireVeinController : MonoBehaviour {
 				average = IndexIntoLayer(layerIndexPercent, average/passingNodes.Count);
 				sampledNodes.Add(average);
 				//print("new vector created");
-				lGR.CreateLines(passingNodes[j], finalTarget.transform.position);
-				//print("Lines Created");
+				//lGR.CreateLines(passingNodes[j], finalTarget.transform.position);
+				//print(passingNodes.Count.ToString());
 			}
 		}
-		for(int k = 1; k < outlyers.Count; k++)
+		for(int k = 0; k < outlyers.Count; k++)
 		{
 			IndexIntoLayer(layerIndexPercent, outlyers[k]);
-			lGR.CreateLines(outlyers[k], finalTarget.transform.position);
-			//print("outlyers processed");
+			//lGR.CreateLines(outlyers[k], finalTarget.transform.position);
+			//print(outlyers.Count.ToString());
 		}
 
 //		nextRound = true;
