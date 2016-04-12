@@ -160,7 +160,7 @@ public class LinesGraphicRender : MonoBehaviour {
 	}
 
 
-	public void CreateLines(Vector3 startPoint ,Vector3 finalPoint)
+	public void CreateLines1(Vector3 startPoint ,Vector3 finalPoint)
 	{
 		Mesh m = new Mesh();
 
@@ -169,6 +169,16 @@ public class LinesGraphicRender : MonoBehaviour {
 
 		AddLine(m, MakeQuad(transform.InverseTransformPoint(startPoint), finalPoint, lineSize), false);
 		Draw();
+	}
+
+	public void CreateLines(Vector3 startPoint ,Vector3 finalPoint)
+	{
+		//ml = new Mesh();
+		//Vector3 s = transform.InverseTransformPoint(finalPoint);
+
+		//AddLine(ml, MakeQuad(startPoint, s, lineSize), false);
+		//print(ml.vertexCount);
+		//Draw();
 	}
 }
 

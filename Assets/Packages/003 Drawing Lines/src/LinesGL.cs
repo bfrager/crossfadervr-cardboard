@@ -14,6 +14,11 @@ public class LinesGL : MonoBehaviour {
 
 	private GUIStyle labelStyle;
 	private GUIStyle linkStyle;
+
+	public GameObject test1;
+	public GameObject test2;
+
+
 	
 	void Start () {
 		labelStyle = new GUIStyle();
@@ -26,6 +31,7 @@ public class LinesGL : MonoBehaviour {
 		g = new GameObject("g");
 		lp = new Vector3[0];
 		sp = new Vector3[0];
+
 	}
 	
 	void processInput() {
@@ -66,27 +72,27 @@ public class LinesGL : MonoBehaviour {
 	}
 	
 	/** Replace the Update function with this one for a click&drag drawing option */
-	void Update1() {
-		processInput();
-		
-		Vector3 e;
-		
-		if(Input.GetMouseButtonDown(0)) {
-			s = GetNewPoint();
-		}
-		
-		if(Input.GetMouseButton(0)) {
-			e = GetNewPoint();
-			lp = AddLine(lp, s, e, true);
-		}
-
-		if(Input.GetMouseButtonUp(0)) {
-			e = GetNewPoint();
-			lp = AddLine(lp, s, e, false);
-		}
-	}
+//	void Update1() {
+//		processInput();
+//		
+//		Vector3 e;
+//		
+//		if(Input.GetMouseButtonDown(0)) {
+//			s = GetNewPoint();
+//		}
+//		
+//		if(Input.GetMouseButton(0)) {
+//			e = GetNewPoint();
+//			lp = AddLine(lp, s, e, true);
+//		}
+//
+//		if(Input.GetMouseButtonUp(0)) {
+//			e = GetNewPoint();
+//			lp = AddLine(lp, s, e, false);
+//		}
+//	}
 	
-	Vector3[] AddLine(Vector3[] l, Vector3 s, Vector3 e, bool tmp) {
+	public Vector3[] AddLine(Vector3[] l, Vector3 s, Vector3 e, bool tmp) {
 		int vl = l.Length;
 		if(!tmp || vl == 0) l = resizeVertices(l, 2);
 		else vl -= 2;
@@ -121,7 +127,7 @@ public class LinesGL : MonoBehaviour {
 			GL.Vertex3(lp[i].x, lp[i].y, lp[i].z);
 		}
 		
-		GL.Color( new Color(0,0,0,0.1f) );
+		GL.Color( new Color(0,0,0,1f) );
 		
 		for(int i = 0; i < sp.Length; i++) {
 			GL.Vertex3(sp[i].x, sp[i].y, sp[i].z);
