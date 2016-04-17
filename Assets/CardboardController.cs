@@ -155,8 +155,6 @@ public class CardboardController : MonoBehaviour {
                 if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
                     if (cardboard.gaze.Object().name.Contains("Diamond"))
                     {
-						//print("song playing is " + cardboard.gaze.Object().GetComponent<CardboardAudioSource>().clip.name);
-
                         textMesh2.text = "Enter DJ Room In:";
                         textMesh2.GetComponent<Renderer>().enabled = true;          
                         textMesh.GetComponent<Renderer>().enabled = true;
@@ -173,7 +171,6 @@ public class CardboardController : MonoBehaviour {
                 }
                 else if (cardboard.gaze.SecondsHeld() > 10) {
                     if (!cardboard.gaze.Object().name.Contains("Heart")) {
-
 
                     	//Gavin: Fade out camera before changing scenes
                     	//Send scene index to load and the fade duration
