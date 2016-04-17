@@ -20,6 +20,8 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 /// Cardboard audio source component that enhances AudioSource to provide advanced spatial audio
 /// features.
@@ -186,6 +188,7 @@ public class CardboardAudioSource : MonoBehaviour {
 
   void Start () {
     if (playOnAwake && !isPlaying) {
+      AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
       Play();
     }
   }

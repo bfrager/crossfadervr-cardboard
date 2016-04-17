@@ -14,7 +14,6 @@ namespace AudioVisualizer
     public class AudioSampler : MonoBehaviour
     {
 
-
         public static AudioSampler instance; //singleton static instance
         public List<AudioSource> audioSources; // list of audio sources used for audio input.
         public bool debug = false; // if true, show audio data being sampled
@@ -44,6 +43,7 @@ namespace AudioVisualizer
 
         void Awake()
         {
+            instance = this;
             drawTexture = Texture2D.whiteTexture; // get an empty white texture
             gradient = PanelWaveform.GetColorGradient(startColor, endColor); // get a color gradient.
             if (audioSources.Count == 0) // if we haven't assigned any audio sources
