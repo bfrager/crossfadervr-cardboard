@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Reflection;
 using UnityEngine.SceneManagement;
+//Gavin: added for Cardboard camera fade
+using VRStandardAssets.Utils;
 
 public class CardboardController : MonoBehaviour {
     private static CardboardControl cardboard;
@@ -169,7 +171,12 @@ public class CardboardController : MonoBehaviour {
                 }
                 else if (cardboard.gaze.SecondsHeld() > 10) {
                     if (!cardboard.gaze.Object().name.Contains("Heart")) {
-                        SceneManager.LoadScene(1);                        
+
+                    	//Gavin: Fade out camera before changing scenes
+                    	//Send scene index to load and the fade duration
+                    	StartCoroutine(FadeLevelChange(1,0.8f));
+                        //SceneManager.LoadScene(1);    
+                                            
                     }
                 }
             }
@@ -188,7 +195,11 @@ public class CardboardController : MonoBehaviour {
                 }
                 else if (cardboard.gaze.SecondsHeld() > 5) {
                     if (cardboard.gaze.Object().name.Contains("Heart")) {
-                        SceneManager.LoadScene(0);
+
+						//Gavin: Fade out camera before changing scenes
+                    	//Send scene index to load and the fade duration
+                    	StartCoroutine(FadeLevelChange(0,0.8f));
+                        //SceneManager.LoadScene(0);
                     }
                 }
             }
@@ -228,4 +239,12 @@ public class CardboardController : MonoBehaviour {
         cardboard.gaze.OnStare -= CardboardStare;
         cardboard.box.OnTilt -= CardboardMagnetReset;
     }
+
+    IEnumerator FadeLevelChange(int sceneIndex, float fadeDur)
+    {
+		transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+		yield return new WaitForSeconds(fadeDur);
+        SceneManager.LoadScene(sceneIndex); 
+    }
+
 }
