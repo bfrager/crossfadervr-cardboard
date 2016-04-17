@@ -23,7 +23,7 @@ public class CameraFacingBillboard : MonoBehaviour
 	IEnumerator InitialRotation()
 	{
 		//initial delay
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.1f);
 		transform.rotation = Quaternion.LookRotation(transform.position - m_Camera.transform.position);
 		gameObject.SetActive(false);
 	}
