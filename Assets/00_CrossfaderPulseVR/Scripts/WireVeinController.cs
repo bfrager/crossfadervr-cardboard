@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class WireVeinController : MonoBehaviour {
 
@@ -10,7 +11,7 @@ public class WireVeinController : MonoBehaviour {
 	private float layerFactorPercent;
 	public float distanceBuffer = 1;
 	public GameObject finalTarget;
-	public GameObject testTarget;
+
 	public float lineSize = 1;
 
 	//lists
@@ -19,16 +20,16 @@ public class WireVeinController : MonoBehaviour {
 	public List<Vector3> gatheredNodes = new List<Vector3>();
 	public List<Vector3> passingNodes = new List<Vector3>();
 	private List<Vector3> outlyers = new List<Vector3>();
+	private List<List<Vector3>> Layers = new List<List<Vector3>>();
 
 
 	//utilities
-	private LinesGL lGL;
-	private LinesGraphicRender lGR;
+	public GameObject testTarget;
+//	private LinesGL lGL;
+//	private LinesGraphicRender lGR;
 	private int randomSeed;
 	private List<Vector3> randomNodes = new List<Vector3>();
 	private List<Vector3> outlyerNodes = new List<Vector3>();
-	private Vector3 lastTarget;
-	private GameObject nextTarget;
 
 	Vector3 IndexIntoLayer(float i, Vector3 v)
 	{
@@ -36,21 +37,17 @@ public class WireVeinController : MonoBehaviour {
 		position =  (finalTarget.transform.position + v) * i;
 		return position;
 	}
-		
 
 	void Awake()
 	{
 		initialNodes = GameObject.FindGameObjectsWithTag("djNode");
-
-		//store nodes
 		foreach(GameObject go in initialNodes)
 		{
 			sampledNodes.Add(go.transform.position);
 		}
 		randomSeed = Random.Range(layerRand_min, layerRand_max);
-		print("Sampled Nodes:" + sampledNodes.Count);
+		print("Sampled Nodes Added: " + sampledNodes.Count);
 	}
-
 	void Start()
 	{
 		labelStyle = new GUIStyle();
@@ -67,10 +64,9 @@ public class WireVeinController : MonoBehaviour {
 		smat = new Material(shader);
 		smat.color = new Color(0,0,0,0.1f);
 
-
 		CreateNewLayer(randomSeed, 0, sampledNodes);
 	}
-
+		
 	void CreateNewLayer(int layer, float layerIndexPercent, List<Vector3> sampledNodes)
 	{
 		layer--;
@@ -79,60 +75,91 @@ public class WireVeinController : MonoBehaviour {
 		outlyers = new List<Vector3>();
 		bool nextRound = false;
 		bool finished = false;
+		List<Vector3> temp = sampledNodes;
 
-//		gatheredNodes.Add(sampledNodes[0]);
-//		gatheredNodes.Add(sampledNodes[3]);
-//		gatheredNodes.Add(sampledNodes[9]);
+		gatheredNodes.Add(sampledNodes[0]);
+		gatheredNodes.Add(sampledNodes[3]);
+		gatheredNodes.Add(sampledNodes[9]);
 
-		print("Gathered Nodes:" + gatheredNodes.Count);
+		print("Gathered Nodes added: " + gatheredNodes.Count);
 
 		for(int i = 0; i < sampledNodes.Count; i++)
 		{
-			gatheredNodes.Add(sampledNodes[i]);
+			//gatheredNodes.Add(sampledNodes[i]);
 			//Get a random listing of nodes via distance distrubtion
 			//Add selected list to gatheredNodes
 			//print("Sample Vectors Cached");
 		}
 
+		//sammoh this is how to compare the two lists
+//		if(passingNodes + gatheredNodes == temp)
+//		{
+//			int cov;
+//			cov = cov < -1 ? 1:cov;
+//		}
 		for(int i = 0; i < gatheredNodes.Count; i++)
 		{
 			Vector3 average =  Vector3.zero;
 			RaycastHit[] hit;
-			hit = Physics.SphereCastAll(gatheredNodes[i], 3, Vector3.up, 0);
-			Debug.Log("Calculating Gathered Node " + gatheredNodes[i]);
-			sampledNodes.Clear();
+			hit = Physics.SphereCastAll(gatheredNodes[i], 1, Vector3.up, 0);
+			Debug.Log("Calculating SphereCast From Gathered Nodes " + gatheredNodes[i]);
 
 			//calculate neighbor nodes
 			for(i = 0; i < hit.Length; i++)
 			{
-
 				passingNodes.Add(hit[i].transform.position);
 				average += hit[i].transform.position;
-
-				sampledNodes.Add(average);
-
-				//start next round
+				//sampledNodes.Add(average);
+				//nodeAverages.Add(average);
+			
 				if (i == hit.Length - 1)
 				{
+					Debug.Log("Created Passing Nodes list: " + passingNodes.Count);
 					average = average/hit.Length;
 					average = IndexIntoLayer(layerIndexPercent, average);
-					CreateLines(passingNodes, average);
+					Debug.Log("Calculated PassingNodeAverage: " + average);
+					//CreateLines(passingNodes, average);
+					temp.AddRange(passingNodes);
+					temp.AddRange(gatheredNodes);
+					print("Temp count " + temp.Count);
+					print("Sample count " + sampledNodes.Count);
 				}
 			}
 		}
+		//separate outlyers from all the others
+		outlyerNodes = sampledNodes.Except(temp).ToList();
+		print("outlyercount" + outlyerNodes.Count);
+
+		//restart sampled nodes with new calculations
+		sampledNodes.Clear();
+		sampledNodes.AddRange(gatheredNodes);
+		sampledNodes.AddRange(passingNodes);
 		//OUTLYERS
 		for(int i = 0; i < outlyers.Count; i++)
 		{
-			Vector3 newPos = outlyers[i];
-			IndexIntoLayer(layerIndexPercent, newPos);
-			CreateLines(outlyers, newPos);
-			sampledNodes.Add(newPos);
-
-			//print("Other Nodes:" + passingNodes.Count);
+			//index new outlyers seperately then ass to new sample list.
+			IndexIntoLayer(layerIndexPercent, outlyers[i]);
+			//CreateLines(outlyers, outlyers[i]);
+			sampledNodes.Add(outlyers[i]);
 		}
-		//sammoh Finally Create New Layer...
-		CreateNewLayer(layer, gatheredNodes.Count, sampledNodes);
+
+		//Finally Create New Layer...
+		//CreateNewLayer(layer, gatheredNodes.Count, sampledNodes);
 	}
+
+	void Update()
+	{
+		//sammoh, store all the create lines into a layer and cast each layer into the update 
+		CreateLines(sampledNodes, finalTarget.transform.position);//for A
+		CreateLines(outlyerNodes, finalTarget.transform.position);
+		//CreateLines(layer1A, layer 1b)
+		//		CreateLines(gatheredNodes, finalTarget.transform.position);//for B
+		//		CreateLines(gatheredNodes, finalTarget.transform.position);//for C
+	}
+
+
+
+
 
 //Here is the line rendering
 
@@ -157,13 +184,19 @@ public class WireVeinController : MonoBehaviour {
 	{
 		for(int i = 0; i < startPoints.Count; i++)
 		{
-			Mesh m = new Mesh();
-			Vector3 s = transform.InverseTransformPoint(startPoints[i]);
-			AddLine(m, MakeQuad(finalPoint, s, lineSize), false);
+			Debug.DrawLine(finalPoint, startPoints[i], Color.red);
 		}
-
-		//print(ml.vertexCount);
-		Draw();
+//
+//		print("Create line" + startPoints.Count);
+//		for(int i = 0; i < startPoints.Count; i++)
+//		{
+//			ml = new Mesh();
+//			Vector3 s = transform.InverseTransformPoint(startPoints[i]);
+//			AddLine(ml, MakeQuad(finalPoint, s, lineSize), false);
+//		}
+//
+//		//print(ml.vertexCount);
+//		Draw();
 	}
 
 	void AddLine(Mesh m, Vector3[] quad, bool tmp) 

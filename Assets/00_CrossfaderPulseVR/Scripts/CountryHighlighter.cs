@@ -17,7 +17,7 @@ public class CountryHighlighter : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		substance = Resources.Load("MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;
+		substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;
 	}
 	
 	// Update is called once per frame
