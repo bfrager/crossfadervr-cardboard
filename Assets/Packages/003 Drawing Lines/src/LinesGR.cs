@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+
+
+
+
+
 public class LinesGR : MonoBehaviour {
 
 	public Shader shader;
@@ -79,7 +84,7 @@ public class LinesGR : MonoBehaviour {
 		processInput();
 	}
 	
-	void Draw() {
+	public void Draw() {
 		Graphics.DrawMesh(ml, transform.localToWorldMatrix, lmat, 0);
 		Graphics.DrawMesh(ms, transform.localToWorldMatrix, smat, 0);
 	}
@@ -193,6 +198,11 @@ public class LinesGR : MonoBehaviour {
 		}
 		
 		Draw();
+	}
+
+	public void CreateLine (Vector3 start, Vector3 finish, float width)
+	{
+		AddLine(ml, MakeQuad(start, finish, width), false);
 	}
 
 }
