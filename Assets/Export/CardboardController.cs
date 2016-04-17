@@ -41,6 +41,7 @@ public class CardboardController : MonoBehaviour {
 
         // When we rotate the device into portrait mode
         cardboard.box.OnTilt += CardboardMagnetReset;
+
     }
         
     private void CardboardDown(object sender) {
@@ -145,14 +146,16 @@ public class CardboardController : MonoBehaviour {
         if (cardboard.gaze.IsHeld()) {
             Debug.Log(cardboard.gaze.Object());
             //ROOT LEVEL CONTROLS:
-            if (SceneManager.GetActiveScene().buildIndex == 0)
+			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
             {
                 if (cardboard.gaze.Object().name.Contains("Heart"))
                 {
                     textMesh2.text = "Feel the Global Pulse";
                     textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;                  
                 }
+				
                 if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
+
                     if (cardboard.gaze.Object().name.Contains("Diamond"))
                     {
                         textMesh2.text = "Enter DJ Room In:";
@@ -173,15 +176,15 @@ public class CardboardController : MonoBehaviour {
                     if (!cardboard.gaze.Object().name.Contains("Heart")) {
 
                     	//Gavin: Fade out camera before changing scenes
-                    	//Send scene index to load and the fade duration
-                    	StartCoroutine(FadeLevelChange(1,0.8f));
+                    	//Send scene name to load and the fade duration
+						StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
                         //SceneManager.LoadScene(1);    
                                             
                     }
                 }
             }
             //DJ LEVEL CONTROLS:
-            else if (SceneManager.GetActiveScene().buildIndex == 1)
+			else if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
             {
                 if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 5) 
                 {
@@ -197,8 +200,8 @@ public class CardboardController : MonoBehaviour {
                     if (cardboard.gaze.Object().name.Contains("Heart")) {
 
 						//Gavin: Fade out camera before changing scenes
-                    	//Send scene index to load and the fade duration
-                    	StartCoroutine(FadeLevelChange(0,0.8f));
+                    	//Send scene name to load and the fade duration
+						StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
                         //SceneManager.LoadScene(0);
                     }
                 }
@@ -240,16 +243,19 @@ public class CardboardController : MonoBehaviour {
         cardboard.box.OnTilt -= CardboardMagnetReset;
     }
 
-    IEnumerator FadeLevelChange(int sceneIndex, float fadeDur)
+    IEnumerator FadeLevelChange(string sceneName, float fadeDur)
     {
-		transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+    	//PersistentData.PD.PubFadeAudio(fadeDur, 0, cardboard.gaze.Object().transform);
+		//transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
 		yield return new WaitForSeconds(fadeDur);
 
 		//cache current time of song
 		float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
 		PersistentData.PD.curSongTime = playHead;
 
-        SceneManager.LoadScene(sceneIndex); 
+        SceneManager.LoadScene(sceneName); 
     }
+
+	
 
 }
