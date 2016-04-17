@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 68624415b13180946b626311b8ac158f
-timeCreated: 1460840010
+timeCreated: 1460867021
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -16,7 +16,7 @@ SubstanceImporter:
     inputs:
     - name: CountrySelection
       value:
-        scalar[0]: 1.8
+        scalar[0]: 3
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
