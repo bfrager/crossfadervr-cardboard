@@ -20,7 +20,7 @@ using System; //This allows the IComparable Interface
 //         user_id = newUser_id;
 //     }
 // }
-
+[Serializable]
 public class Performance
 {
     public int id { get; set; }
