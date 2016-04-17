@@ -244,6 +244,11 @@ public class CardboardController : MonoBehaviour {
     {
 		transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
 		yield return new WaitForSeconds(fadeDur);
+
+		//cache current time of song
+		float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
+		PersistentData.PD.curSongTime = playHead;
+
         SceneManager.LoadScene(sceneIndex); 
     }
 

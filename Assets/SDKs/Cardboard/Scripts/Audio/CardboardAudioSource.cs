@@ -159,7 +159,7 @@ public class CardboardAudioSource : MonoBehaviour {
   private float nextOcclusionUpdate = 0.0f;
 
   // Unity audio source attached to the game object.
-  private AudioSource audioSource = null;
+  public AudioSource audioSource = null;
 
   // Denotes whether the source is currently paused or not.
   private bool isPaused = false;
