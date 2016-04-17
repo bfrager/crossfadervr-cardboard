@@ -155,8 +155,6 @@ public class CardboardController : MonoBehaviour {
                 if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
                     if (cardboard.gaze.Object().name.Contains("Diamond"))
                     {
-						//print("song playing is " + cardboard.gaze.Object().GetComponent<CardboardAudioSource>().clip.name);
-
                         textMesh2.text = "Enter DJ Room In:";
                         textMesh2.GetComponent<Renderer>().enabled = true;          
                         textMesh.GetComponent<Renderer>().enabled = true;
@@ -247,6 +245,11 @@ public class CardboardController : MonoBehaviour {
     {
 		transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
 		yield return new WaitForSeconds(fadeDur);
+
+		//cache current time of song
+		float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
+		PersistentData.PD.curSongTime = playHead;
+
         SceneManager.LoadScene(sceneIndex); 
     }
 

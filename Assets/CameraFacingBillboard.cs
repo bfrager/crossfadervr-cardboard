@@ -7,6 +7,7 @@ public class CameraFacingBillboard : MonoBehaviour
 
 	void Start()
 	{
+		m_Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
 		StartCoroutine(InitialRotation());
 	}
 
