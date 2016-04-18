@@ -83,7 +83,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
         {
             if (child.name != this.transform.parent.name)
             {
-                Debug.Log ("Found sibling "+child.name);
+                // Debug.Log ("Found sibling "+child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
             }
             else
@@ -92,7 +92,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 djInfo.SetActive(true);
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(true);
-                child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 10;
+                // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 10;
             }
         }
     }
@@ -116,7 +116,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 djInfo.SetActive(false);
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(false);
-                child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 0;
+                // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 0;
             }
         }
     }
