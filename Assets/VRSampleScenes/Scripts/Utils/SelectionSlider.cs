@@ -176,6 +176,9 @@ namespace VRStandardAssets.Utils
 
         private void HandleOver ()
         {
+			if (m_GazeOver)
+                m_FillBarRoutine = StartCoroutine(FillBar());
+
             // The user is now looking at the bar.
             m_GazeOver = true;
 
