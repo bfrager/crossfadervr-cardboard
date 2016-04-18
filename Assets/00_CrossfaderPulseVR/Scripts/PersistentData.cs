@@ -10,12 +10,27 @@ public class PersistentData : MonoBehaviour {
 
 	enum Fade {In, Out};
 
+	private ApiCall api;
+	public Texture avatarTexture;
+	public Texture bgTexture;
+
+
+	//utility
+	public MeshRenderer mr;
+	public MeshRenderer iconMr;
+	public string url = "https://dxzw8fe3xavok.cloudfront.net/performances/550352/550352-background-performancePhoto.jpeg?1449747147";
+	public string performanceID;
+	public string AvatarURL; 
+	public string trackName;
+	public string djName;
+
 	// Use this for initialization
 	void Awake () 
 	{
 		DontDestroyOnLoad(gameObject);
 		PD = this;
 
+		api = gameObject.GetComponent<ApiCall>();
 
 
 	}
@@ -23,7 +38,13 @@ public class PersistentData : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-	
+
+	}
+	void LoadPerformanceData()
+	{
+		StartCoroutine("_LoadAvatarFromUrl");
+		StartCoroutine("_LoadBGFromUrl");
+
 	}
 
 	void OnLevelWasLoaded()
@@ -40,6 +61,12 @@ public class PersistentData : MonoBehaviour {
 		else{
 			curSongTime = 0;
 		}
+
+		mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
+		iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
+
+		//sammoh loading...
+		LoadPerformanceData();
 	}
 
 	public void PubFadeAudio(float timer, int fadeType, Transform gameObject)
@@ -66,4 +93,21 @@ public class PersistentData : MonoBehaviour {
 	    }
 
     }
+
+
+	IEnumerator _LoadAvatarFromUrl()
+	{
+
+		WWW imgUrl = new WWW(url);
+		yield return imgUrl;
+		iconMr.material.mainTexture = imgUrl.texture;
+	}
+
+	IEnumerator _LoadBGFromUrl()
+	{
+
+		WWW imgUrl = new WWW(url);
+		yield return imgUrl;
+		mr.material.mainTexture = imgUrl.texture;
+	}
 }
