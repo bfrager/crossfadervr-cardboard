@@ -13,6 +13,8 @@ public class ApiCall : MonoBehaviour {
     // private JsonData itemData;
     public List<int> performanceIds = new List<int>();
     private List<JSONObject> performances = new List<JSONObject>();
+    public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
+
 
 	void Start () {
         //add performance IDs of DJ Nodes to grab
@@ -30,21 +32,30 @@ public class ApiCall : MonoBehaviour {
             
             crossFaderData.Send( ( request ) => 
             {
-                // Convert response string to JSON object
-                JSONObject cfData = new JSONObject( request.response.Text );
+                //add response to performances list
+                performances.Add(new JSONObject( request.response.Text ));
+                performancesDict.Add(idString, new JSONObject( request.response.Text ));
+
+                //NAVIGATE JSON OBJECTS BY PERFORMANCE ID:                
+                // Debug.Log(performancesDict[idString]);   
+                // Debug.Log(performancesDict[idString]["performance"]["title"]);   
+                             
+                // // Convert response string to JSON object
+                // JSONObject cfData = new JSONObject( request.response.Text );
                 
-                performances.Add(cfData);
-                Debug.Log(performances);
+                // performances.Add(cfData);
+                // Debug.Log(performances);
                 
-                // access data in response object
-                accessData(cfData["performances"][1]["title"]);
+                // // access data in response object
+                // accessData(cfData["performances"][idString]["performance"]["title"]);
                 
-                // alt syntax to access data
-                JSONObject perf = cfData["performances"][1];
-                Debug.Log(perf["title"]); 
+                // // alt syntax to access data
+                // JSONObject perf = cfData["performances"][idString]["performance"];
+                // Debug.Log(perf["title"]); 
             });
+            
         }
-        
+
         
         
         
