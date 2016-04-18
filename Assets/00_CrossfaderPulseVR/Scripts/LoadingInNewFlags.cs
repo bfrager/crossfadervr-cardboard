@@ -4,30 +4,24 @@ using UnityEngine.UI;
 
 public class LoadingInNewFlags : MonoBehaviour {
 
-	private SpriteRenderer sr;
-	public Sprite flagSprite;
+	public SpriteRenderer spriteRenderer;
+	private Sprite flagSprite;
 	public string countryName;
-	public Sprite[] flaglist ;
 
-
-	void awake()
-	{
-
-		
-	}
-	// Use this for initialization
 	void Start () 
 	{
-		sr = gameObject.GetComponent<SpriteRenderer>();
-		//flaglist = Resources.LoadAll<Sprite>("flags");
-		flagSprite = Resources.Load<Sprite>("flags/"+ countryName);
-		sr.sprite = flagSprite;
-		if(flagSprite.packed) Debug.LogError("Image is Altased!");
+
+		if(spriteRenderer.sprite == null)
+		{
+			flagSprite = Resources.Load<Sprite>("flags/Unknown");
+			Debug.LogError("Sprite Not Found!");
+		}
+		else{
+			flagSprite = Resources.Load<Sprite>("flags/"+ countryName);
+		}
+
+		spriteRenderer.sprite = flagSprite;
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
