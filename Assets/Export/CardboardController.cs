@@ -278,7 +278,7 @@ public class CardboardController : MonoBehaviour {
 		{
 		float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
 		PersistentData.PD.curSongTime = playHead;
-        PersistentData.PD.performanceId = cardboard.gaze.Object().transform.parent.name;
+        PersistentData.PD.performanceId = node.transform.parent.name;
         }
 
         SceneManager.LoadScene(sceneName); 
