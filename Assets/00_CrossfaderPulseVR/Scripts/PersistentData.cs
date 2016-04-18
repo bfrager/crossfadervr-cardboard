@@ -7,6 +7,7 @@ public class PersistentData : MonoBehaviour {
 
 	public static PersistentData PD;
 	public float curSongTime;
+	public string performanceId;
 
 	enum Fade {In, Out};
 
@@ -15,8 +16,6 @@ public class PersistentData : MonoBehaviour {
 	{
 		DontDestroyOnLoad(gameObject);
 		PD = this;
-
-
 
 	}
 	
@@ -36,6 +35,7 @@ public class PersistentData : MonoBehaviour {
 		{
 			print (GameObject.Find("DJ_Room").transform.name);
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().time = curSongTime;
+			Debug.Log("perf id = " + performanceId);
 		}
 		else{
 			curSongTime = 0;

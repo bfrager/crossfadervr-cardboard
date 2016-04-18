@@ -252,6 +252,7 @@ public class CardboardController : MonoBehaviour {
 		//cache current time of song
 		float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
 		PersistentData.PD.curSongTime = playHead;
+        PersistentData.PD.performanceId = cardboard.gaze.Object().transform.parent.name;
 
         SceneManager.LoadScene(sceneName); 
     }
