@@ -8,6 +8,7 @@ using LitJson;
 
 public class ApiCall : MonoBehaviour {
     
+    public static ApiCall AC;
     private string url;
     private string apiEndpoint;
     // private JsonData itemData;
@@ -55,8 +56,12 @@ public class ApiCall : MonoBehaviour {
             });
             
         }
-
         
+        // //test saving dictionary to PersistentData static class for access globally
+        // PersistentData.PD.performancesDict = performancesDict;
+        // Debug.Log(PersistentData.PD.performancesDict[performanceIds[0].ToString()]["user"]["title"]);
+        
+        Debug.Log(performancesDict[performanceIds[0].ToString()]["user"]["title"]);
         
         
         // LitJson

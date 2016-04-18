@@ -19,7 +19,7 @@ public class CardboardController : MonoBehaviour {
 	void Start () {
         Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
-        Debug.Log(audioSources);
+        // Debug.Log(audioSources);
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
         textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
         textMesh.GetComponent<Renderer>().enabled = false;
@@ -144,7 +144,7 @@ public class CardboardController : MonoBehaviour {
 	void Update () {
         //Countdown timer on GUI
         if (cardboard.gaze.IsHeld()) {
-            Debug.Log(cardboard.gaze.Object());
+            // Debug.Log(cardboard.gaze.Object());
             //ROOT LEVEL CONTROLS:
 			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
             {
