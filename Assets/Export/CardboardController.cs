@@ -9,14 +9,17 @@ using UnityEngine.SceneManagement;
 using VRStandardAssets.Utils;
 
 public class CardboardController : MonoBehaviour {
-    private static CardboardControl cardboard;
+    public static CardboardControl cardboard;
+    public static CardboardController cardboardController;
 	public Image radialFill;
     private TextMesh textMesh;
     private TextMesh textMesh2;
     private AudioSource[] audioSources;
+    public GameObject curObj;
 
 	// Use this for initialization
 	void Start () {
+		cardboardController = this;
         Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
         // Debug.Log(audioSources);
@@ -153,6 +156,21 @@ public class CardboardController : MonoBehaviour {
                     textMesh2.text = "Feel the Global Pulse";
                     textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;                  
                 }
+
+				if (cardboard.gaze.Object().name.Contains("Diamond"))
+                {
+                	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
+                }
+				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
+				{
+					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+				}
+
+				if (cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>())
+				{
+					cardboard.gaze.Object().transform.parent.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+					cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>().hovered = true;
+				}
 				
                 if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
 
@@ -177,7 +195,7 @@ public class CardboardController : MonoBehaviour {
 
                     	//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
-						StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
+						//StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
                         //SceneManager.LoadScene(1);    
                                             
                     }
@@ -201,7 +219,7 @@ public class CardboardController : MonoBehaviour {
 
 						//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
-						StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
+						//StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
                         //SceneManager.LoadScene(0);
                     }
                 }
@@ -212,7 +230,8 @@ public class CardboardController : MonoBehaviour {
             textMesh2.GetComponent<Renderer>().enabled = false;
 
         }
-        
+        curObj = cardboard.gaze.Object();
+
         // // Check on gaze and add radial to reticle
         // if (cardboard.gaze.IsHeld())
 		// 	cardboard.reticle.radialFill.fillAmount += (Time.deltaTime * fillSpeed);
@@ -243,16 +262,24 @@ public class CardboardController : MonoBehaviour {
         cardboard.box.OnTilt -= CardboardMagnetReset;
     }
 
-    IEnumerator FadeLevelChange(string sceneName, float fadeDur)
+	public void ChangeLevel (string sceneName, float fadeDur, GameObject node)
+	{
+		StartCoroutine(FadeLevelChange(sceneName, fadeDur, node));
+	}
+
+    IEnumerator FadeLevelChange(string sceneName, float fadeDur, GameObject node)
     {
     	//PersistentData.PD.PubFadeAudio(fadeDur, 0, cardboard.gaze.Object().transform);
 		//transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
 		yield return new WaitForSeconds(fadeDur);
 
 		//cache current time of song
-		float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
+		if (node != null)
+		{
+		float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
 		PersistentData.PD.curSongTime = playHead;
         PersistentData.PD.performanceId = cardboard.gaze.Object().transform.parent.name;
+        }
 
         SceneManager.LoadScene(sceneName); 
     }
