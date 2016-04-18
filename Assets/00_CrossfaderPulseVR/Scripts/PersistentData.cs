@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 
@@ -8,6 +9,8 @@ public class PersistentData : MonoBehaviour {
 	public static PersistentData PD;
 	public float curSongTime;
 	public string performanceId;
+	// public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
+
 
 	enum Fade {In, Out};
 

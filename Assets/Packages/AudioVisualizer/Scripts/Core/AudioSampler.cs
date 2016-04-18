@@ -54,7 +54,7 @@ namespace AudioVisualizer
                 }
                 else
                 {
-                    Debug.LogError("No audio sources attached. Finding game objects with 'Audio' tag on start.")
+                    // Debug.LogError("No audio sources attached. Finding game objects with 'Audio' tag on start.")
                     ;
                 }
             }
@@ -68,7 +68,7 @@ namespace AudioVisualizer
                 audioSources.Add(cardboardAudioSource.GetComponent<AudioSource>());
                 Debug.Log("Adding cardboard audio source from " + cardboardAudioSource);
             }
-            Debug.Log(audioSources);
+            // Debug.Log(audioSources);
             //get max frequency
             fMax = (float)AudioSettings.outputSampleRate / 2;
         }

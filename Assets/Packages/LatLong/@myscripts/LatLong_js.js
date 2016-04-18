@@ -1,6 +1,6 @@
 // latlong (mgear / http://unity3dstuff.blogspot.com/ )
 var myobject:Transform; // marker object
-var myradius:float = 5; // globe ball radius
+var myradius:float = 20; // globe ball radius
 var mylatitude:float = 0; // lat
 var mylongitude:float = 0; // long
 
