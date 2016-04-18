@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using LitJson;
-
 
 // based on https://github.com/andyburke/UnityHTTP
 
@@ -11,9 +9,7 @@ public class ApiCall : MonoBehaviour {
     public static ApiCall AC;
     private string url;
     private string apiEndpoint;
-    // private JsonData itemData;
     public List<int> performanceIds = new List<int>();
-    private List<JSONObject> performances = new List<JSONObject>();
     public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
 
 
@@ -34,25 +30,14 @@ public class ApiCall : MonoBehaviour {
             crossFaderData.Send( ( request ) => 
             {
                 //add response to performances list
-                performances.Add(new JSONObject( request.response.Text ));
                 performancesDict.Add(idString, new JSONObject( request.response.Text ));
 
                 //NAVIGATE JSON OBJECTS BY PERFORMANCE ID:                
-                // Debug.Log(performancesDict[idString]);   
-                // Debug.Log(performancesDict[idString]["performance"]["title"]);   
-                             
-                // // Convert response string to JSON object
-                // JSONObject cfData = new JSONObject( request.response.Text );
-                
-                // performances.Add(cfData);
-                // Debug.Log(performances);
-                
+                Debug.Log(performancesDict[idString]["performance"]["title"]);   
+                          
                 // // access data in response object
-                // accessData(cfData["performances"][idString]["performance"]["title"]);
-                
-                // // alt syntax to access data
-                // JSONObject perf = cfData["performances"][idString]["performance"];
-                // Debug.Log(perf["title"]); 
+                // accessData(performancesDict[idString]["performance"]["title"]);
+
             });
             
         }
@@ -61,30 +46,8 @@ public class ApiCall : MonoBehaviour {
         // PersistentData.PD.performancesDict = performancesDict;
         // Debug.Log(PersistentData.PD.performancesDict[performanceIds[0].ToString()]["user"]["title"]);
         
-        Debug.Log(performancesDict[performanceIds[0].ToString()]["user"]["title"]);
-        
-        
-        // LitJson
-        // itemData = JsonMapper.ToObject(cfData);
-        // Debug.Log(itemData["performances"][1]["title"]);
-        // GetItem(783984, "performances");
-        // GetItem(cfData, 783984, "performances");
-        
-        
-        //simpleJSON             
-        // TODO: PARSE JSON DATA (SIMPLEJSON FUNCTION NOT WORKING)
-        //     performances = JsonConvert.DeserializeObject<List<Performance>>(cfData);
-        //     cfDataParsed = JSON.Parse(cfData);
-            
-        //     foreach(JSONClass performance in cfData["performances"]) 
-        //     {  
-        //         int id = performance.AsObject["id"].Value;
-        //         int duration_seconds = performance.AsObject["duration_seconds"].Value;
-        //         int user_id = performance.AsObject["user_id"].Value;
-        //         performances.Add(new Performance(id, duration, user_id));
-        //     }
-        //     Debug.Log(performances.Count);
-        //     Debug.Log(performances);
+        // // Test accessing dictionary outside of foreach loop (maybe yield until server response?)
+        // Debug.Log(performancesDict[performanceIds[1].ToString()]["users"]["dj_name"]);
         
 	}
 
@@ -130,26 +93,5 @@ public class ApiCall : MonoBehaviour {
              performanceIds.Add(list[i]);
           }
      }
-
-//UNUSED CODE (DLL LIBRARY AS ALTERNATE JSON DECODER)
-    // LitJson	
-    //     JSONObject GetItem(JSONObject obj, int id, string type)
-    //     {
-    //         for (int i = 0; i < obj[type].Count; i++)
-    //         {
-    //             if (int.Parse(obj[type][i]["id"]) == id)
-    //                 return obj[type][i];
-    //         }
-    //     }
-
-    //     JsonData GetItem(int id, string type)
-    //     {
-    //         for (int i = 0; i < itemData[type].Count; i++)
-    //         {
-    //             if (itemData[type][i]["id"] == id)
-    //                 return itemData[type][i];
-    //         }
-    //     }
-    
 	
 }
