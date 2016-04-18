@@ -31,12 +31,10 @@ public class PersistentData : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 		PD = this;
 
-<<<<<<< HEAD
 		api = gameObject.GetComponent<ApiCall>();
 
 
-=======
->>>>>>> fe09d89c1fca7e11b16fdbe59ff9e4948861a6e1
+
 	}
 	
 	// Update is called once per frame
