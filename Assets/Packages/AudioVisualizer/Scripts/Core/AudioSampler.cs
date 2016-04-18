@@ -62,6 +62,7 @@ namespace AudioVisualizer
 
         void Start()
         {
+            Debug.Log(AudioListener.volume);
             cardboardAudioSources = GameObject.FindGameObjectsWithTag("Audio");
             foreach (GameObject cardboardAudioSource in cardboardAudioSources)
             {
