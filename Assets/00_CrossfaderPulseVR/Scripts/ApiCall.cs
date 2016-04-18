@@ -25,26 +25,30 @@ public class ApiCall : MonoBehaviour {
         {
             string idString = id.ToString();
             url = apiEndpoint + idString;
+            Debug.Log(url);
             
             HTTP.Request crossFaderData = new HTTP.Request( "get", url );
             
             crossFaderData.Send( ( request ) => 
             {
-                // Convert response string to JSON object
-                JSONObject cfData = new JSONObject( request.response.Text );
+                performances.Add(new JSONObject( request.response.Text ));
+                Debug.Log(performances[0]);                
+                // // Convert response string to JSON object
+                // JSONObject cfData = new JSONObject( request.response.Text );
                 
-                performances.Add(cfData);
-                Debug.Log(performances);
+                // performances.Add(cfData);
+                // Debug.Log(performances);
                 
-                // access data in response object
-                accessData(cfData["performances"][1]["title"]);
+                // // access data in response object
+                // accessData(cfData["performances"][idString]["performance"]["title"]);
                 
-                // alt syntax to access data
-                JSONObject perf = cfData["performances"][1];
-                Debug.Log(perf["title"]); 
+                // // alt syntax to access data
+                // JSONObject perf = cfData["performances"][idString]["performance"];
+                // Debug.Log(perf["title"]); 
             });
+            
         }
-        
+
         
         
         
