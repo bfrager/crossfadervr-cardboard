@@ -8,6 +8,6 @@ public class Spin_Node : MonoBehaviour
     
     void Update ()
     {
-        transform.Rotate(0,0,1 * speed * Time.deltaTime);
+		transform.Rotate(0,0,1 * speed * Time.deltaTime, Space.World);
     }
 }

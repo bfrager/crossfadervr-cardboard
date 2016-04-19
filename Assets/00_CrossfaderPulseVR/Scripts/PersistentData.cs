@@ -14,18 +14,44 @@ public class PersistentData : MonoBehaviour {
 
 	enum Fade {In, Out};
 
+	private ApiCall api;
+	public Texture avatarTexture;
+	public Texture bgTexture;
+
+
+	//utility
+	public MeshRenderer mr;
+	public MeshRenderer iconMr;
+	public string url = "https://dxzw8fe3xavok.cloudfront.net/performances/550352/550352-background-performancePhoto.jpeg?1449747147";
+	public string AvatarURL; 
+	public string trackName;
+	public string djName;
+	public Material avatarMat;
+
 	// Use this for initialization
 	void Awake () 
 	{
 		DontDestroyOnLoad(gameObject);
 		PD = this;
 
+		api = gameObject.GetComponent<ApiCall>();
+
+
+
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-	
+
+	}
+	void LoadPerformanceData()
+	{
+//		StartCoroutine("_LoadAvatarUserName");
+//		StartCoroutine("_LoadAvatarFromUrl");
+		StartCoroutine("_LoadBGFromUrl");
+
+
 	}
 
 	void OnLevelWasLoaded()
@@ -37,12 +63,23 @@ public class PersistentData : MonoBehaviour {
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
 			print (GameObject.Find("DJ_Room").transform.name);
+			GameObject.Find("AudioSampler").GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().time = curSongTime;
+			GameObject.Find("AudioSampler").GetComponent<AudioSource>().Play();
+
 			Debug.Log("perf id = " + performanceId);
+
+			print(gameObject.GetComponent<ApiCall>().performancesDict[performanceId].GetField("title"));
 		}
 		else{
 			curSongTime = 0;
 		}
+
+		mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
+		iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
+
+		//sammoh loading...
+		LoadPerformanceData();
 	}
 
 	public void PubFadeAudio(float timer, int fadeType, Transform gameObject)
@@ -69,4 +106,44 @@ public class PersistentData : MonoBehaviour {
 	    }
 
     }
+
+	IEnumerator _LoadAvatarUserName()
+	{
+
+		string usernameUrl = api.performancesDict[performanceId]["users"]["dj_name"].ToString();
+		print("usernameUrl");
+		string[] temp = usernameUrl.Split('\"');
+		usernameUrl = temp[1];
+		print(temp[1]);
+		WWW stringUrl = new WWW(usernameUrl);
+		yield return stringUrl;
+		djName = stringUrl.ToString();
+	}
+
+
+	IEnumerator _LoadAvatarFromUrl()
+	{
+		string avatarUrl = api.performancesDict[performanceId]["users"]["avatar"].ToString();
+		print(avatarUrl);
+		string[] temp = avatarUrl.Split('\"');
+		avatarUrl = temp[1];
+		WWW imgUrl = new WWW(avatarUrl);
+		yield return imgUrl;
+		iconMr.materials[1].mainTexture = imgUrl.texture;
+
+
+	}
+
+	IEnumerator _LoadBGFromUrl()
+	{
+
+		string bgUrl = api.performancesDict[performanceId]["performance"]["background_image"].ToString();
+		string[] temp = bgUrl.Split('\"');
+		print(temp[1]);
+		bgUrl = temp[1];
+		WWW imgUrl = new WWW(bgUrl);
+		yield return imgUrl;
+		mr.material.mainTexture = imgUrl.texture;
+		StartCoroutine("_LoadAvatarFromUrl");
+	}
 }
