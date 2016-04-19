@@ -177,7 +177,6 @@ public class CardboardController : MonoBehaviour {
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
                     int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    Debug.Log("Country Id = " + countryId);
                     planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
 
                 }

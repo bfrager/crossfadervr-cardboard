@@ -134,7 +134,6 @@ public class PersistentData : MonoBehaviour {
 
 		string bgUrl = api.performancesDict[performanceId]["performance"]["background_image"].ToString();
 		string[] temp = bgUrl.Split('\"');
-		print(temp[1]);
 		bgUrl = temp[1];
 		WWW imgUrl = new WWW(bgUrl);
 		yield return imgUrl;

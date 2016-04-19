@@ -31,6 +31,9 @@ public class ApiCall : MonoBehaviour {
             {
                 //add response to performances list
                 performancesDict.Add(idString, new JSONObject( request.response.Text ));
+                Debug.Log(idString + "Response added to dictionary");
+                
+                
 
                 //NAVIGATE JSON OBJECTS BY PERFORMANCE ID:                
                 // Debug.Log(performancesDict[idString]["performance"]["title"]);   

@@ -43,7 +43,8 @@ public class LoadAvatarImage : MonoBehaviour {
 	
 	IEnumerator WaitForCall()
     {
- 	    yield return new WaitForSeconds(1);
+ 	    yield return new WaitForSeconds(2);
+		Debug.Log("Grabbing dictionary");
 		 
 		Debug.Log(api.performancesDict);
 		foreach(KeyValuePair<string,JSONObject> performance in api.performancesDict)		
