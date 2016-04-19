@@ -8,7 +8,7 @@ public class CountryHighlighter : MonoBehaviour {
 	public int countryID = 0;
 	public float maxOpacity = 0.3f;
 	public bool triggerPing;
-	private float pingTime = 0.5f;
+	private float pingTime = 1f;
 
 	private ProceduralMaterial substance;
 
@@ -38,11 +38,13 @@ public class CountryHighlighter : MonoBehaviour {
 
 	IEnumerator WaitTime()
 	{
-		yield return new WaitForSeconds(pingTime);
-		countryID = 0;
-		substance.SetProceduralFloat("Mask_Opacity", 0);
-		substance.RebuildTextures ();
-
+		while (true) 
+		{
+			yield return new WaitForSeconds(pingTime);
+			countryID = 0;
+			substance.SetProceduralFloat("Mask_Opacity", 0);
+			substance.RebuildTextures ();
+		}
 	}
 	
 	public void updateCountry(int countryID) 
@@ -51,7 +53,7 @@ public class CountryHighlighter : MonoBehaviour {
 		{
 			substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;		
 			substance.SetProceduralFloat("CountrySelection", countryID);
-			substance.SetProceduralFloat("Mask_Opacity", Mathf.Lerp(0, maxOpacity, pingTime));
+			substance.SetProceduralFloat("Mask_Opacity", maxOpacity);
 			StartCoroutine(WaitTime());
 			substance.RebuildTextures ();
 		}
