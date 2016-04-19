@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 [RequireComponent(typeof(Collider))]
@@ -22,7 +23,10 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject djInfo;
     private GameObject visuals;
     enum Fade {In, Out};
-    private float visTimer = 5;
+    public float buttonFillAmount;
+    public bool gazedAt;
+
+    public Image buttonFill;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
@@ -67,14 +71,24 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
 //   	}
 //   }
 
-  public void SetGazedAt(bool gazedAt) {
+  public void SetGazedAt(bool gazed) {
+  }
+
+  public void IsGazedAt()
+  {
+  	gazedAt = true;
+  }
+
+  public void NotGazedAt()
+  {
+  	gazedAt = false;
   }
 
   public void Highlight() {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
     if (!locked)
     {
-    	visTimer = 0.5f;
+    	
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name)
@@ -105,7 +119,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
         {
             if (child.name != this.transform.parent.name) 
             {
-                // Debug.Log ("Found sibling "+ child.name);
+                Debug.Log ("Found sibling "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
                 // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
@@ -167,6 +181,38 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 }
             }
   }
+  public void FillButton()
+  {
+  	StartCoroutine(IEFillButton());
+
+  }
+
+  IEnumerator IEFillButton()
+  {
+  	while (gazedAt)
+  	{
+	  	if (buttonFillAmount < 2)
+	  	{
+	  		buttonFillAmount += Time.deltaTime;
+	  		buttonFill.fillAmount = buttonFillAmount/2;
+	  	}
+	  	else if (buttonFillAmount >= 1)
+	  	{
+
+				CardboardController.cardboardController.ChangeLevel("02_Cardboard_DJLevel_v2",0.8f, gameObject);
+	  	}
+	  	yield return new WaitForSeconds(0.05f);
+  	}
+
+  }
+
+  public void ResetButton()
+  {
+  	buttonFillAmount = 0;
+  	buttonFill.fillAmount = buttonFillAmount;
+
+  }
+
 
 //   public void ToggleVRMode() {
 //     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
