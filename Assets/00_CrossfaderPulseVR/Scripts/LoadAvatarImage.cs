@@ -9,7 +9,6 @@ public class LoadAvatarImage : MonoBehaviour {
 	public Texture avatarTexture;
 	public string performanceId;
 	private bool loading = true;
-	public Font gravity;
 	
 	//DJ Info:
 	public Text djName;
@@ -42,10 +41,10 @@ public class LoadAvatarImage : MonoBehaviour {
 	void Start () 
 	{
 		//Set Canvas Style
-		djName.font = gravity;
-		location.font = gravity;
-		listens.font = gravity;
-		tags.font = gravity;
+		// djName.font = Gravity;
+		// location.font = Gravity;
+		// listens.font = Gravity;
+		// tags.font = Gravity;
 		
 		
 		//Load objects
