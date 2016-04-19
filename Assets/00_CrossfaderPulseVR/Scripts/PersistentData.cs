@@ -78,30 +78,19 @@ public class PersistentData : MonoBehaviour {
 		LoadPerformanceData();
 	}
 
-	public void PubFadeAudio(float timer, int fadeType, Transform gameObject)
-	{
-		if (fadeType ==0)
-		{
-			//fadeout
-			StartCoroutine(FadeAudio(timer, Fade.Out));
-		}
-	}
-
-	IEnumerator FadeAudio (float timer, Fade fadeType) {
-	    // TODO: check whether gameObject volume is at 0 or 1
-	    float start = fadeType == Fade.In? 0.0F : 1.0F;
-	    float end = fadeType == Fade.In? 1.0F : 0.0F;
-	    float i = 0.0F;
-	    float step = 1.0F/timer;
-	 
-	    while (i <= 1.0F) {
-	        i += step * Time.deltaTime;
-
-	        AudioListener.volume = Mathf.Lerp(start, end, i);
-	        yield return new WaitForSeconds(step * Time.deltaTime);
-	    }
-
+IEnumerator FadeAudio (float timer, Fade fadeType) {
+    float start = fadeType == Fade.In? 0.0F : 1.0F;
+    float end = fadeType == Fade.In? 1.0F : 0.0F;
+    float i = 0.0F;
+    float step = 1.0F/timer;
+ 
+    while (i <= 1.0F) {
+        i += step * Time.deltaTime;
+        AudioListener.volume = Mathf.Lerp(start, end, i);
+        yield return new WaitForSeconds(step * Time.deltaTime);
     }
+    
+}
 
 		IEnumerator _LoadName()
 	{

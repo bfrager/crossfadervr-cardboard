@@ -187,8 +187,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
-
-				CardboardController.cardboardController.ChangeLevel("02_Cardboard_DJLevel_v2",0.8f, gameObject);
+				CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
 	  	yield return new WaitForSeconds(0.05f);
   	}

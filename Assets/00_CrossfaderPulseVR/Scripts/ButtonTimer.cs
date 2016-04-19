@@ -26,7 +26,7 @@ public class ButtonTimer : MonoBehaviour {
 				Countdown();
 			}
 			else{
-				CardboardController.cardboardController.ChangeLevel("02_Cardboard_DJLevel_v2",0.8f, transform.parent.parent.GetChild(0).gameObject);
+				CardboardController.cardboardController.ChangeLevel(1,0.8f, transform.parent.parent.GetChild(0).gameObject);
 
 			}
 		}
