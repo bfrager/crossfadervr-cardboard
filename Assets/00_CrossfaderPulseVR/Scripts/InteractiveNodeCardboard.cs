@@ -18,7 +18,8 @@ using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class InteractiveNodeCardboard : MonoBehaviour {
-    public float fadeTime = 3.0F;
+    
+    public float fadeTime = 1.0F;
     public float sceneStartFade = 5.0F;
     public bool locked = false;
     private GameObject djInfo;
@@ -26,10 +27,14 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
+    
     private Coroutine buttonFillRoutine = null;
-    private Coroutine audioFadeIn = null;
-    private Coroutine audioFadeOut = null;
-    private Coroutine audioFade = null;
+
+    private Coroutine audioFade1 = null;
+    private Coroutine audioFade2 = null;
+    private Coroutine audioFade3 = null;
+
+
 
     public Image buttonFill;
 
