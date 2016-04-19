@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LoadAvatarImage : MonoBehaviour {
 
@@ -13,19 +14,27 @@ public class LoadAvatarImage : MonoBehaviour {
 
 	void Awake ()
 	{
-
+		api = GameObject.Find("PersistentData").GetComponent<ApiCall>();
 	}
 
 	// Use this for initialization
 	void Start () 
 	{
-		api = GameObject.Find("PersistentData").GetComponent<ApiCall>();
-		//Debug.Log(api.performancesDict);
+		
+		StartCoroutine(WaitForCall());
+		
+		Debug.Log(api.performancesDict);
+		foreach(KeyValuePair<string,JSONObject> performance in api.performancesDict)		
+		{
+			Debug.Log(performance.Key);
+		}
+		
 		performanceId = gameObject.name;
-			Debug.Log(performanceId);
-		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
+		Debug.Log(performanceId);
 		Debug.Log(api.performancesDict[performanceId]);
-		StartCoroutine("_LoadAvatarTexture");
+		
+		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
+		
 	}
 	
 	// Update is called once per frame
@@ -33,7 +42,7 @@ public class LoadAvatarImage : MonoBehaviour {
 	
 	}
 	
-		IEnumerator _LoadAvatarTexture()
+	IEnumerator _LoadAvatarTexture()
 	{
 		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
 		string[] temp = avatarUrl.Split('\"');
@@ -42,7 +51,12 @@ public class LoadAvatarImage : MonoBehaviour {
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		mr.materials[1].mainTexture = imgUrl.texture;
-
-
 	}
+	
+	IEnumerator WaitForCall()
+    {
+ 	    yield return new WaitForSeconds(1);
+   
+		StartCoroutine("_LoadAvatarTexture");
+    }
 }

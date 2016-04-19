@@ -66,7 +66,6 @@ public class PersistentData : MonoBehaviour {
 
 			Debug.Log("perf id = " + performanceId);
 
-			print(gameObject.GetComponent<ApiCall>().performancesDict[performanceId].GetField("title"));
 		}
 		else{
 			curSongTime = 0;

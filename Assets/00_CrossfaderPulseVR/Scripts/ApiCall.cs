@@ -24,7 +24,7 @@ public class ApiCall : MonoBehaviour {
         {
             string idString = id.ToString();
             url = apiEndpoint + idString;
-            
+            Debug.Log("sending request for " + idString);
             HTTP.Request crossFaderData = new HTTP.Request( "get", url );
             
             crossFaderData.Send( ( request ) => 
