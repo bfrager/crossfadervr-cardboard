@@ -9,12 +9,13 @@ public class LoadAvatarImage : MonoBehaviour {
 	public Texture avatarTexture;
 	public string performanceId;
 	private bool loading = true;
+	public Font gravity;
 	
 	//DJ Info:
-	public TextMesh djName;
-	public TextMesh tags;
-	public TextMesh listens;
-	public TextMesh location;
+	public Text djName;
+	public Text tags;
+	public Text listens;
+	public Text location;
 	public Transform canvas;
 
 	//utility
@@ -30,19 +31,29 @@ public class LoadAvatarImage : MonoBehaviour {
 		performanceId = gameObject.name;
 		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
         canvas = gameObject.transform.Find("Dj_Info_Canvas");
-        djName = canvas.transform.Find("Dj_Name").GetComponent<TextMesh>();
-        location = canvas.transform.Find("Location").GetComponent<TextMesh>();
-        listens = canvas.transform.Find("Hearts").GetComponent<TextMesh>();
-        tags = canvas.transform.Find("Tags").GetComponent<TextMesh>();
+        djName = canvas.transform.Find("Dj_Name").GetComponent<Text>();
+        location = canvas.transform.Find("Location").GetComponent<Text>();
+        listens = canvas.transform.Find("Hearts").GetComponent<Text>();
+        tags = canvas.transform.Find("Tags").GetComponent<Text>();
+
 	}
 
 	// Use this for initialization
 	void Start () 
 	{
+		//Set Canvas Style
+		djName.font = gravity;
+		location.font = gravity;
+		listens.font = gravity;
+		tags.font = gravity;
+		
+		
+		//Load objects
 		StartCoroutine(WaitForCall());
-		StartCoroutine(ScaleUpNodes(1f));
+		StartCoroutine(ScaleUpNodes(1f, 0.35f));
 		string country = gameObject.GetComponent<LoadingInNewFlags>().countryName;
 		location.text = country;
+		Debug.Log(location.text);
 	}
 	
 	// Update is called once per frame
@@ -50,13 +61,13 @@ public class LoadAvatarImage : MonoBehaviour {
 	
 	}
 	
-	IEnumerator ScaleUpNodes(float time)
+	IEnumerator ScaleUpNodes(float time, float scale)
     {
 		while(loading)       
 		yield return new WaitForSeconds(0.1f);
 		//LOAD DJ NODES
         Vector3 originalScale = gameObject.transform.localScale;
-        Vector3 destinationScale = new Vector3(0.25f, 0.25f, 0.25f);
+        Vector3 destinationScale = new Vector3(scale, scale, scale);
          
          float currentTime = 0.0f;
          
@@ -125,5 +136,4 @@ public class LoadAvatarImage : MonoBehaviour {
 		yield return firstTag;
 		tags.text = firstTag;
 	}
-	
 }

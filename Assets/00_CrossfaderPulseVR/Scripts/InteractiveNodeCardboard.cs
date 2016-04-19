@@ -18,38 +18,28 @@ using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class InteractiveNodeCardboard : MonoBehaviour {
-    public float fadeTime = 1.0F;
+    public float fadeTime = 3.0F;
+    public float sceneStartFade = 5.0F;
     public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
+    private Coroutine buttonFillRoutine = null;
+    private Coroutine audioFadeIn = null;
+    private Coroutine audioFadeOut = null;
+    private Coroutine audioFade = null;
 
     public Image buttonFill;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
 
-IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
-    // float start = fadeType == Fade.In? 0.0F : 1.0F;
-    float end = fadeType == Fade.In? 1.0F : 0.0F;
-    float i = 0.0F;
-    float step = 1.0F/timer;
-    float currentVolume = gameObject.GetComponent<CardboardAudioSource>().volume;
- 
-    while (i <= 1.0F) {
-        i += step * Time.deltaTime;
-        gameObject.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
-        yield return new WaitForSeconds(step * Time.deltaTime);
-    }
-    
-}
-
 
   void Start() {
     SetGazedAt(false);
-    StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
+    StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
   }
 
 //   void LateUpdate() {
@@ -102,7 +92,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 djInfo.SetActive(true);
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(true);
-                // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 10;
+                child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = true;
             }
         }
 
@@ -129,7 +119,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 djInfo.SetActive(false);
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(false);
-                // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 0;
+                child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = false;
             }
         }
 
@@ -184,7 +174,6 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
   public void FillButton()
   {
   	StartCoroutine(IEFillButton());
-
   }
 
   IEnumerator IEFillButton()
@@ -213,6 +202,21 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
 
   }
 
+
+IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
+    // float start = fadeType == Fade.In? 0.0F : 1.0F;
+    float end = fadeType == Fade.In? 1.0F : 0.0F;
+    float i = 0.0F;
+    float step = 1.0F/timer;
+    float currentVolume = gameObject.GetComponent<CardboardAudioSource>().volume;
+ 
+    while (i <= 1.0F) {
+        i += step * Time.deltaTime;
+        gameObject.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
+        yield return new WaitForSeconds(step * Time.deltaTime);
+    }
+    
+}
 
 //   public void ToggleVRMode() {
 //     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
