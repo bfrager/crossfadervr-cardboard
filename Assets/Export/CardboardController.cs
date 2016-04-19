@@ -17,6 +17,7 @@ public class CardboardController : MonoBehaviour {
     private AudioSource[] audioSources;
     public GameObject curObj;
     public GameObject planet;
+    public GameObject curNode;
 
 	// Use this for initialization
 	void Start () {
@@ -99,6 +100,16 @@ public class CardboardController : MonoBehaviour {
         cardboard.reticle.ClearHighlight();
         }
 
+		if (cardboard.gaze.Object() == null)
+        {
+        	curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        	curNode = null;
+        }
+		else if (cardboard.gaze.Object().name.Contains("Diamond") && cardboard.gaze.Object() != curNode)
+		{
+			curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+			curNode = cardboard.gaze.Object();
+		}
         // Be sure to set the Reticle Layer Mask on the CardboardControlManager
         // to grow the reticle on the objects you want. The default is everything.
 
@@ -149,7 +160,7 @@ public class CardboardController : MonoBehaviour {
 	void Update () {
         //Countdown timer on GUI
         if (cardboard.gaze.IsHeld()) {
-            // Debug.Log(cardboard.gaze.Object());
+            curObj = cardboard.gaze.Object();
             //ROOT LEVEL CONTROLS:
 			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
             {
@@ -161,6 +172,7 @@ public class CardboardController : MonoBehaviour {
 
 				if (cardboard.gaze.Object().name.Contains("Diamond"))
                 {
+                	curNode = cardboard.gaze.Object();
                 	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
@@ -172,6 +184,7 @@ public class CardboardController : MonoBehaviour {
 				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
 				{
 					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+					//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
 				}
 
 				if (cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>())
@@ -204,10 +217,12 @@ public class CardboardController : MonoBehaviour {
                     	//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						// StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
-                        SceneManager.LoadScene(1);    
+                        //SceneManager.LoadScene(1);    
                                             
                     }
                 }
+
+
             }
             //DJ LEVEL CONTROLS:
 			else if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
@@ -228,7 +243,7 @@ public class CardboardController : MonoBehaviour {
 						//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						// StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
-                        SceneManager.LoadScene(0);
+                        //SceneManager.LoadScene(0);
                     }
                 }
             }
@@ -238,7 +253,6 @@ public class CardboardController : MonoBehaviour {
             textMesh2.GetComponent<Renderer>().enabled = false;
 
         }
-        curObj = cardboard.gaze.Object();
 
         // // Check on gaze and add radial to reticle
         // if (cardboard.gaze.IsHeld())
