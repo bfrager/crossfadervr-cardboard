@@ -17,7 +17,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class InteractiveNodeCardboard : MonoBehaviour {
-    public float fadeTime = 3.0F;
+    public float fadeTime = 1.0F;
     public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
@@ -28,67 +28,46 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	public LoadingInNewFlags _country;
 
 IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
-    // TODO: check whether gameObject volume is at 0 or 1
-    float start = fadeType == Fade.In? 0.0F : 1.0F;
+    // float start = fadeType == Fade.In? 0.0F : 1.0F;
     float end = fadeType == Fade.In? 1.0F : 0.0F;
     float i = 0.0F;
     float step = 1.0F/timer;
+    float currentVolume = gameObject.GetComponent<CardboardAudioSource>().volume;
  
     while (i <= 1.0F) {
         i += step * Time.deltaTime;
-        gameObject.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(start, end, i);
+        gameObject.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
         yield return new WaitForSeconds(step * Time.deltaTime);
     }
     
 }
 
-// public class FadeOutAudio : MonoBehaviour {
- 
-//     [TooltipAttribute("The audio source")]
-//     public AudioSource audioSource;
-//     [TooltipAttribute("Time in seconds to fade out")]
-//     public float fadeSpeed = 5f;
-//     [TooltipAttribute("Toggle the fade")]
-//     public bool startFade = false;
- 
-//     float time = 0f;
- 
-//     void Update(){
-//         if(startFade){
-//             audioSource.volume = Mathf.Lerp(1f, 0f, time);
-//             time += Time.deltaTime / fadeSpeed;
-//         }
-//     }
- 
-// }
 
   void Start() {
     SetGazedAt(false);
     StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
   }
 
-  void LateUpdate() {
-    Cardboard.SDK.UpdateState();
-    if (Cardboard.SDK.BackButtonPressed) {
-      Application.Quit();
-    }
-  }
+//   void LateUpdate() {
+//     Cardboard.SDK.UpdateState();
+//     if (Cardboard.SDK.BackButtonPressed) {
+//       Application.Quit();
+//     }
+//   }
 
-  void Update()
-  {
-  	if (visTimer > 0)
-  	{
-  		visTimer -= 0.1f;
-  	}
-  	else if (visTimer <= 0)
-  	{
-  		Reset();
-  	}
-  }
+//   void Update()
+//   {
+//   	if (visTimer > 0)
+//   	{
+//   		visTimer -= 0.1f;
+//   	}
+//   	else if (visTimer <= 0)
+//   	{
+//   		Reset();
+//   	}
+//   }
 
   public void SetGazedAt(bool gazedAt) {
-    // GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.(1, 1, 1, 0); //lerp size instead of color
-    //add particle effect on selected node
   }
 
   public void Highlight() {
@@ -192,5 +171,26 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
 //   public void ToggleVRMode() {
 //     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
 //   }
+
+
+// public class FadeOutAudio : MonoBehaviour {
+ 
+//     [TooltipAttribute("The audio source")]
+//     public AudioSource audioSource;
+//     [TooltipAttribute("Time in seconds to fade out")]
+//     public float fadeSpeed = 5f;
+//     [TooltipAttribute("Toggle the fade")]
+//     public bool startFade = false;
+ 
+//     float time = 0f;
+ 
+//     void Update(){
+//         if(startFade){
+//             audioSource.volume = Mathf.Lerp(1f, 0f, time);
+//             time += Time.deltaTime / fadeSpeed;
+//         }
+//     }
+ 
+// }
 
 }

@@ -17,6 +17,7 @@ public class LoadingInNewFlags : MonoBehaviour {
 	public float maxOpacity = 0.3f;
 	public bool triggerPing;
 	private float pingTime = 1;
+	public int tempCode;
 
 	private ProceduralMaterial substance;
 
@@ -36,28 +37,29 @@ public class LoadingInNewFlags : MonoBehaviour {
 
 	}
 
-	IEnumerator WaitTime()
+	IEnumerator WaitTime(int id)
 	{
 		yield return new WaitForSeconds(pingTime);
 		substance.SetProceduralFloat("Mask_Opacity", 0);
-		countryID = 0;
+		id = 0;
 		substance.RebuildTextures ();
 
 	}
 
-	public void PingCountry(bool triggerPing)
+	public void PingCountry(bool triggerPing, int id)
 	{
 		//loadsubstanceMaterial
-		substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;
-
-		if (countryID == 0)Debug.LogError("Country Not Set!");
-		if(countryID != 0 && triggerPing)
+		substance = Resources.Load("Substance Materials/MapHighlight",typeof(ProceduralMaterial)) as ProceduralMaterial;
+		tempCode = id;
+		if (id == 0)Debug.LogError("Country Not Set!");
+		if(id != 0 && triggerPing)
 		{
 			triggerPing = false;
-			substance.SetProceduralFloat("CountrySelection", countryID);
+			substance.SetProceduralFloat("CountrySelection", id);
 			substance.SetProceduralFloat("Mask_Opacity", Mathf.PingPong(Time.time, maxOpacity));
-			StartCoroutine(WaitTime());
+			StartCoroutine(WaitTime(id));
 			substance.RebuildTextures();
+			id = tempCode;
 		}
 	}
 
