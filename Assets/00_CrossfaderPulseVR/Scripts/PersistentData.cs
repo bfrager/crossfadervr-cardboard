@@ -103,17 +103,11 @@ public class PersistentData : MonoBehaviour {
 
     }
 
-	IEnumerator _LoadAvatarUserName()
+		IEnumerator _LoadName()
 	{
-
-		string usernameUrl = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
-		print("usernameUrl");
-		string[] temp = usernameUrl.Split('\"');
-		usernameUrl = temp[1];
-		print(temp[1]);
-		WWW stringUrl = new WWW(usernameUrl);
-		yield return stringUrl;
-		djName = stringUrl.ToString();
+		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
+		yield return name;
+		djName = name;
 	}
 
 
@@ -125,8 +119,6 @@ public class PersistentData : MonoBehaviour {
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		iconMr.materials[1].mainTexture = imgUrl.texture;
-
-
 	}
 
 	IEnumerator _LoadBGFromUrl()
