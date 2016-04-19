@@ -124,9 +124,11 @@ public class PersistentData : MonoBehaviour {
 	IEnumerator _LoadAvatarFromUrl()
 	{
 		string avatarUrl = api.performancesDict[performanceId]["users"]["avatar"].ToString();
-		print(avatarUrl);
-		string[] temp = avatarUrl.Split('\"');
-		avatarUrl = temp[1];
+		print(api.performancesDict[performanceId]);
+		print(api.performancesDict[performanceId]["users"]);
+		print(api.performancesDict[performanceId]["users"]["avatar"]);
+		//string[] temp = avatarUrl.Split('\"');
+		//avatarUrl = temp[1];
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		iconMr.materials[1].mainTexture = imgUrl.texture;
