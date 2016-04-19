@@ -22,6 +22,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject djInfo;
     private GameObject visuals;
     enum Fade {In, Out};
+    private float visTimer = 5;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
@@ -73,6 +74,18 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     }
   }
 
+  void Update()
+  {
+  	if (visTimer > 0)
+  	{
+  		visTimer -= 0.1f;
+  	}
+  	else if (visTimer <= 0)
+  	{
+  		Reset();
+  	}
+  }
+
   public void SetGazedAt(bool gazedAt) {
     // GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.(1, 1, 1, 0); //lerp size instead of color
     //add particle effect on selected node
@@ -82,6 +95,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
     if (!locked)
     {
+    	visTimer = 0.5f;
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name)
@@ -98,6 +112,9 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 10;
             }
         }
+
+        gameObject.transform.localScale = 5 * Vector3.one;
+
     }
   }
   
@@ -122,6 +139,8 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
                 // child.transform.GetChild(0).GetComponent<Spin_Node>().speed = 0;
             }
         }
+
+			gameObject.transform.localScale = 3 * Vector3.one;
     }
   }
   
