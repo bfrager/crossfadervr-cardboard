@@ -15,26 +15,14 @@ public class LoadAvatarImage : MonoBehaviour {
 	void Awake ()
 	{
 		api = GameObject.Find("PersistentData").GetComponent<ApiCall>();
+		performanceId = gameObject.name;
+		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
 	}
 
 	// Use this for initialization
 	void Start () 
 	{
-		
 		StartCoroutine(WaitForCall());
-		
-		Debug.Log(api.performancesDict);
-		foreach(KeyValuePair<string,JSONObject> performance in api.performancesDict)		
-		{
-			Debug.Log(performance.Key);
-		}
-		
-		performanceId = gameObject.name;
-		Debug.Log(performanceId);
-		Debug.Log(api.performancesDict[performanceId]);
-		
-		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
-		
 	}
 	
 	// Update is called once per frame
@@ -56,6 +44,12 @@ public class LoadAvatarImage : MonoBehaviour {
 	IEnumerator WaitForCall()
     {
  	    yield return new WaitForSeconds(1);
+		 
+		Debug.Log(api.performancesDict);
+		foreach(KeyValuePair<string,JSONObject> performance in api.performancesDict)		
+		{
+			Debug.Log(performance.Key);
+		}
    
 		StartCoroutine("_LoadAvatarTexture");
     }
