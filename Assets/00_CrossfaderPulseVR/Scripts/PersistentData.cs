@@ -23,10 +23,10 @@ public class PersistentData : MonoBehaviour {
 	public MeshRenderer mr;
 	public MeshRenderer iconMr;
 	public string url = "https://dxzw8fe3xavok.cloudfront.net/performances/550352/550352-background-performancePhoto.jpeg?1449747147";
-	public string performanceID;
 	public string AvatarURL; 
 	public string trackName;
 	public string djName;
+	public Material avatarMat;
 
 	// Use this for initialization
 	void Awake () 
@@ -47,8 +47,10 @@ public class PersistentData : MonoBehaviour {
 	}
 	void LoadPerformanceData()
 	{
-		StartCoroutine("_LoadAvatarFromUrl");
+//		StartCoroutine("_LoadAvatarUserName");
+//		StartCoroutine("_LoadAvatarFromUrl");
 		StartCoroutine("_LoadBGFromUrl");
+
 
 	}
 
@@ -100,20 +102,43 @@ public class PersistentData : MonoBehaviour {
 
     }
 
+	IEnumerator _LoadAvatarUserName()
+	{
+
+		string usernameUrl = api.performancesDict[performanceId]["users"]["dj_name"].ToString();
+		print("usernameUrl");
+		string[] temp = usernameUrl.Split('\"');
+		usernameUrl = temp[1];
+		print(temp[1]);
+		WWW stringUrl = new WWW(usernameUrl);
+		yield return stringUrl;
+		djName = stringUrl.ToString();
+	}
+
 
 	IEnumerator _LoadAvatarFromUrl()
 	{
-
-		WWW imgUrl = new WWW(url);
+		string avatarUrl = api.performancesDict[performanceId]["users"]["avatar"].ToString();
+		print(avatarUrl);
+		string[] temp = avatarUrl.Split('\"');
+		avatarUrl = temp[1];
+		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
-		iconMr.material.mainTexture = imgUrl.texture;
+		iconMr.materials[1].mainTexture = imgUrl.texture;
+
+
 	}
 
 	IEnumerator _LoadBGFromUrl()
 	{
 
-		WWW imgUrl = new WWW(url);
+		string bgUrl = api.performancesDict[performanceId]["performance"]["background_image"].ToString();
+		string[] temp = bgUrl.Split('\"');
+		print(temp[1]);
+		bgUrl = temp[1];
+		WWW imgUrl = new WWW(bgUrl);
 		yield return imgUrl;
 		mr.material.mainTexture = imgUrl.texture;
+		StartCoroutine("_LoadAvatarFromUrl");
 	}
 }

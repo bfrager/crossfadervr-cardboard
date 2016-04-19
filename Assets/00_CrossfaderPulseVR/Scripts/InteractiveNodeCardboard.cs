@@ -23,6 +23,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject visuals;
     enum Fade {In, Out};
 
+	//sammoh this is where I'm gonna ping the country script
+	public LoadingInNewFlags _country;
+
 IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     // TODO: check whether gameObject volume is at 0 or 1
     float start = fadeType == Fade.In? 0.0F : 1.0F;
