@@ -47,8 +47,11 @@ public class PersistentData : MonoBehaviour {
 	}
 	void LoadPerformanceData()
 	{
-//		StartCoroutine("_LoadAvatarUserName");
-//		StartCoroutine("_LoadAvatarFromUrl");
+		StartCoroutine("_LoadAvatarUserName");
+		StartCoroutine("_LoadAvatarFromUrl");
+		print(api.performancesDict[performanceId]);
+		print(api.performancesDict[performanceId]["users"][0]);
+		print(api.performancesDict[performanceId]["users"][0]["avatar"]);
 		StartCoroutine("_LoadBGFromUrl");
 
 
@@ -110,7 +113,7 @@ public class PersistentData : MonoBehaviour {
 	IEnumerator _LoadAvatarUserName()
 	{
 
-		string usernameUrl = api.performancesDict[performanceId]["users"]["dj_name"].ToString();
+		string usernameUrl = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
 		print("usernameUrl");
 		string[] temp = usernameUrl.Split('\"');
 		usernameUrl = temp[1];
@@ -123,12 +126,9 @@ public class PersistentData : MonoBehaviour {
 
 	IEnumerator _LoadAvatarFromUrl()
 	{
-		string avatarUrl = api.performancesDict[performanceId]["users"]["avatar"].ToString();
-		print(api.performancesDict[performanceId]);
-		print(api.performancesDict[performanceId]["users"]);
-		print(api.performancesDict[performanceId]["users"]["avatar"]);
-		//string[] temp = avatarUrl.Split('\"');
-		//avatarUrl = temp[1];
+		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
+		string[] temp = avatarUrl.Split('\"');
+		avatarUrl = temp[1];
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		iconMr.materials[1].mainTexture = imgUrl.texture;
