@@ -243,7 +243,7 @@ public class CardboardController : MonoBehaviour {
 						//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						// StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
-                        //SceneManager.LoadScene(0);
+                        SceneManager.LoadScene(0);
                     }
                 }
             }
