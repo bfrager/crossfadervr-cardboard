@@ -17,8 +17,13 @@ public class CardboardController : MonoBehaviour {
     private AudioSource[] audioSources;
     public GameObject curObj;
 
+	//sammoh country ping
+	private LoadingInNewFlags loadcountry;
+
 	// Use this for initialization
 	void Start () {
+		loadcountry = gameObject.transform.GetComponentInParent<LoadingInNewFlags>();
+
 		cardboardController = this;
         Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
@@ -160,6 +165,9 @@ public class CardboardController : MonoBehaviour {
 				if (cardboard.gaze.Object().name.Contains("Diamond"))
                 {
                 	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
+					//sammoh this is where you put the function call
+					loadcountry.PingCountry(true);
+
                 }
 				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
 				{
