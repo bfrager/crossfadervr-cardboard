@@ -165,7 +165,7 @@ public class CardboardController : MonoBehaviour {
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
                     int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    Debug.Log("Country Id = " + countryId);
+                    // Debug.Log("Country Id = " + countryId);
                     planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
 
                 }
@@ -184,6 +184,11 @@ public class CardboardController : MonoBehaviour {
 
                     if (cardboard.gaze.Object().name.Contains("Diamond"))
                     {
+                        
+                        float playHead = cardboard.gaze.Object().GetComponent<CardboardAudioSource>().audioSource.time;
+                        PersistentData.PD.curSongTime = playHead;
+                        PersistentData.PD.performanceId = cardboard.gaze.Object().transform.parent.name;
+                        SceneManager.LoadScene(1);
                         // textMesh2.text = "Enter DJ Room In:";
                         // textMesh2.GetComponent<Renderer>().enabled = true;          
                         // textMesh.GetComponent<Renderer>().enabled = true;
@@ -204,7 +209,7 @@ public class CardboardController : MonoBehaviour {
                     	//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						// StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
-                        SceneManager.LoadScene(1);    
+                        // SceneManager.LoadScene(1);    
                                             
                     }
                 }

@@ -8,6 +8,10 @@ class PlaceNodes : MonoBehaviour {
 public GameObject djNodePrefab;
 public GameObject[] djNodes;
 
+private MeshRenderer mr;
+private ApiCall api;
+
+
 void Start () 
 {
     djNodes = GameObject.FindGameObjectsWithTag("djNode");
@@ -32,7 +36,9 @@ void Start ()
         // test call to Performances Dictionary containing metadata
 		//var perfJson = GameObject.Find("PersistentData").GetComponent(ApiCall.cs).performancesDict[perfId];
         
-		StartCoroutine(TestCall(perfId));
+        mr = djNodes[i].GetComponent<MeshRenderer>();
+        
+		StartCoroutine(LoadAvatar(perfId, mr));
         
         //set dj info canvas text
         location.GetComponent<Text>().text = "USA";
@@ -55,10 +61,13 @@ void Update ()
     }
 }
 
-IEnumerator TestCall(string perfId)
+IEnumerator LoadAvatar(string perfId, MeshRenderer mrender)
 {
-	yield return new WaitForSeconds(1);
-		string perfJson = GameObject.Find("PersistentData").GetComponent<ApiCall>().performancesDict[perfId].ToString();
-		Debug.Log(perfJson);
+		string avatarUrl = api.performancesDict[perfId]["users"][0]["avatar"].ToString();
+		string[] temp = avatarUrl.Split('\"');
+		avatarUrl = temp[1];
+		WWW imgUrl = new WWW(avatarUrl);
+		yield return imgUrl;
+		mrender.materials[1].mainTexture = imgUrl.texture;
 }
 }

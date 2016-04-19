@@ -13,7 +13,6 @@ function Start ()
         node.active = true;
         // Debug.Log(node);
         var perfId = node.name;
-        Debug.Log(perfId);
         
         // TODO: Set performanceId in persistent data to pass song and metadata lookup info
         // PersistentData.PD.performanceId = perfId;

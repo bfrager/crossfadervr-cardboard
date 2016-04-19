@@ -9,7 +9,6 @@ public class PersistentData : MonoBehaviour {
 	public static PersistentData PD;
 	public float curSongTime;
 	public string performanceId;
-	// public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
 
 
 	enum Fade {In, Out};
@@ -49,12 +48,7 @@ public class PersistentData : MonoBehaviour {
 	{
 		StartCoroutine("_LoadAvatarUserName");
 		StartCoroutine("_LoadAvatarFromUrl");
-		print(api.performancesDict[performanceId]);
-		print(api.performancesDict[performanceId]["users"][0]);
-		print(api.performancesDict[performanceId]["users"][0]["avatar"]);
 		StartCoroutine("_LoadBGFromUrl");
-
-
 	}
 
 	void OnLevelWasLoaded()

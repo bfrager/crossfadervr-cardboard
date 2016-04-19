@@ -105,7 +105,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
         {
             if (child.name != this.transform.parent.name) 
             {
-                Debug.Log ("Found sibling "+ child.name);
+                // Debug.Log ("Found sibling "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
                 // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
