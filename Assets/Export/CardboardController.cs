@@ -24,7 +24,7 @@ public class CardboardController : MonoBehaviour {
 	void Start () {
 		planet = GameObject.Find("Planet960tris");
         cardboardController = this;
-        Cardboard.SDK.VRModeEnabled = true;
+        // Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
         // Debug.Log(audioSources);
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
