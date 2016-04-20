@@ -24,7 +24,7 @@ public class CardboardController : MonoBehaviour {
 	void Start () {
 		planet = GameObject.Find("Planet960tris");
         cardboardController = this;
-        Cardboard.SDK.VRModeEnabled = true;
+        Cardboard.SDK.VRModeEnabled = false;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
         // Debug.Log(audioSources);
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
@@ -124,19 +124,8 @@ public class CardboardController : MonoBehaviour {
         CardboardControlGaze gaze = sender as CardboardControlGaze;
         if (gaze.IsHeld() && gaze.Object().name.Contains("Spatialized")) {
             
-            // TOGGLE ROOT/DJ LEVEL
-
-            // if (SceneManager.GetActiveScene().buildIndex == 0) {
-            //     SceneManager.LoadScene(1);
-            // }
-            // else if (SceneManager.GetActiveScene().buildIndex == 1) {
-            //     SceneManager.LoadScene(0);
-            // }
-            // m_someOtherScriptOnAnotherGameObject = GameObject.FindObjectOfType(typeof(ScriptA)) as ScriptA;
-
-            
-            // Be sure to hide the cursor when it's not needed
-            cardboard.reticle.Hide();
+        // Be sure to hide the cursor when it's not needed
+        cardboard.reticle.Hide();
         }
 
     }

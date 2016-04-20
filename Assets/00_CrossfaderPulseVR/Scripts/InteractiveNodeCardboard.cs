@@ -27,12 +27,14 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
-    
-    private Coroutine buttonFillRoutine = null;
 
-    private Coroutine audioFade1 = null;
-    private Coroutine audioFade2 = null;
-    private Coroutine audioFade3 = null;
+    private Coroutine buttonFull = null;    
+    private Coroutine buttonEmpty = null;
+
+    private Coroutine audioFadeOthersOut = null;
+    private Coroutine audioFadeOthersIn = null;
+    private Coroutine audioFadeThisIn = null;
+    private Coroutine audioFadeThisOut = null;
 
 
 
@@ -46,25 +48,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     SetGazedAt(false);
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
   }
-
-//   void LateUpdate() {
-//     Cardboard.SDK.UpdateState();
-//     if (Cardboard.SDK.BackButtonPressed) {
-//       Application.Quit();
-//     }
-//   }
-
-//   void Update()
-//   {
-//   	if (visTimer > 0)
-//   	{
-//   		visTimer -= 0.1f;
-//   	}
-//   	else if (visTimer <= 0)
-//   	{
-//   		Reset();
-//   	}
-//   }
 
   public void SetGazedAt(bool gazed) {
   }
@@ -89,10 +72,12 @@ public class InteractiveNodeCardboard : MonoBehaviour {
             if (child.name != this.transform.parent.name)
             {
                 // Debug.Log ("Found sibling "+child.name);
-                StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
+                audioFadeOthersOut = StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
+
             }
             else
             {
+                audioFadeThisIn = StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
                 djInfo = child.transform.GetChild(1).gameObject;
                 djInfo.SetActive(true);
                 visuals = child.transform.GetChild(2).gameObject;
@@ -114,8 +99,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         {
             if (child.name != this.transform.parent.name) 
             {
-                Debug.Log ("Found sibling "+ child.name);
-                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
+                StopCoroutine(audioFadeOthersOut);
+                audioFadeOthersIn = StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
+                // Debug.Log ("Found sibling "+ child.name);
                 // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
             else 
@@ -138,6 +124,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
                 foreach (Transform child in transform.parent.parent)
                 {
                     // GetComponent<CardboardAudioSource>().spatialize = true;
+                    
                     child.transform.GetChild(0).GetComponent<CardboardAudioSource>().UnPause();
                     child.transform.GetChild(0).GetComponent<InteractiveNodeCardboard>().locked = false;
                     if (child.transform.GetChild(0).GetComponent<CardboardAudioSource>().volume == 0) 
@@ -161,24 +148,25 @@ public class InteractiveNodeCardboard : MonoBehaviour {
                     child.transform.GetChild(0).GetComponent<InteractiveNodeCardboard>().locked = true;
                     if (child.name != this.transform.parent.name)
                     {
-                        Debug.Log ("Pausing "+ child.transform.GetChild(0).name);
+                        // Debug.Log ("Pausing "+ child.transform.GetChild(0).name);
                         // GetComponent<CardboardAudioSource>().spatialize = true;
-                        StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
-                        child.transform.GetChild(0).GetComponent<CardboardAudioSource>().Pause();
+                        
+                        audioFadeOthersOut = StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
+                        // child.transform.GetChild(0).GetComponent<CardboardAudioSource>().Pause();
                     }
                     else if (child.name == this.transform.parent.name)
                     {
                         Debug.Log ("Unpausing "+child.name);
                         // GetComponent<CardboardAudioSource>().spatialize = false;
                         child.transform.GetChild(0).GetComponent<CardboardAudioSource>().volume = 1;
-                        child.transform.GetChild(0).GetComponent<CardboardAudioSource>().UnPause();
+                        // child.transform.GetChild(0).GetComponent<CardboardAudioSource>().UnPause();
                     }
                 }
             }
   }
   public void FillButton()
   {
-  	StartCoroutine(IEFillButton());
+  	buttonFull = StartCoroutine(IEFillButton());
   }
 
   IEnumerator IEFillButton()
@@ -192,9 +180,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
-				CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
+            CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
-	  	yield return new WaitForSeconds(0.05f);
+	  	yield return new WaitForSeconds(0.1f);
   	}
 
   }
@@ -222,11 +210,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     
 }
 
-//   public void ToggleVRMode() {
-//     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
-//   }
-
-
+// ALTERNATE AUDIO FADE
 // public class FadeOutAudio : MonoBehaviour {
  
 //     [TooltipAttribute("The audio source")]
