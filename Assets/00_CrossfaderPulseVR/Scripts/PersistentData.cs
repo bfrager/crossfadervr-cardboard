@@ -53,6 +53,8 @@ public class PersistentData : MonoBehaviour {
 
 	void OnLevelWasLoaded()
 	{
+		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
+
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudio(5, Fade.In));
 
