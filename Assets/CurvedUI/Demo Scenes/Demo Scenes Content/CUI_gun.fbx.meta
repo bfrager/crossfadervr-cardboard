@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 832f782c0cb304117944296ad6c5bae5
+timeCreated: 1456076634
+licenseType: Store
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -25,7 +27,6 @@ ModelImporter:
     4300002: Object_3
     4300004: Object_4
     4300006: Object_5
-    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -50,7 +51,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -84,7 +85,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
