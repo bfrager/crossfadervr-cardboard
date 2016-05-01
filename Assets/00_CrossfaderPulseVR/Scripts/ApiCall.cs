@@ -13,7 +13,7 @@ public class ApiCall : MonoBehaviour {
     public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
 
 
-	void Start () {
+	void Awake () {
         //add performance IDs of DJ Nodes to grab
         performanceIds.AddRange (new int[]{734638, 722131, 734615, 734598, 550352, 709722, 741630, 681878, 734698, 734668, 734734, 722237, 695891, 669405, 695743});
                 
@@ -24,16 +24,19 @@ public class ApiCall : MonoBehaviour {
         {
             string idString = id.ToString();
             url = apiEndpoint + idString;
-            
+            Debug.Log("sending request for " + idString);
             HTTP.Request crossFaderData = new HTTP.Request( "get", url );
             
             crossFaderData.Send( ( request ) => 
             {
                 //add response to performances list
                 performancesDict.Add(idString, new JSONObject( request.response.Text ));
+                Debug.Log(idString + "Response added to dictionary");
+                
+                
 
                 //NAVIGATE JSON OBJECTS BY PERFORMANCE ID:                
-                Debug.Log(performancesDict[idString]["performance"]["title"]);   
+                // Debug.Log(performancesDict[idString]["performance"]["title"]);   
                           
                 // // access data in response object
                 // accessData(performancesDict[idString]["performance"]["title"]);

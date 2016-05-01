@@ -9,7 +9,6 @@ public class PersistentData : MonoBehaviour {
 	public static PersistentData PD;
 	public float curSongTime;
 	public string performanceId;
-	// public Dictionary<string, JSONObject> performancesDict = new Dictionary<string, JSONObject>();
 
 
 	enum Fade {In, Out};
@@ -47,15 +46,15 @@ public class PersistentData : MonoBehaviour {
 	}
 	void LoadPerformanceData()
 	{
-//		StartCoroutine("_LoadAvatarUserName");
-//		StartCoroutine("_LoadAvatarFromUrl");
+		StartCoroutine("_LoadAvatarUserName");
+		StartCoroutine("_LoadAvatarFromUrl");
 		StartCoroutine("_LoadBGFromUrl");
-
-
 	}
 
 	void OnLevelWasLoaded()
 	{
+		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
+
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudio(5, Fade.In));
 
@@ -69,7 +68,6 @@ public class PersistentData : MonoBehaviour {
 
 			Debug.Log("perf id = " + performanceId);
 
-			print(gameObject.GetComponent<ApiCall>().performancesDict[performanceId].GetField("title"));
 		}
 		else{
 			curSongTime = 0;
@@ -82,56 +80,36 @@ public class PersistentData : MonoBehaviour {
 		LoadPerformanceData();
 	}
 
-	public void PubFadeAudio(float timer, int fadeType, Transform gameObject)
-	{
-		if (fadeType ==0)
-		{
-			//fadeout
-			StartCoroutine(FadeAudio(timer, Fade.Out));
-		}
-	}
-
-	IEnumerator FadeAudio (float timer, Fade fadeType) {
-	    // TODO: check whether gameObject volume is at 0 or 1
-	    float start = fadeType == Fade.In? 0.0F : 1.0F;
-	    float end = fadeType == Fade.In? 1.0F : 0.0F;
-	    float i = 0.0F;
-	    float step = 1.0F/timer;
-	 
-	    while (i <= 1.0F) {
-	        i += step * Time.deltaTime;
-
-	        AudioListener.volume = Mathf.Lerp(start, end, i);
-	        yield return new WaitForSeconds(step * Time.deltaTime);
-	    }
-
+IEnumerator FadeAudio (float timer, Fade fadeType) {
+    float start = fadeType == Fade.In? 0.0F : 1.0F;
+    float end = fadeType == Fade.In? 1.0F : 0.0F;
+    float i = 0.0F;
+    float step = 1.0F/timer;
+ 
+    while (i <= 1.0F) {
+        i += step * Time.deltaTime;
+        AudioListener.volume = Mathf.Lerp(start, end, i);
+        yield return new WaitForSeconds(step * Time.deltaTime);
     }
+    
+}
 
-	IEnumerator _LoadAvatarUserName()
+		IEnumerator _LoadName()
 	{
-
-		string usernameUrl = api.performancesDict[performanceId]["users"]["dj_name"].ToString();
-		print("usernameUrl");
-		string[] temp = usernameUrl.Split('\"');
-		usernameUrl = temp[1];
-		print(temp[1]);
-		WWW stringUrl = new WWW(usernameUrl);
-		yield return stringUrl;
-		djName = stringUrl.ToString();
+		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
+		yield return name;
+		djName = name;
 	}
 
 
 	IEnumerator _LoadAvatarFromUrl()
 	{
-		string avatarUrl = api.performancesDict[performanceId]["users"]["avatar"].ToString();
-		print(avatarUrl);
+		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
 		string[] temp = avatarUrl.Split('\"');
 		avatarUrl = temp[1];
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		iconMr.materials[1].mainTexture = imgUrl.texture;
-
-
 	}
 
 	IEnumerator _LoadBGFromUrl()
@@ -139,7 +117,6 @@ public class PersistentData : MonoBehaviour {
 
 		string bgUrl = api.performancesDict[performanceId]["performance"]["background_image"].ToString();
 		string[] temp = bgUrl.Split('\"');
-		print(temp[1]);
 		bgUrl = temp[1];
 		WWW imgUrl = new WWW(bgUrl);
 		yield return imgUrl;

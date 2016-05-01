@@ -18,18 +18,25 @@ public class CardboardController : MonoBehaviour {
     public GameObject curObj;
     public GameObject planet;
     public GameObject curNode;
+<<<<<<< HEAD
 
+=======
+    public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
+    enum Fade {In, Out};
+>>>>>>> 51c1004b72761e2dcd146bcc2a90f917ee9aece9
 	// Use this for initialization
 	void Start () {
 		planet = GameObject.Find("Planet960tris");
         cardboardController = this;
-        Cardboard.SDK.VRModeEnabled = true;
+        // Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
         // Debug.Log(audioSources);
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
         textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
         textMesh.GetComponent<Renderer>().enabled = false;
         textMesh2.GetComponent<Renderer>().enabled = false;
+        textMesh.color = textColor;
+        textMesh2.color = textColor;
 	    cardboard = GameObject.Find("CardboardControlManager").GetComponent<CardboardControl>();
         cardboard.trigger.OnDown += CardboardDown;  // When the trigger goes down
         cardboard.trigger.OnUp += CardboardUp;      // When the trigger comes back up
@@ -177,7 +184,6 @@ public class CardboardController : MonoBehaviour {
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
                     int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    Debug.Log("Country Id = " + countryId);
                     planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
 
                 }
@@ -193,27 +199,37 @@ public class CardboardController : MonoBehaviour {
 					cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>().hovered = true;
 				}
 				
-                if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
+                // if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
 
-                    if (cardboard.gaze.Object().name.Contains("Diamond"))
-                    {
-                        // textMesh2.text = "Enter DJ Room In:";
-                        // textMesh2.GetComponent<Renderer>().enabled = true;          
-                        // textMesh.GetComponent<Renderer>().enabled = true;
-                        // textMesh.text = (8 - cardboard.gaze.SecondsHeld()).ToString("#");
-                    }
-                }
-                else if (8 < cardboard.gaze.SecondsHeld() && cardboard.gaze.SecondsHeld() < 10) {
-                    if (cardboard.gaze.Object().name.Contains("Diamond"))
-                    {
-                        // textMesh2.GetComponent<Renderer>().enabled = false;
-                        // textMesh.text = "DJ Selected";
-                        // textMesh.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;         
-                    }
-                }
-                else if (cardboard.gaze.SecondsHeld() > 10) {
-                    if (!cardboard.gaze.Object().name.Contains("Heart")) {
+                //     if (cardboard.gaze.Object().name.Contains("Diamond"))
+                //     {
+                //         // textMesh2.text = "Enter DJ Room In:";
+                //         // textMesh2.GetComponent<Renderer>().enabled = true;          
+                //         // textMesh.GetComponent<Renderer>().enabled = true;
+                //         // textMesh.text = (8 - cardboard.gaze.SecondsHeld()).ToString("#");
+                //     }
+                // }
+                // else if (8 < cardboard.gaze.SecondsHeld() && cardboard.gaze.SecondsHeld() < 10) {
+                //     if (cardboard.gaze.Object().name.Contains("Diamond"))
+                //     {
+                //         // textMesh2.GetComponent<Renderer>().enabled = false;
+                //         // textMesh.text = "DJ Selected";
+                //         // textMesh.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;         
+                //     }
+                // }
+                // else if (cardboard.gaze.SecondsHeld() > 10) {
+                //     if (!cardboard.gaze.Object().name.Contains("Heart")) {
 
+                //     	//Gavin: Fade out camera before changing scenes
+                //     	//Send scene name to load and the fade duration
+				// 		// StartCoroutine(FadeLevelChange(1,0.8f));
+                //         //SceneManager.LoadScene(1);    
+                                            
+                //     }
+                // }
+
+
+<<<<<<< HEAD
                     	//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						// StartCoroutine(FadeLevelChange("02_Cardboard_DJLevel_v2",0.8f));
@@ -223,6 +239,8 @@ public class CardboardController : MonoBehaviour {
                 }
 
 
+=======
+>>>>>>> 51c1004b72761e2dcd146bcc2a90f917ee9aece9
             }
             //DJ LEVEL CONTROLS:
 			else if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
@@ -242,8 +260,13 @@ public class CardboardController : MonoBehaviour {
 
 						//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
+<<<<<<< HEAD
 						// StartCoroutine(FadeLevelChange("01_Cardboard_RootLevel_v1",0.8f));
                         //SceneManager.LoadScene(0);
+=======
+						StartCoroutine(FadeLevelChange(0, 2f, null));
+                        // SceneManager.LoadScene(0);
+>>>>>>> 51c1004b72761e2dcd146bcc2a90f917ee9aece9
                     }
                 }
             }
@@ -284,28 +307,40 @@ public class CardboardController : MonoBehaviour {
         cardboard.box.OnTilt -= CardboardMagnetReset;
     }
 
-	public void ChangeLevel (string sceneName, float fadeDur, GameObject node)
+	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
 	{
-		StartCoroutine(FadeLevelChange(sceneName, fadeDur, node));
+		StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
 	}
 
-    IEnumerator FadeLevelChange(string sceneName, float fadeDur, GameObject node)
+    IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
     {
-    	PersistentData.PD.PubFadeAudio(fadeDur, 0, cardboard.gaze.Object().transform);
-		transform.GetChild(0).GetChild(0).GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+    	GameObject.Find("Main Camera").GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+        StartCoroutine(FadeAudio(fadeDur, Fade.Out));
 		yield return new WaitForSeconds(fadeDur);
-
+        
 		//cache current time of song
 		if (node != null)
 		{
-		float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
-		PersistentData.PD.curSongTime = playHead;
-        PersistentData.PD.performanceId = node.transform.parent.name;
+            float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
+            PersistentData.PD.curSongTime = playHead;
+            PersistentData.PD.performanceId = node.transform.parent.name;
         }
 
-        SceneManager.LoadScene(sceneName); 
+        SceneManager.LoadScene(sceneBuild); 
     }
-
-	
+    
+IEnumerator FadeAudio (float timer, Fade fadeType) {
+    float start = fadeType == Fade.In? 0.0F : 1.0F;
+    float end = fadeType == Fade.In? 1.0F : 0.0F;
+    float i = 0.0F;
+    float step = 1.0F/timer;
+ 
+    while (i <= 1.0F) {
+        i += step * Time.deltaTime;
+        AudioListener.volume = Mathf.Lerp(start, end, i);
+        yield return new WaitForSeconds(step * Time.deltaTime);
+    }
+    
+}
 
 }

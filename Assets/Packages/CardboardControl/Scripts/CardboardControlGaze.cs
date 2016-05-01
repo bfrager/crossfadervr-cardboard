@@ -64,7 +64,7 @@ public class CardboardControlGaze : MonoBehaviour {
 
   private void ReportStare() {
     OnStare(this);
-    if (vibrateOnStare) Handheld.Vibrate();
+    // if (vibrateOnStare) Handheld.Vibrate();
     stared = true;
   }
 
