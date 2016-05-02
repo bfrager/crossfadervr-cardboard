@@ -39,23 +39,12 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
 
-    void Awake() 
-    {
-    }
-
     void Start() 
     {
         SetGazedAt(false);
         planet = GameObject.Find("Planet960tris");
-        StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
+        // StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
     }
-
-//   void LateUpdate() {
-//     Cardboard.SDK.UpdateState();
-//     if (Cardboard.SDK.BackButtonPressed) {
-//       Application.Quit();
-//     }
-//   }
 
   public void SetGazedAt(bool gazed) 
   {
@@ -75,7 +64,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
     if (!locked)
     {
-    	
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name)

@@ -26,8 +26,6 @@ public class LoadAvatarImage : MonoBehaviour {
 	{
 		api = ApiCall.instance;
 		
-		api.djLoaded += djLoaded;
-		
 		// add DJ node objects
 		performanceId = gameObject.name;
 		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
@@ -44,6 +42,8 @@ public class LoadAvatarImage : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		api.djLoaded += djLoaded;
+		
 		//Set Canvas Style
 		// djName.font = Gravity;
 		// location.font = Gravity;
@@ -59,7 +59,7 @@ public class LoadAvatarImage : MonoBehaviour {
 			StartCoroutine(LoadDjNode());
 			
 			//Unsubscribe event listener
-			// api.djLoaded -= djLoaded;
+			api.djLoaded -= djLoaded;
         }
     }
 	
@@ -86,7 +86,6 @@ public class LoadAvatarImage : MonoBehaviour {
 		StartCoroutine("_LoadTags");
 		StartCoroutine("_LoadListens");		
 		yield return StartCoroutine("_LoadAvatarTexture"); 
-		// gameObject.enabled = true;
 		StartCoroutine(ScaleUpNode(1f, 0.35f));
 		loading = false;
     }
@@ -124,6 +123,7 @@ public class LoadAvatarImage : MonoBehaviour {
 		tags.text = firstTag;
 	}
 	
+	// TURNED OFF BECAUSE MOST CROSSFADER PROFILES DO NOT CONTAIN LOCATION INFO, MUST REFERENCE INTERCOM API INSTEAD
 	// IEnumerator _LoadLocation()
 	// {
 	// 	string country = api.performancesDict[performanceId]["users"][0]["country"].ToString();
