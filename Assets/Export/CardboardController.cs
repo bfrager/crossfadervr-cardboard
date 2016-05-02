@@ -16,13 +16,11 @@ public class CardboardController : MonoBehaviour {
     private TextMesh textMesh2;
     private AudioSource[] audioSources;
     public GameObject curObj;
-    public GameObject planet;
     public GameObject curNode;
     public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
     enum Fade {In, Out};
 	// Use this for initialization
 	void Start () {
-		planet = GameObject.Find("Planet960tris");
         cardboardController = this;
         // Cardboard.SDK.VRModeEnabled = true;
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
@@ -74,7 +72,7 @@ public class CardboardController : MonoBehaviour {
         // If the raycast doesn't find anything then the focused object will be null
         string name = cardboard.gaze.IsHeld() ? cardboard.gaze.Object().name : "nothing";
         float count = cardboard.gaze.SecondsHeld();
-        Debug.Log("We've focused on "+name+" for "+count+" seconds.");
+        // Debug.Log("We've focused on "+name+" for "+count+" seconds.");
 
         // TODO: LOCK ONTO TRACK HERE INSTEAD OF ON COLLISION OBJECTS
         
@@ -86,22 +84,22 @@ public class CardboardController : MonoBehaviour {
         CardboardControlGaze gaze = sender as CardboardControlGaze;
         // We can access to the object we're looking at
         // gaze.IsHeld will make sure the gaze.Object() isn't null
-        if (gaze.IsHeld() && gaze.Object().name.Contains("Spatialized")) {
-            // ChangeObjectColor(gaze.Object().name);
-            if (gaze.Object().name == "Spatialized") {
-                // Highlighting can help identify which objects can be interacted with
-                // The reticle is hidden by default but we already toggled that in the Inspector
-                cardboard.reticle.Highlight(Color.red);        
-            }
-        }
+        // if (gaze.IsHeld() && gaze.Object().name.Contains("Spatialized")) {
+        //     // ChangeObjectColor(gaze.Object().name);
+        //     if (gaze.Object().name == "Spatialized") {
+        //         // Highlighting can help identify which objects can be interacted with
+        //         // The reticle is hidden by default but we already toggled that in the Inspector
+        //         cardboard.reticle.Highlight(Color.red);        
+        //     }
+        // }
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-        if (gaze.WasHeld() && gaze.PreviousObject().name.Contains("Spatialized")) {
-        ResetObjectColor(gaze.PreviousObject().name);
+        // if (gaze.WasHeld() && gaze.PreviousObject().name.Contains("Spatialized")) {
+        // ResetObjectColor(gaze.PreviousObject().name);
         // Use these to undo reticle hiding and highlighting
-        cardboard.reticle.Show();
-        cardboard.reticle.ClearHighlight();
-        }
+        // cardboard.reticle.Show();
+        // cardboard.reticle.ClearHighlight();
+        // }
 
 		if (cardboard.gaze.Object() == null)
         {
@@ -148,16 +146,6 @@ public class CardboardController : MonoBehaviour {
         Debug.Log("Device tilted");
         cardboard.trigger.ResetMagnetState();
     }
-
-    private void ChangeObjectColor(string name) {
-        GameObject obj = GameObject.Find(name);
-        Color newColor = Color.blue;
-        obj.GetComponent<Renderer>().material.color = newColor;
-    }
-
-    private void ResetObjectColor(string name) {
-        GameObject.Find(name).GetComponent<Renderer>().material.color = Color.white;
-    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -177,11 +165,6 @@ public class CardboardController : MonoBehaviour {
                 {
                 	curNode = cardboard.gaze.Object();
                 	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
-                    
-                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
-
                 }
 				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
 				{
@@ -308,18 +291,24 @@ public class CardboardController : MonoBehaviour {
         SceneManager.LoadScene(sceneBuild); 
     }
     
-IEnumerator FadeAudio (float timer, Fade fadeType) {
-    float start = fadeType == Fade.In? 0.0F : 1.0F;
-    float end = fadeType == Fade.In? 1.0F : 0.0F;
-    float i = 0.0F;
-    float step = 1.0F/timer;
- 
-    while (i <= 1.0F) {
-        i += step * Time.deltaTime;
-        AudioListener.volume = Mathf.Lerp(start, end, i);
-        yield return new WaitForSeconds(step * Time.deltaTime);
+    IEnumerator FadeAudio (float timer, Fade fadeType) 
+    {
+        float start = fadeType == Fade.In? 0.0F : 1.0F;
+        float end = fadeType == Fade.In? 1.0F : 0.0F;
+        float i = 0.0F;
+        float step = 1.0F/timer;
+    
+        while (i <= 1.0F) {
+            i += step * Time.deltaTime;
+            AudioListener.volume = Mathf.Lerp(start, end, i);
+            yield return new WaitForSeconds(step * Time.deltaTime);
     }
     
 }
+
+//   public void ToggleVRMode() {
+//     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
+//   }
+
 
 }

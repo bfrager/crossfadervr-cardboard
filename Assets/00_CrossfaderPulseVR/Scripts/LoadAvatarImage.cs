@@ -24,7 +24,9 @@ public class LoadAvatarImage : MonoBehaviour {
 
 	void Awake ()
 	{
-		api = GameObject.Find("PersistentData").GetComponent<ApiCall>();
+		api = ApiCall.instance;
+		
+		api.djLoaded += djLoaded;
 		
 		// add DJ node objects
 		performanceId = gameObject.name;
@@ -34,7 +36,9 @@ public class LoadAvatarImage : MonoBehaviour {
         location = canvas.transform.Find("Location").GetComponent<Text>();
         listens = canvas.transform.Find("Hearts").GetComponent<Text>();
         tags = canvas.transform.Find("Tags").GetComponent<Text>();
-
+		
+		string country = gameObject.GetComponent<LoadingInNewFlags>().countryName;
+		location.text = country;
 	}
 
 	// Use this for initialization
@@ -45,54 +49,45 @@ public class LoadAvatarImage : MonoBehaviour {
 		// location.font = Gravity;
 		// listens.font = Gravity;
 		// tags.font = Gravity;
-		
-		
-		//Load objects
-		StartCoroutine(WaitForCall());
-		StartCoroutine(ScaleUpNodes(1f, 0.35f));
-		string country = gameObject.GetComponent<LoadingInNewFlags>().countryName;
-		location.text = country;
-		Debug.Log(location.text);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
-	IEnumerator ScaleUpNodes(float time, float scale)
+
+    void djLoaded(string perfId)
     {
-		while(loading)       
-		yield return new WaitForSeconds(0.1f);
-		//LOAD DJ NODES
+        if (perfId == gameObject.name)
+        {			
+			//Load dj node assets and show node
+			StartCoroutine(LoadDjNode());
+			
+			//Unsubscribe event listener
+			// api.djLoaded -= djLoaded;
+        }
+    }
+	
+	IEnumerator ScaleUpNode(float time, float scale)
+    {
+		// while(loading)       
+		// yield return new WaitForSeconds(0.1f);
+		//LOAD DJ NODE
         Vector3 originalScale = gameObject.transform.localScale;
-        Vector3 destinationScale = new Vector3(scale, scale, scale);
-         
-         float currentTime = 0.0f;
-         
-         do
-         {
-             gameObject.transform.localScale = Vector3.Lerp(originalScale, destinationScale, currentTime / time);
-             currentTime += Time.deltaTime;
-             yield return null;
-         } while (currentTime <= time);         
+        Vector3 destinationScale = new Vector3(scale, scale, scale); 
+		float currentTime = 0.0f;
+		do
+		{
+			gameObject.transform.localScale = Vector3.Lerp(originalScale, destinationScale, currentTime / time);
+			currentTime += Time.deltaTime;
+			yield return null;
+		} while (currentTime <= time);         
 	}
 	
-	IEnumerator WaitForCall()
+	IEnumerator LoadDjNode()
     {
  	    loading = true;
-		yield return new WaitForSeconds(2f);
-		Debug.Log("Grabbing dictionary");
-		 
-		Debug.Log(api.performancesDict);
-		foreach(KeyValuePair<string,JSONObject> performance in api.performancesDict)		
-		{
-			Debug.Log(performance.Key);
-		}
-		StartCoroutine("_LoadAvatarTexture");
 		StartCoroutine("_LoadName");
 		StartCoroutine("_LoadTags");
-		StartCoroutine("_LoadListens");
+		StartCoroutine("_LoadListens");		
+		yield return StartCoroutine("_LoadAvatarTexture"); 
+		// gameObject.enabled = true;
+		StartCoroutine(ScaleUpNode(1f, 0.35f));
 		loading = false;
     }
 	
@@ -101,7 +96,7 @@ public class LoadAvatarImage : MonoBehaviour {
 		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
 		string[] temp = avatarUrl.Split('\"');
 		avatarUrl = temp[1];
-		print("This is the djNode url: " + temp[1]);
+		// print("This is the djNode url: " + temp[1]);
 		WWW imgUrl = new WWW(avatarUrl);
 		yield return imgUrl;
 		mr.materials[1].mainTexture = imgUrl.texture;
@@ -113,13 +108,6 @@ public class LoadAvatarImage : MonoBehaviour {
 		yield return name;
 		djName.text = name;
 	}
-	
-	// IEnumerator _LoadLocation()
-	// {
-	// 	string country = api.performancesDict[performanceId]["users"][0]["country"].ToString();
-	// 	yield return country;
-	// 	location.text = country;
-	// }
 	
 	IEnumerator _LoadListens()
 	{
@@ -135,4 +123,11 @@ public class LoadAvatarImage : MonoBehaviour {
 		yield return firstTag;
 		tags.text = firstTag;
 	}
+	
+	// IEnumerator _LoadLocation()
+	// {
+	// 	string country = api.performancesDict[performanceId]["users"][0]["country"].ToString();
+	// 	yield return country;
+	// 	location.text = country;
+	// }
 }

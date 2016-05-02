@@ -20,10 +20,10 @@ using System.Collections;
 public class InteractiveNodeCardboard : MonoBehaviour {
     
     public float fadeTime = 1.0F;
-    public float sceneStartFade = 5.0F;
     public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
+    public GameObject planet;
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
@@ -34,18 +34,21 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private Coroutine audioFade2 = null;
     private Coroutine audioFade3 = null;
 
-
-
     public Image buttonFill;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
 
+    void Awake() 
+    {
+    }
 
-  void Start() {
-    SetGazedAt(false);
-    StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
-  }
+    void Start() 
+    {
+        SetGazedAt(false);
+        planet = GameObject.Find("Planet960tris");
+        StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
+    }
 
 //   void LateUpdate() {
 //     Cardboard.SDK.UpdateState();
@@ -54,19 +57,8 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 //     }
 //   }
 
-//   void Update()
-//   {
-//   	if (visTimer > 0)
-//   	{
-//   		visTimer -= 0.1f;
-//   	}
-//   	else if (visTimer <= 0)
-//   	{
-//   		Reset();
-//   	}
-//   }
-
-  public void SetGazedAt(bool gazed) {
+  public void SetGazedAt(bool gazed) 
+  {
   }
 
   public void IsGazedAt()
@@ -102,6 +94,10 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         }
 
         gameObject.transform.localScale = 5 * Vector3.one;
+
+        //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+        int countryId = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
+        planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
 
     }
   }
@@ -222,10 +218,7 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     
 }
 
-//   public void ToggleVRMode() {
-//     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
-//   }
-
+//ALTERNATE FADE SCRIPT:
 
 // public class FadeOutAudio : MonoBehaviour {
  
