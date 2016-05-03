@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 68624415b13180946b626311b8ac158f
-timeCreated: 1462212230
+guid: befcaf55a4d8ea84b862b1066a0b1530
+timeCreated: 1462240255
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -9,39 +9,39 @@ SubstanceImporter:
     name: MapHighlight
     prototypeName: MapHighlight
     shaderName: 
-    shader: {fileID: 10720, guid: 0000000000000000f000000000000000, type: 0}
+    shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
     shaderKeywords: 
     renderQueue: 3000
     lightmapFlags: 5
     inputs:
-    - name: CountrySelection
-      value:
-        scalar[0]: 4.1
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
     - name: Mask_Opacity
       value:
-        scalar[0]: 0.23
+        scalar[0]: 0.3
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
-    - name: $randomseed
+    - name: NorthAmericaMask
       value:
         scalar[0]: 0
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
+    - name: Color01
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
     materialInformation:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
-      generateMipmaps: 0
+      generateMipmaps: 1
       generateAllOutputs: 0
-      animationUpdateRate: 0
+      animationUpdateRate: 42
     materialProperties:
       serializedVersion: 2
       texEnvs:
@@ -65,6 +65,10 @@ SubstanceImporter:
           first:
             name: _Cutoff
           second: 0.5
+        data:
+          first:
+            name: _InvFade
+          second: 1
         data:
           first:
             name: _Parallax
@@ -110,6 +114,10 @@ SubstanceImporter:
           first:
             name: _Color
           second: {r: 1, g: 1, b: 1, a: 1}
+        data:
+          first:
+            name: _TintColor
+          second: {r: 1, g: 1, b: 1, a: 0.5}
     textureParameters:
     - name: MapHighlight_basecolor
       alphaSource: 6
