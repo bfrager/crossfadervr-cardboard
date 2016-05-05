@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 68624415b13180946b626311b8ac158f
-timeCreated: 1462212230
+timeCreated: 1462462859
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -8,7 +8,6 @@ SubstanceImporter:
   - serializedVersion: 16
     name: MapHighlight
     prototypeName: MapHighlight
-    shaderName: 
     shader: {fileID: 10720, guid: 0000000000000000f000000000000000, type: 0}
     shaderKeywords: 
     renderQueue: 3000
@@ -16,7 +15,7 @@ SubstanceImporter:
     inputs:
     - name: CountrySelection
       value:
-        scalar[0]: 4.1
+        scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -67,6 +66,10 @@ SubstanceImporter:
           second: 0.5
         data:
           first:
+            name: _Metallic
+          second: 0
+        data:
+          first:
             name: _Parallax
           second: 0.02
         data:
@@ -96,10 +99,6 @@ SubstanceImporter:
         data:
           first:
             name: _Mode
-          second: 0
-        data:
-          first:
-            name: _Metallic
           second: 0
       colors:
         data:

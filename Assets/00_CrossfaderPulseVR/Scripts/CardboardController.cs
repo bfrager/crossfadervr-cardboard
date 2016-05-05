@@ -93,7 +93,6 @@ public class CardboardController : MonoBehaviour {
         {
             Debug.Log("Please select a track to lock onto");    
         }
-
         
         // If you need more raycast data from cardboard.gaze, the RaycastHit is exposed as gaze.Hit()
     }
@@ -108,7 +107,6 @@ public class CardboardController : MonoBehaviour {
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
         if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "ButtonCollider")
         {
-        	print("reset button");
         	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
         }
 
@@ -142,9 +140,9 @@ public class CardboardController : MonoBehaviour {
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
-                    // //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    // int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
-                    // planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
+                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
                 else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
                 {
@@ -152,9 +150,9 @@ public class CardboardController : MonoBehaviour {
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                     
-                    // //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    // int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
-                    // planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
+                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
             }
             else if (scene == "02_Cardboard_DJLevel_v2")
@@ -208,17 +206,17 @@ public class CardboardController : MonoBehaviour {
         //Countdown timer on GUI
         if (cardboard.gaze.IsHeld()) {
             //DJ LEVEL CONTROLS:
-			if (scene == "02_Cardboard_DJLevel_v2" && cardboard.gaze.Object().name.Contains("Heart"))
+			if (scene == "02_Cardboard_DJLevel_v2")
             {
                 cardboard.reticle.Show();
-                if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 5) 
+                if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 4) 
                 {
-                    textMesh2.text = "Return to Globe In: ";
+                    textMesh2.text = "Back to Global Beat";
                     textMesh2.GetComponent<Renderer>().enabled = true;          
                     textMesh.GetComponent<Renderer>().enabled = true;
-                    textMesh.text = (5 - cardboard.gaze.SecondsHeld()).ToString("#"); 
+                    textMesh.text = (4 - cardboard.gaze.SecondsHeld()).ToString("#"); 
                 }
-                else if (cardboard.gaze.SecondsHeld() > 5) {
+                else if (cardboard.gaze.SecondsHeld() > 4) {
                     //Gavin: Fade out camera before changing scenes
                     //Send scene name to load and the fade duration
                     StartCoroutine(FadeLevelChange(0, 2f, null));
