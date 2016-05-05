@@ -23,9 +23,7 @@ public class LoadAvatarImage : MonoBehaviour {
 
 
 	void Awake ()
-	{
-		api = ApiCall.instance;
-		
+	{		
 		// add DJ node objects
 		performanceId = gameObject.name;
 		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
@@ -42,6 +40,7 @@ public class LoadAvatarImage : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		api = ApiCall.instance;
 		api.djLoaded += djLoaded;
 		
 		//Set Canvas Style
