@@ -24,7 +24,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
-    public GameObject planet;
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
@@ -36,10 +35,12 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private Coroutine audioFade3 = null;
 
 
+
     public Slider buttonFill;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
+
 
   void Start() {
 	//NotGazedAt();
@@ -51,6 +52,18 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 //     if (Cardboard.SDK.BackButtonPressed) {
 //       Application.Quit();
 //     }
+//   }
+
+//   void Update()
+//   {
+//   	if (visTimer > 0)
+//   	{
+//   		visTimer -= 0.1f;
+//   	}
+//   	else if (visTimer <= 0)
+//   	{
+//   		Reset();
+//   	}
 //   }
 
   public void IsGazedAt()
@@ -70,6 +83,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
     if (!locked)
     {
+    	
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name)
@@ -91,10 +105,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         }
 
         gameObject.transform.localScale = 5 * Vector3.one;
-
-        //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-        int countryId = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
-        planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
 
     }
   }
@@ -218,7 +228,10 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
     
 }
 
-//ALTERNATE FADE SCRIPT:
+//   public void ToggleVRMode() {
+//     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
+//   }
+
 
 // public class FadeOutAudio : MonoBehaviour {
  
