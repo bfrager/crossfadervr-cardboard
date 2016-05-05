@@ -15,7 +15,8 @@ public class CardboardController : MonoBehaviour {
     private TextMesh textMesh;
     private TextMesh textMesh2;
     private AudioSource[] audioSources;
-    public GameObject curObj;
+    // public GameObject curObj;
+    public GameObject planet;
     public GameObject curNode;
     public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
     enum Fade {In, Out};
@@ -95,18 +96,83 @@ public class CardboardController : MonoBehaviour {
             // cardboard.reticle.Show();
             cardboard.reticle.ClearHighlight();
         }
+        //print("Prev obj = " + gaze.PreviousObject());
+        if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "ButtonCollider")
+        {
+        	//print("reset button");
+        	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
+        }
 
 		if (cardboard.gaze.Object() == null)
         {
-        	curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        	if (curNode != null)
+        	{
+        		curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        	}
         	curNode = null;
         }
-		else if (cardboard.gaze.Object().name.Contains("Diamond") && cardboard.gaze.Object() != curNode)
-		{
-			curNode.GetComponent<InteractiveNodeCardboard>().Reset();
-			curNode = cardboard.gaze.Object();
-		}
-        
+
+        else {
+
+	        //MOVED FROM UPDATE//
+			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
+            {
+                if (cardboard.gaze.Object().name.Contains("Diamond"))
+                    {
+                        curNode = cardboard.gaze.Object();
+                        curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                        
+                        //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                        int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
+                        planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+                    }
+                //
+                //
+                //if user is staring at panel, keep active
+                else if(cardboard.gaze.Object().name.Contains("HighLightCollider"))
+                {
+                    //curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+                    curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    
+                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                }
+                else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
+                {
+                    //print("on button!");
+                    //curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+                    curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
+                    
+                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+                }
+            }
+            else if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2" && cardboard.gaze.Object().name.Contains("Heart"))
+            {
+                
+            }
+        }
+
+//		else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
+//		{
+//			cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//			//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
+//		}
+		//END MOVED FROM UPDATE//
+
+        //print("Gaze Changed to " + cardboard.gaze.Object());
+//		else if (cardboard.gaze.Object().name.Contains("Diamond") && cardboard.gaze.Object() != curNode)
+//		{
+//			curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+//			curNode = cardboard.gaze.Object();
+//		}
         // Be sure to set the Reticle Layer Mask on the CardboardControlManager
         // to grow the reticle on the objects you want. The default is everything.
 
@@ -116,8 +182,9 @@ public class CardboardController : MonoBehaviour {
 
     private void CardboardStare(object sender) {
         CardboardControlGaze gaze = sender as CardboardControlGaze;
-        
-        if (gaze.IsHeld() && gaze.Object().name.Contains("Spatialized")) {
+
+            cardboard.reticle.Hide();
+
             // TOGGLE ROOT/DJ LEVEL
 
             // if (SceneManager.GetActiveScene().buildIndex == 0) {
@@ -129,8 +196,6 @@ public class CardboardController : MonoBehaviour {
             // m_someOtherScriptOnAnotherGameObject = GameObject.FindObjectOfType(typeof(ScriptA)) as ScriptA;
             
             // Be sure to hide the cursor when it's not needed
-            cardboard.reticle.Hide();
-        }
 
     }
 
@@ -146,31 +211,53 @@ public class CardboardController : MonoBehaviour {
 	void Update () {
         //Countdown timer on GUI
         if (cardboard.gaze.IsHeld()) {
-            curObj = cardboard.gaze.Object();
+            // curObj = cardboard.gaze.Object();
             //ROOT LEVEL CONTROLS:
-			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
-            {
-                if (cardboard.gaze.Object().name.Contains("Heart"))
-                {
-                         
-                }
+			// if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
+            // {
+                // if (cardboard.gaze.Object().name.Contains("Heart"))
+                // {
+                    // textMesh2.text = "Feel the Global Pulse";
+                //     // textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;  
+                // }
 
-				if (cardboard.gaze.Object().name.Contains("Diamond"))
-                {
-                	curNode = cardboard.gaze.Object();
-                	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
-                }
-				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
-				{
-					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
-					//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
-				}
+//				if (cardboard.gaze.Object().name.Contains("Diamond"))
+//                {
+//                	curNode = cardboard.gaze.Object();
+//                	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
+//                    
+//                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+//                    int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
+//                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+//
+//                }
+//                //
+//                //
+//                //if user is staring at panel, keep active
+//				else if(cardboard.gaze.Object().name.Contains("HighLightCollider"))
+//                {
+//					curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+//                	curNode = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+//                	cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//                    
+//                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+//                    int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+//                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+//
+//                }
+// 
+//				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
+//				{
+//					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//					//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
+//				}
 
-				if (cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>())
-				{
-					cardboard.gaze.Object().transform.parent.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
-					cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>().hovered = true;
-				}
+
+				// if (cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>())
+				// {
+				// 	cardboard.gaze.Object().transform.parent.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+				// 	cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>().hovered = true;
+				// }
 				
                 // if (cardboard.gaze.SecondsHeld() > 3 && cardboard.gaze.SecondsHeld() < 8) {
 
@@ -200,11 +287,10 @@ public class CardboardController : MonoBehaviour {
                                             
                 //     }
                 // }
-
-
-            }
+        //  }
+            
             //DJ LEVEL CONTROLS:
-			else if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
+			if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
             {
                 if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 5) 
                 {
@@ -222,16 +308,16 @@ public class CardboardController : MonoBehaviour {
 						//Gavin: Fade out camera before changing scenes
                     	//Send scene name to load and the fade duration
 						StartCoroutine(FadeLevelChange(0, 2f, null));
+                        textMesh.GetComponent<Renderer>().enabled = false;
+                        textMesh2.GetComponent<Renderer>().enabled = false;
                         // SceneManager.LoadScene(0);
                     }
                 }
             }
         }
-        else {
-            textMesh.GetComponent<Renderer>().enabled = false;
-            textMesh2.GetComponent<Renderer>().enabled = false;
-
-        }
+        // else {
+            
+        // }
 
         // // Check on gaze and add radial to reticle
         // if (cardboard.gaze.IsHeld())
@@ -254,6 +340,11 @@ public class CardboardController : MonoBehaviour {
 		// }  
 	}
     
+    // IEnumerator HeartCountdown (float time)
+    // {
+        
+    // }
+    
     void OnDestroy() {
         cardboard.trigger.OnDown -= CardboardDown;
         cardboard.trigger.OnUp -= CardboardUp;
@@ -270,10 +361,11 @@ public class CardboardController : MonoBehaviour {
 
     IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
     {
-    	GameObject.Find("Main Camera").GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+    	GameObject camera = GameObject.Find("Main Camera");
+        camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
         StartCoroutine(FadeAudio(fadeDur, Fade.Out));
 		yield return new WaitForSeconds(fadeDur);
-        
+        camera.SetActive(false);
 		//cache current time of song
 		if (node != null)
 		{
