@@ -54,18 +54,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 //     }
 //   }
 
-//   void Update()
-//   {
-//   	if (visTimer > 0)
-//   	{
-//   		visTimer -= 0.1f;
-//   	}
-//   	else if (visTimer <= 0)
-//   	{
-//   		Reset();
-//   	}
-//   }
-
   public void IsGazedAt()
   {
   	gazedAt = true;
@@ -84,32 +72,31 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     if (!locked)
     {
     	
-        foreach (Transform child in transform.parent.parent)
+        foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
         {
             if (child.name != this.transform.parent.name)
             {
                 // Debug.Log ("Found sibling "+child.name);
-                StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
+                StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.Find("Diamond")));
             }
             else
             {
-                djInfo = child.transform.GetChild(1).gameObject;
+                djInfo = child.transform.Find("Dj_Info_Canvas").gameObject;
                 djInfo.SetActive(true);
-                visuals = child.transform.GetChild(2).gameObject;
+                visuals = child.transform.Find("Visuals").gameObject;
                 visuals.SetActive(true);
-                child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = true;
 
                 //activate highlight collider
-					child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
+                child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
             }
         }
-
+        gameObject.GetComponent<Spin_Node>().enabled = true;
         gameObject.transform.localScale = 5 * Vector3.one;
 
     }
   }
   
-  public void Reset() {
+public void Reset() {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = true;
     if (!locked)
     {
@@ -118,70 +105,70 @@ public class InteractiveNodeCardboard : MonoBehaviour {
             if (child.name != this.transform.parent.name) 
             {
                 Debug.Log ("Found sibling "+ child.name);
-                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
+                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.Find("Diamond")));
                 // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
             else 
             {
-                djInfo = child.transform.GetChild(1).gameObject;
+                djInfo = child.transform.Find("Dj_Info_Canvas").gameObject;
                 djInfo.SetActive(false);
-                visuals = child.transform.GetChild(2).gameObject;
+                visuals = child.transform.Find("Visuals").gameObject;
                 visuals.SetActive(false);
-                child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = false;
-
+                
 				//deactivate highlight collider
-					child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
+                child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
             }
         }
-
-			gameObject.transform.localScale = 3 * Vector3.one;
+        gameObject.GetComponent<Spin_Node>().enabled = false;
+        gameObject.transform.localScale = 3 * Vector3.one;
     }
   }
   
   public void PlaySolo() {
-      if (locked)
+        if (locked)
+        {
+            foreach (Transform child in transform.parent.parent)
             {
-                foreach (Transform child in transform.parent.parent)
+                // GetComponent<CardboardAudioSource>().spatialize = true;
+                child.transform.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
+                child.transform.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = false;
+                if (child.transform.Find("Diamond").GetComponent<CardboardAudioSource>().volume == 0) 
                 {
-                    // GetComponent<CardboardAudioSource>().spatialize = true;
-                    child.transform.GetChild(0).GetComponent<CardboardAudioSource>().UnPause();
-                    child.transform.GetChild(0).GetComponent<InteractiveNodeCardboard>().locked = false;
-                    if (child.transform.GetChild(0).GetComponent<CardboardAudioSource>().volume == 0) 
-                    {
-                        StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.GetChild(0)));
-                    }
-                    else 
-                    {
-                        djInfo = child.transform.GetChild(1).gameObject;
-                        djInfo.SetActive(false);
-                        visuals = child.transform.GetChild(2).gameObject;
-                        visuals.SetActive(false); 
-                    }
-            
+                    StartCoroutine(FadeAudio(fadeTime, Fade.In, child.transform.Find("Diamond")));
                 }
+                else 
+                {
+                    djInfo = child.transform.Find("Dj_Info_Canvas").gameObject;
+                    djInfo.SetActive(false);
+                    visuals = child.transform.Find("Visuals").gameObject;
+                    visuals.SetActive(false); 
+                }
+        
             }
+        }
         else if (!locked)
+        {
+            foreach (Transform child in transform.parent.parent)
             {
-                foreach (Transform child in transform.parent.parent)
+                child.transform.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = true;
+                if (child.name != this.transform.parent.name)
                 {
-                    child.transform.GetChild(0).GetComponent<InteractiveNodeCardboard>().locked = true;
-                    if (child.name != this.transform.parent.name)
-                    {
-                        Debug.Log ("Pausing "+ child.transform.GetChild(0).name);
-                        // GetComponent<CardboardAudioSource>().spatialize = true;
-                        StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.GetChild(0)));
-                        child.transform.GetChild(0).GetComponent<CardboardAudioSource>().Pause();
-                    }
-                    else if (child.name == this.transform.parent.name)
-                    {
-                        Debug.Log ("Unpausing "+child.name);
-                        // GetComponent<CardboardAudioSource>().spatialize = false;
-                        child.transform.GetChild(0).GetComponent<CardboardAudioSource>().volume = 1;
-                        child.transform.GetChild(0).GetComponent<CardboardAudioSource>().UnPause();
-                    }
+                    Debug.Log ("Pausing "+ child.transform.Find("Diamond").name);
+                    // GetComponent<CardboardAudioSource>().spatialize = true;
+                    StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.transform.Find("Diamond")));
+                    child.transform.Find("Diamond").GetComponent<CardboardAudioSource>().Pause();
+                }
+                else if (child.name == this.transform.parent.name)
+                {
+                    Debug.Log ("Unpausing "+child.name);
+                    // GetComponent<CardboardAudioSource>().spatialize = false;
+                    child.transform.Find("Diamond").GetComponent<CardboardAudioSource>().volume = 1;
+                    child.transform.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
                 }
             }
+        }
   }
+  
   public void FillButton()
   {
   	StartCoroutine(IEFillButton());
@@ -231,26 +218,5 @@ IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) {
 //   public void ToggleVRMode() {
 //     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
 //   }
-
-
-// public class FadeOutAudio : MonoBehaviour {
- 
-//     [TooltipAttribute("The audio source")]
-//     public AudioSource audioSource;
-//     [TooltipAttribute("Time in seconds to fade out")]
-//     public float fadeSpeed = 5f;
-//     [TooltipAttribute("Toggle the fade")]
-//     public bool startFade = false;
- 
-//     float time = 0f;
- 
-//     void Update(){
-//         if(startFade){
-//             audioSource.volume = Mathf.Lerp(1f, 0f, time);
-//             time += Time.deltaTime / fadeSpeed;
-//         }
-//     }
- 
-// }
 
 }
