@@ -62,12 +62,12 @@ namespace AudioVisualizer
 
         void Start()
         {
-            cardboardAudioSources = GameObject.FindGameObjectsWithTag("Audio");
-            foreach (GameObject cardboardAudioSource in cardboardAudioSources)
-            {
-                audioSources.Add(cardboardAudioSource.GetComponent<AudioSource>());
-                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource);
-            }
+            // cardboardAudioSources = GameObject.FindGameObjectsWithTag("Audio");
+            // foreach (GameObject cardboardAudioSource in cardboardAudioSources)
+            // {
+            //     audioSources.Add(cardboardAudioSource.GetComponent<AudioSource>());
+            //     Debug.Log("Adding cardboard audio source from " + cardboardAudioSource);
+            // }
             // Debug.Log(audioSources);
             //get max frequency
             fMax = (float)AudioSettings.outputSampleRate / 2;

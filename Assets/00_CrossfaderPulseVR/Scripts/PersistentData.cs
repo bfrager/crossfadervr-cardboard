@@ -32,11 +32,7 @@ public class PersistentData : MonoBehaviour {
 	{
 		DontDestroyOnLoad(gameObject);
 		PD = this;
-
 		api = gameObject.GetComponent<ApiCall>();
-
-
-
 	}
 	
 	// Update is called once per frame
@@ -44,6 +40,7 @@ public class PersistentData : MonoBehaviour {
 	{
 
 	}
+	
 	void LoadPerformanceData()
 	{
 		StartCoroutine("_LoadAvatarUserName");
@@ -57,8 +54,8 @@ public class PersistentData : MonoBehaviour {
 
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudio(5, Fade.In));
-
-		print ("listner: " + AudioListener.volume);
+		print ("listener: " + AudioListener.volume);
+		
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
 			print (GameObject.Find("DJ_Room").transform.name);
@@ -67,6 +64,9 @@ public class PersistentData : MonoBehaviour {
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().Play();
 
 			Debug.Log("perf id = " + performanceId);
+			
+			//sammoh loading...
+			LoadPerformanceData();
 
 		}
 		else{
@@ -76,25 +76,24 @@ public class PersistentData : MonoBehaviour {
 		mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
 		iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
 
-		//sammoh loading...
-		LoadPerformanceData();
 	}
 
-IEnumerator FadeAudio (float timer, Fade fadeType) {
-    float start = fadeType == Fade.In? 0.0F : 1.0F;
-    float end = fadeType == Fade.In? 1.0F : 0.0F;
-    float i = 0.0F;
-    float step = 1.0F/timer;
- 
-    while (i <= 1.0F) {
-        i += step * Time.deltaTime;
-        AudioListener.volume = Mathf.Lerp(start, end, i);
-        yield return new WaitForSeconds(step * Time.deltaTime);
-    }
-    
-}
+	IEnumerator FadeAudio (float timer, Fade fadeType) 
+	{
+		float start = fadeType == Fade.In? 0.0F : 1.0F;
+		float end = fadeType == Fade.In? 1.0F : 0.0F;
+		float i = 0.0F;
+		float step = 1.0F/timer;
+	
+		while (i <= 1.0F) {
+			i += step * Time.deltaTime;
+			AudioListener.volume = Mathf.Lerp(start, end, i);
+			yield return new WaitForSeconds(step * Time.deltaTime);
+		}
+		
+	}
 
-		IEnumerator _LoadName()
+	IEnumerator _LoadName()
 	{
 		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
 		yield return name;

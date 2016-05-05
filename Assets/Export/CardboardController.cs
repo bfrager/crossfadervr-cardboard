@@ -22,18 +22,21 @@ public class CardboardController : MonoBehaviour {
     enum Fade {In, Out};
 	// Use this for initialization
 	void Start () {
-		planet = GameObject.Find("Planet960tris");
         cardboardController = this;
+        
         // Cardboard.SDK.VRModeEnabled = true;
+
         AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
-        // Debug.Log(audioSources);
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
         textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
         textMesh.GetComponent<Renderer>().enabled = false;
         textMesh2.GetComponent<Renderer>().enabled = false;
         textMesh.color = textColor;
         textMesh2.color = textColor;
-	    cardboard = GameObject.Find("CardboardControlManager").GetComponent<CardboardControl>();
+        
+        // Register event listeners
+        cardboard = gameObject.GetComponent<CardboardControl>();
+        Debug.Log(cardboard);
         cardboard.trigger.OnDown += CardboardDown;  // When the trigger goes down
         cardboard.trigger.OnUp += CardboardUp;      // When the trigger comes back up
 
@@ -55,26 +58,19 @@ public class CardboardController : MonoBehaviour {
         
     private void CardboardDown(object sender) {
         // Debug.Log("Trigger went down");
-        // ChangeObjectColor("SphereDown");
     }
 
     private void CardboardUp(object sender) {
         // Debug.Log("Trigger came up");
-        // ChangeObjectColor("SphereUp");
     }
 
     private void CardboardClick(object sender) {
-        // ChangeObjectColor("SphereClick");
-
-        // TextMesh textMesh = GameObject.Find("SphereClick/Counter").GetComponent<TextMesh>();
-        // int increment = int.Parse(textMesh.text) + 1;
-        // textMesh.text = increment.ToString();
 
         // With the cardboard object, we can grab information from various controls
         // If the raycast doesn't find anything then the focused object will be null
         string name = cardboard.gaze.IsHeld() ? cardboard.gaze.Object().name : "nothing";
         float count = cardboard.gaze.SecondsHeld();
-        Debug.Log("We've focused on "+name+" for "+count+" seconds.");
+        // Debug.Log("We've focused on "+name+" for "+count+" seconds.");
 
         // TODO: LOCK ONTO TRACK HERE INSTEAD OF ON COLLISION OBJECTS
         
@@ -84,23 +80,21 @@ public class CardboardController : MonoBehaviour {
     private void CardboardGazeChange(object sender) {
         // You can grab the data from the sender instead of the CardboardControl object
         CardboardControlGaze gaze = sender as CardboardControlGaze;
+        
         // We can access to the object we're looking at
         // gaze.IsHeld will make sure the gaze.Object() isn't null
-        if (gaze.IsHeld() && gaze.Object().name.Contains("Spatialized")) {
-            // ChangeObjectColor(gaze.Object().name);
-            if (gaze.Object().name == "Spatialized") {
-                // Highlighting can help identify which objects can be interacted with
-                // The reticle is hidden by default but we already toggled that in the Inspector
-                cardboard.reticle.Highlight(Color.red);        
-            }
+        if (gaze.IsHeld()) {
+            // Highlighting can help identify which objects can be interacted with
+            // The reticle is hidden by default but we already toggled that in the Inspector
+            cardboard.reticle.Highlight(textColor);        
         }
+        
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-        if (gaze.WasHeld() && gaze.PreviousObject().name.Contains("Spatialized")) {
-        ResetObjectColor(gaze.PreviousObject().name);
-        // Use these to undo reticle hiding and highlighting
-        cardboard.reticle.Show();
-        cardboard.reticle.ClearHighlight();
+        if (gaze.WasHeld()) {
+            // Use these to undo reticle hiding and highlighting
+            // cardboard.reticle.Show();
+            cardboard.reticle.ClearHighlight();
         }
         //print("Prev obj = " + gaze.PreviousObject());
         if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "ButtonCollider")
@@ -117,7 +111,8 @@ public class CardboardController : MonoBehaviour {
         	}
         	curNode = null;
         }
-        else{
+
+        else {
 
 	        //MOVED FROM UPDATE//
 			if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
@@ -188,6 +183,8 @@ public class CardboardController : MonoBehaviour {
     private void CardboardStare(object sender) {
         CardboardControlGaze gaze = sender as CardboardControlGaze;
 
+            cardboard.reticle.Hide();
+
             // TOGGLE ROOT/DJ LEVEL
 
             // if (SceneManager.GetActiveScene().buildIndex == 0) {
@@ -197,10 +194,8 @@ public class CardboardController : MonoBehaviour {
             //     SceneManager.LoadScene(0);
             // }
             // m_someOtherScriptOnAnotherGameObject = GameObject.FindObjectOfType(typeof(ScriptA)) as ScriptA;
-
             
             // Be sure to hide the cursor when it's not needed
-            cardboard.reticle.Hide();
 
     }
 
@@ -210,16 +205,6 @@ public class CardboardController : MonoBehaviour {
         // or if the magnetometer readings are weak enough to cut in and out
         Debug.Log("Device tilted");
         cardboard.trigger.ResetMagnetState();
-    }
-
-    private void ChangeObjectColor(string name) {
-        GameObject obj = GameObject.Find(name);
-        Color newColor = Color.blue;
-        obj.GetComponent<Renderer>().material.color = newColor;
-    }
-
-    private void ResetObjectColor(string name) {
-        GameObject.Find(name).GetComponent<Renderer>().material.color = Color.white;
     }
 	
 	// Update is called once per frame
@@ -392,18 +377,24 @@ public class CardboardController : MonoBehaviour {
         SceneManager.LoadScene(sceneBuild); 
     }
     
-IEnumerator FadeAudio (float timer, Fade fadeType) {
-    float start = fadeType == Fade.In? 0.0F : 1.0F;
-    float end = fadeType == Fade.In? 1.0F : 0.0F;
-    float i = 0.0F;
-    float step = 1.0F/timer;
- 
-    while (i <= 1.0F) {
-        i += step * Time.deltaTime;
-        AudioListener.volume = Mathf.Lerp(start, end, i);
-        yield return new WaitForSeconds(step * Time.deltaTime);
+    IEnumerator FadeAudio (float timer, Fade fadeType) 
+    {
+        float start = fadeType == Fade.In? 0.0F : 1.0F;
+        float end = fadeType == Fade.In? 1.0F : 0.0F;
+        float i = 0.0F;
+        float step = 1.0F/timer;
+    
+        while (i <= 1.0F) {
+            i += step * Time.deltaTime;
+            AudioListener.volume = Mathf.Lerp(start, end, i);
+            yield return new WaitForSeconds(step * Time.deltaTime);
     }
     
 }
+
+//   public void ToggleVRMode() {
+//     Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
+//   }
+
 
 }

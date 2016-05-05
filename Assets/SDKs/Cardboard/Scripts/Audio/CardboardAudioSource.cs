@@ -187,8 +187,9 @@ public class CardboardAudioSource : MonoBehaviour {
   }
 
   void Start () {
+    AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
+    // Debug.Log("Adding cardboard audio source from " + gameObject);
     if (playOnAwake && !isPlaying) {
-      AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
       Play();
     }
   }
