@@ -108,27 +108,28 @@ public class CardboardController : MonoBehaviour {
         	}
         	curNode = null;
         }
-        else
+        else if (cardboard.gaze.IsHeld())
         {
 	        //MOVED FROM UPDATE//
 			if (scene == "01_Cardboard_RootLevel_v1")
             {
                 Debug.Log("Scene 1");
                 if (cardboard.gaze.Object().name.Contains("Diamond"))
-                    {
-                        curNode = cardboard.gaze.Object();
-                        curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
-                        
-                        //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                        int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                        planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
-
-                    }
-                //
+                {
+                    Debug.Log("Hit Diamond");
+                    curNode = cardboard.gaze.Object();
+                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    
+                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
+                    Debug.Log("country id = " + countryId);
+                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                }
                 //
                 //if user is staring at panel, keep active
-                else if(cardboard.gaze.Object().name.Contains("HighLightCollider"))
+                else if (cardboard.gaze.Object().name.Contains("HighLightCollider"))
                 {
+                                        Debug.Log("Hit Highlight");
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
@@ -138,8 +139,11 @@ public class CardboardController : MonoBehaviour {
                 }
                 else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
                 {
+                                        Debug.Log("Hit Button");
+
                     print("on button!");
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
+                    Debug.Log("diamond parent = " + curNode.transform.parent.name);
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                     

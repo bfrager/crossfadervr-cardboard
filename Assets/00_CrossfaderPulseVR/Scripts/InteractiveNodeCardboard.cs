@@ -71,16 +71,18 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
     if (!locked)
     {
-    	
+        StopAllCoroutines();
         foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
         {
             if (child.name != this.transform.parent.name)
             {
-                // Debug.Log ("Found sibling "+child.name);
+                Debug.Log ("Fading audio for audio on "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
             }
             else
             {
+                // TODO: FADE AUDIO TO 1
+                
                 child.Find("Dj_Info_Canvas").gameObject.SetActive(true);
                 child.Find("Visuals").gameObject.SetActive(true);
 
@@ -98,11 +100,12 @@ public void Reset() {
     GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = true;
     if (!locked)
     {
+        StopAllCoroutines();
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name) 
             {
-                // Debug.Log ("Found sibling "+ child.name);
+                Debug.Log ("Fading in audio for "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
                 // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
@@ -110,6 +113,7 @@ public void Reset() {
             {
                 child.Find("Dj_Info_Canvas").gameObject.SetActive(false);
                 child.Find("Visuals").gameObject.SetActive(false);
+                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
                 
 				//deactivate highlight collider
                 child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
@@ -179,7 +183,7 @@ public void Reset() {
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
-				CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
+            CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
 	  	yield return new WaitForSeconds(0.02f);
   	}

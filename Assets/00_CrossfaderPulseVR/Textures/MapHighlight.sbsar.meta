@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: befcaf55a4d8ea84b862b1066a0b1530
-timeCreated: 1462240255
+timeCreated: 1462455737
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -8,7 +8,6 @@ SubstanceImporter:
   - serializedVersion: 16
     name: MapHighlight
     prototypeName: MapHighlight
-    shaderName: 
     shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
     shaderKeywords: 
     renderQueue: 3000
@@ -68,7 +67,11 @@ SubstanceImporter:
         data:
           first:
             name: _InvFade
-          second: 1
+          second: 0.51
+        data:
+          first:
+            name: _Metallic
+          second: 0
         data:
           first:
             name: _Parallax
@@ -100,10 +103,6 @@ SubstanceImporter:
         data:
           first:
             name: _Mode
-          second: 0
-        data:
-          first:
-            name: _Metallic
           second: 0
       colors:
         data:
