@@ -20,6 +20,7 @@ using System.Collections;
 public class InteractiveNodeCardboard : MonoBehaviour {
     
     public float fadeTime = 1.0F;
+    public float sceneStartFade = 5.0F;
     public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
@@ -39,13 +40,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
-
-    void Start() 
-    {
-        SetGazedAt(false);
-        planet = GameObject.Find("Planet960tris");
-        // StartCoroutine(FadeAudio(fadeTime, Fade.In, gameObject.transform));
-    }
 
   void Start() {
 	//NotGazedAt();
