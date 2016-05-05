@@ -22,8 +22,8 @@ public class LightGraphicsController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		
 		currentState = Behaviors.RLPingpong;
+		lights = GameObject.FindGameObjectsWithTag("Lights");
 	}
 
 	IEnumerator RiseUp(float waitTime, GameObject go)
@@ -49,8 +49,8 @@ public class LightGraphicsController : MonoBehaviour {
 
 		for(int i = 0; i < lights.Length; i++)
 		{
-
 			anim = lights[i].GetComponent<Animator>();
+			
 			anim.SetInteger("Switch", BehaviorNumber);
 			//print("Make Lights fall down");
 //			switch(currentState)

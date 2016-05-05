@@ -21,20 +21,20 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     
     public float fadeTime = 1.0F;
     public float sceneStartFade = 5.0F;
-    public bool locked = false;
     private GameObject djInfo;
     private GameObject visuals;
+    private GameObject planet;
     enum Fade {In, Out};
     public float buttonFillAmount;
     public bool gazedAt;
+    private GameObject cc;
+    private GameObject earth;
     
     private Coroutine buttonFillRoutine = null;
 
     private Coroutine audioFade1 = null;
     private Coroutine audioFade2 = null;
     private Coroutine audioFade3 = null;
-
-
 
     public Slider buttonFill;
 
@@ -45,7 +45,11 @@ public class InteractiveNodeCardboard : MonoBehaviour {
   void Start() {
 	//NotGazedAt();
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
+    cc = GameObject.Find("CardboardControlManager");
+    planet = GameObject.Find("Planet960tris");
+    earth = GameObject.Find("EarthLow");
   }
+  
 
 //   void LateUpdate() {
 //     Cardboard.SDK.UpdateState();
@@ -68,21 +72,19 @@ public class InteractiveNodeCardboard : MonoBehaviour {
   }
 
   public void Highlight() {
-    GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = false;
-    if (!locked)
+    earth.GetComponent<SpinFree>().spin = false;
+    if (!(cc.GetComponent<CardboardController>().locked))
     {
         StopAllCoroutines();
         foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
         {
             if (child.name != this.transform.parent.name)
             {
-                Debug.Log ("Fading audio for audio on "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
             }
             else
             {
-                // TODO: FADE AUDIO TO 1
-                
+                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
                 child.Find("Dj_Info_Canvas").gameObject.SetActive(true);
                 child.Find("Visuals").gameObject.SetActive(true);
 
@@ -93,45 +95,46 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         gameObject.GetComponent<Spin_Node>().enabled = true;
         gameObject.transform.localScale = 5 * Vector3.one;
 
+        // If we want to move country highlighting here...
+        int countryID = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
+        planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
     }
   }
   
 public void Reset() {
-    GameObject.Find("EarthLow").GetComponent<SpinFree>().spin = true;
-    if (!locked)
+    earth.GetComponent<SpinFree>().spin = true;
+    if (!(cc.GetComponent<CardboardController>().locked))
     {
         StopAllCoroutines();
         foreach (Transform child in transform.parent.parent)
         {
             if (child.name != this.transform.parent.name) 
             {
-                Debug.Log ("Fading in audio for "+ child.name);
                 StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
-                // child.GetComponent<CardboardAudioSource>().volume = 1;
             }
             else 
             {
                 child.Find("Dj_Info_Canvas").gameObject.SetActive(false);
                 child.Find("Visuals").gameObject.SetActive(false);
                 StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
-                
 				//deactivate highlight collider
                 child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
             }
         }
         gameObject.GetComponent<Spin_Node>().enabled = false;
         gameObject.transform.localScale = 3 * Vector3.one;
+        // planet.GetComponent<CountryHighlighter>().updateCountry(0);
     }
   }
   
   public void PlaySolo() {
-        if (locked)
+        if (cc.GetComponent<CardboardController>().locked)
         {
             foreach (Transform child in transform.parent.parent)
             {
                 // GetComponent<CardboardAudioSource>().spatialize = true;
                 child.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
-                child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = false;
+                // child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = false;
                 if (child.Find("Diamond").GetComponent<CardboardAudioSource>().volume == 0) 
                 {
                     StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
@@ -144,21 +147,21 @@ public void Reset() {
         
             }
         }
-        else if (!locked)
+        else if (!(cc.GetComponent<CardboardController>().locked))
         {
             foreach (Transform child in transform.parent.parent)
             {
-                child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = true;
+                // child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = true;
                 if (child.name != this.transform.parent.name)
                 {
-                    Debug.Log ("Pausing "+ child.Find("Diamond").name);
+                    // Debug.Log ("Pausing "+ child.Find("Diamond").name);
                     // GetComponent<CardboardAudioSource>().spatialize = true;
                     StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
                     child.Find("Diamond").GetComponent<CardboardAudioSource>().Pause();
                 }
                 else if (child.name == this.transform.parent.name)
                 {
-                    Debug.Log ("Unpausing "+child.name);
+                    // Debug.Log ("Unpausing "+child.name);
                     // GetComponent<CardboardAudioSource>().spatialize = false;
                     child.Find("Diamond").GetComponent<CardboardAudioSource>().volume = 1;
                     child.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();

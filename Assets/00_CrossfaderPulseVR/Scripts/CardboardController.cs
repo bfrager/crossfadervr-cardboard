@@ -22,6 +22,7 @@ public class CardboardController : MonoBehaviour {
     public string scene;
     public float countdownValue = 3;
     private float countdown;
+    public bool locked = false;
     
 	// Use this for initialization
 	
@@ -77,11 +78,22 @@ public class CardboardController : MonoBehaviour {
     private void CardboardClick(object sender) {
         // With the cardboard object, we can grab information from various controls
         // If the raycast doesn't find anything then the focused object will be null
-        string name = cardboard.gaze.IsHeld() ? cardboard.gaze.Object().name : "nothing";
-        float count = cardboard.gaze.SecondsHeld();
-        Debug.Log("We've focused on "+name+" for "+count+" seconds.");
+        
+        if (cardboard.gaze.IsHeld())
+        { 
+            curNode.GetComponent<InteractiveNodeCardboard>().PlaySolo();
+            ToggleLock();            
+        }
+        else if (cardboard.gaze.WasHeld())
+        {
+            cardboard.gaze.PreviousObject().GetComponent<InteractiveNodeCardboard>().PlaySolo();
+            ToggleLock();            
+        }
+        else
+        {
+            Debug.Log("Please select a track to lock onto");    
+        }
 
-        // TODO: LOCK ONTO TRACK HERE INSTEAD OF ON COLLISION OBJECTS
         
         // If you need more raycast data from cardboard.gaze, the RaycastHit is exposed as gaze.Hit()
     }
@@ -113,10 +125,8 @@ public class CardboardController : MonoBehaviour {
 	        //MOVED FROM UPDATE//
 			if (scene == "01_Cardboard_RootLevel_v1")
             {
-                Debug.Log("Scene 1");
                 if (cardboard.gaze.Object().name.Contains("Diamond"))
                 {
-                    Debug.Log("Hit Diamond");
                     curNode = cardboard.gaze.Object();
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
@@ -129,33 +139,31 @@ public class CardboardController : MonoBehaviour {
                 //if user is staring at panel, keep active
                 else if (cardboard.gaze.Object().name.Contains("HighLightCollider"))
                 {
-                                        Debug.Log("Hit Highlight");
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
-                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
-                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                    // //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    // int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
+                    // planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
                 else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
                 {
-                                        Debug.Log("Hit Button");
-
-                    print("on button!");
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
-                    Debug.Log("diamond parent = " + curNode.transform.parent.name);
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                     
-                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
-                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+                    // //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+                    // int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
+                    // planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
-                Debug.Log(curNode);
             }
-            else if (scene == "02_Cardboard_DJLevel_v2" && cardboard.gaze.Object().name.Contains("Heart"))
+            else if (scene == "02_Cardboard_DJLevel_v2")
             {
-                Debug.Log("Scene 2");
+                Debug.Log(cardboard.gaze.Object().name);
+                if (cardboard.gaze.Object().name.Contains("Heart"))
+                {
+                    
+                }
             }
         }
 
@@ -333,6 +341,10 @@ public class CardboardController : MonoBehaviour {
     public void ToggleVRMode() {
         Cardboard.SDK.VRModeEnabled = !Cardboard.SDK.VRModeEnabled;
     }
+    
+    public void ToggleLock() {
+        locked = !locked;
+    }
 
 	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
 	{
@@ -381,5 +393,7 @@ public class CardboardController : MonoBehaviour {
             countdown --;
         }
     }
+    
+    
 
 }
