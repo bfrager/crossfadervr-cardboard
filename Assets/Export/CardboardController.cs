@@ -102,17 +102,76 @@ public class CardboardController : MonoBehaviour {
         cardboard.reticle.Show();
         cardboard.reticle.ClearHighlight();
         }
+        //print("Prev obj = " + gaze.PreviousObject());
+        if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "ButtonCollider")
+        {
+        	//print("reset button");
+        	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
+        }
 
 		if (cardboard.gaze.Object() == null)
         {
-        	curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        	if (curNode != null)
+        	{
+        		curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        	}
         	curNode = null;
         }
-		else if (cardboard.gaze.Object().name.Contains("Diamond") && cardboard.gaze.Object() != curNode)
-		{
-			curNode.GetComponent<InteractiveNodeCardboard>().Reset();
-			curNode = cardboard.gaze.Object();
-		}
+        else{
+
+	        //MOVED FROM UPDATE//
+			if (cardboard.gaze.Object().name.Contains("Diamond"))
+	            {
+	            	curNode = cardboard.gaze.Object();
+	            	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+	                
+	                //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+	                int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
+	                planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+	            }
+	        //
+	        //
+	        //if user is staring at panel, keep active
+			else if(cardboard.gaze.Object().name.Contains("HighLightCollider"))
+	        {
+				//curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+	            
+	            //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+	            int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+	            planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+	        }
+			else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
+	        {
+	        	//print("on button!");
+				//curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
+	            
+	            //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+	            int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+	            planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+	        }
+        }
+
+//		else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
+//		{
+//			cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//			//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
+//		}
+		//END MOVED FROM UPDATE//
+
+        //print("Gaze Changed to " + cardboard.gaze.Object());
+//		else if (cardboard.gaze.Object().name.Contains("Diamond") && cardboard.gaze.Object() != curNode)
+//		{
+//			curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+//			curNode = cardboard.gaze.Object();
+//		}
         // Be sure to set the Reticle Layer Mask on the CardboardControlManager
         // to grow the reticle on the objects you want. The default is everything.
 
@@ -173,21 +232,37 @@ public class CardboardController : MonoBehaviour {
                     // textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;                  
                 }
 
-				if (cardboard.gaze.Object().name.Contains("Diamond"))
-                {
-                	curNode = cardboard.gaze.Object();
-                	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
-                    
-                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
-                    int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+//				if (cardboard.gaze.Object().name.Contains("Diamond"))
+//                {
+//                	curNode = cardboard.gaze.Object();
+//                	cardboard.gaze.Object().GetComponent<InteractiveNodeCardboard>().Highlight();
+//                    
+//                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+//                    int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
+//                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+//
+//                }
+//                //
+//                //
+//                //if user is staring at panel, keep active
+//				else if(cardboard.gaze.Object().name.Contains("HighLightCollider"))
+//                {
+//					curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+//                	curNode = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+//                	cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//                    
+//                    //HIGHLIGHT CONTINENT BY COUNTRYID CODE
+//                    int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
+//                    planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+//
+//                }
+// 
+//				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
+//				{
+//					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
+//					//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
+//				}
 
-                }
-				else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
-				{
-					cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().Highlight();
-					//cardboard.gaze.Object().transform.parent.GetChild(0).GetComponent<InteractiveNodeCardboard>().FillButton();
-				}
 
 				if (cardboard.gaze.Object().gameObject.GetComponent<ButtonTimer>())
 				{
