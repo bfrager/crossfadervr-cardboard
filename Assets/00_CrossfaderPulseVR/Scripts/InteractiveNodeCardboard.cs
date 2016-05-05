@@ -36,14 +36,14 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 
 
 
-    public Image buttonFill;
+    public Slider buttonFill;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
 
 
   void Start() {
-    SetGazedAt(false);
+	//NotGazedAt();
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
   }
 
@@ -66,17 +66,17 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 //   	}
 //   }
 
-  public void SetGazedAt(bool gazed) {
-  }
-
   public void IsGazedAt()
   {
   	gazedAt = true;
+  	StartCoroutine(IEFillButton());
   }
 
   public void NotGazedAt()
   {
   	gazedAt = false;
+  	StopCoroutine(IEFillButton());
+  	ResetButton();
   }
 
   public void Highlight() {
@@ -98,6 +98,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(true);
                 child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = true;
+
+                //activate highlight collider
+					child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
             }
         }
 
@@ -125,6 +128,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
                 visuals = child.transform.GetChild(2).gameObject;
                 visuals.SetActive(false);
                 child.transform.GetChild(0).GetComponent<Spin_Node>().enabled = false;
+
+				//deactivate highlight collider
+					child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
             }
         }
 
@@ -188,21 +194,21 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	  	if (buttonFillAmount < 2)
 	  	{
 	  		buttonFillAmount += Time.deltaTime;
-	  		buttonFill.fillAmount = buttonFillAmount/2;
+	  		buttonFill.value = buttonFillAmount/2;
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
 				CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
-	  	yield return new WaitForSeconds(0.05f);
+	  	yield return new WaitForSeconds(0.02f);
   	}
 
   }
 
   public void ResetButton()
   {
-  	buttonFillAmount = 0;
-  	buttonFill.fillAmount = buttonFillAmount;
+  	buttonFillAmount = 0.001f;
+  	buttonFill.value = buttonFillAmount;
 
   }
 
