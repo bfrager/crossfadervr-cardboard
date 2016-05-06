@@ -29,7 +29,7 @@ public class OnboardingUI : MonoBehaviour {
   	{
 	  	if (buttonFillAmount < 1)
 	  	{
-	  		buttonFillAmount += Time.deltaTime;
+	  		buttonFillAmount += Time.deltaTime / 2;
 	  		buttonFill.value = buttonFillAmount;
 	  	}
 	  	else if (buttonFillAmount >= 1)

@@ -23,9 +23,15 @@ public class CardboardController : MonoBehaviour {
     public float countdownValue = 3;
     private float countdown;
     public bool locked = false;
+    private bool isFading = false;
     
 	// Use this for initialization
-	
+	void Awake()
+    {
+        textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
+        textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
+    }
+    
     void Start () 
     {
         cardboardController = this;
@@ -42,8 +48,6 @@ public class CardboardController : MonoBehaviour {
             cardboard.reticle.Hide();
         }
         
-        textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
-        textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
         textMesh.GetComponent<Renderer>().enabled = false;
         textMesh2.GetComponent<Renderer>().enabled = false;
         textMesh.color = textColor;
@@ -165,21 +169,21 @@ public class CardboardController : MonoBehaviour {
                     {
                         //print("on button!");
                         //curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
-        //				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
-        //	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
-        //				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
+                        //				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+                        //	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                        //				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                         cardboard.gaze.Object().GetComponent<OnboardingUI>().IsGazedAt();
                     }
 
             }
-            else if (scene == "02_Cardboard_DJLevel_v2")
-            {
-                Debug.Log(cardboard.gaze.Object().name);
-                if (cardboard.gaze.Object().name.Contains("Heart"))
-                {
+            // else if (scene == "02_Cardboard_DJLevel_v2")
+            // {
+            //     Debug.Log(cardboard.gaze.Object().name);
+            //     if (cardboard.gaze.Object().name.Contains("Heart"))
+            //     {
                     
-                }
-            }
+            //     }
+            // }
         }
 
         //		else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
@@ -225,21 +229,37 @@ public class CardboardController : MonoBehaviour {
             //DJ LEVEL CONTROLS:
 			if (scene == "02_Cardboard_DJLevel_v2")
             {
-                cardboard.reticle.Show();
-                if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 4) 
+                if (cardboard.gaze.Object().name.Contains("Heart"))
                 {
-                    textMesh2.text = "Back to Global Beat";
-                    textMesh2.GetComponent<Renderer>().enabled = true;          
-                    textMesh.GetComponent<Renderer>().enabled = true;
-                    textMesh.text = (4 - cardboard.gaze.SecondsHeld()).ToString("#"); 
+                    cardboard.reticle.Show();
+                    cardboard.reticle.Highlight(textColor);
+                    if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 3) 
+                    {
+
+                        textMesh2.GetComponent<Renderer>().enabled = true;          
+                        textMesh.GetComponent<Renderer>().enabled = true;
+                        textMesh2.text = "Back to Global Beat";
+                        textMesh.text = (3 - cardboard.gaze.SecondsHeld()).ToString("#"); 
+                    }
+                    else if (cardboard.gaze.SecondsHeld() > 3) {
+                        //Gavin: Fade out camera before changing scenes
+                        //Send scene name to load and the fade duration
+                        if (!isFading)
+                        {
+                            StartCoroutine(FadeLevelChange(0, 2f, null));
+                            textMesh.GetComponent<Renderer>().enabled = false;
+                            textMesh2.GetComponent<Renderer>().enabled = false; 
+                        }
+                    }
                 }
-                else if (cardboard.gaze.SecondsHeld() > 4) {
-                    //Gavin: Fade out camera before changing scenes
-                    //Send scene name to load and the fade duration
-                    StartCoroutine(FadeLevelChange(0, 2f, null));
+                else
+                {
+                    cardboard.reticle.Hide();
+                    cardboard.reticle.ClearHighlight();
                     textMesh.GetComponent<Renderer>().enabled = false;
-                    textMesh2.GetComponent<Renderer>().enabled = false;
+                    textMesh2.GetComponent<Renderer>().enabled = false;    
                 }
+                
             }
             
             //ROOT LEVEL CONTROLS (MOVED UP TO ONGAZECHANGE FUNCTION):
@@ -340,10 +360,6 @@ public class CardboardController : MonoBehaviour {
 		// }  
 	}
     
-    // IEnumerator HeartCountdown (float time)
-    // {   
-    // }
-    
     void OnDestroy() {
         cardboard.trigger.OnDown -= CardboardDown;
         cardboard.trigger.OnUp -= CardboardUp;
@@ -368,7 +384,8 @@ public class CardboardController : MonoBehaviour {
 
     IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
     {
-    	GameObject camera = GameObject.Find("Main Camera");
+    	isFading = true;
+        GameObject camera = GameObject.Find("Main Camera");
         camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
         StartCoroutine(FadeAudio(fadeDur, Fade.Out));
 		yield return new WaitForSeconds(fadeDur);
@@ -381,6 +398,7 @@ public class CardboardController : MonoBehaviour {
             PersistentData.PD.performanceId = node.transform.parent.name;
         }
         SceneManager.LoadScene(sceneBuild); 
+        isFading = false;
     }
     
     IEnumerator FadeAudio (float timer, Fade fadeType) 
