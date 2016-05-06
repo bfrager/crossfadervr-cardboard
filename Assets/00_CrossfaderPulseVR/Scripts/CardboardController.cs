@@ -109,6 +109,13 @@ public class CardboardController : MonoBehaviour {
         {
         	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
         }
+        
+        else if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "Slider")
+        {
+        	//print("reset button");
+        	gaze.PreviousObject().GetComponent<OnboardingUI>().NotGazedAt();
+        }
+
 
 		if (cardboard.gaze.Object() == null)
         {
@@ -154,6 +161,16 @@ public class CardboardController : MonoBehaviour {
                     int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
                     planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
+                else if (cardboard.gaze.Object().name.Contains("Slider"))
+                    {
+                        //print("on button!");
+                        //curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+        //				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+        //	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+        //				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
+                        cardboard.gaze.Object().GetComponent<OnboardingUI>().IsGazedAt();
+                    }
+
             }
             else if (scene == "02_Cardboard_DJLevel_v2")
             {
