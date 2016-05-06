@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: befcaf55a4d8ea84b862b1066a0b1530
-timeCreated: 1462240255
+timeCreated: 1462570297
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -16,7 +16,7 @@ SubstanceImporter:
     inputs:
     - name: Mask_Opacity
       value:
-        scalar[0]: 0.3
+        scalar[0]: 0.11
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -35,11 +35,18 @@ SubstanceImporter:
         scalar[2]: 0
         scalar[3]: 1
         texture: {instanceID: 0}
+    - name: input_number
+      value:
+        scalar[0]: 2
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
     materialInformation:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
-      generateMipmaps: 1
+      generateMipmaps: 0
       generateAllOutputs: 0
       animationUpdateRate: 42
     materialProperties:
@@ -67,20 +74,24 @@ SubstanceImporter:
           second: 0.5
         data:
           first:
-            name: _InvFade
-          second: 1
-        data:
-          first:
             name: _Parallax
           second: 0.02
         data:
           first:
-            name: _ZWrite
+            name: _InvFade
           second: 1
+        data:
+          first:
+            name: _Metallic
+          second: 0
         data:
           first:
             name: _Glossiness
           second: 0.5
+        data:
+          first:
+            name: _ZWrite
+          second: 1
         data:
           first:
             name: _BumpScale
@@ -100,10 +111,6 @@ SubstanceImporter:
         data:
           first:
             name: _Mode
-          second: 0
-        data:
-          first:
-            name: _Metallic
           second: 0
       colors:
         data:
