@@ -108,6 +108,11 @@ public class CardboardController : MonoBehaviour {
         	//print("reset button");
         	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
         }
+		else if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "Slider")
+        {
+        	//print("reset button");
+        	gaze.PreviousObject().GetComponent<OnboardingUI>().NotGazedAt();
+        }
 
 		if (cardboard.gaze.Object() == null)
         {
@@ -155,6 +160,17 @@ public class CardboardController : MonoBehaviour {
 	            //HIGHLIGHT CONTINENT BY COUNTRYID CODE
 	            int countryId = cardboard.gaze.Object().transform.parent.GetChild(0).GetComponentInParent<LoadingInNewFlags>().countryID;
 	            planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
+
+	        }
+			else if (cardboard.gaze.Object().name.Contains("Slider"))
+	        {
+	        	//print("on button!");
+				//curObj = cardboard.gaze.Object().transform.parent.GetChild(0).gameObject;
+//				curNode = cardboard.gaze.Object().transform.parent.parent.GetChild(0).gameObject;
+//	        	curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+//				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
+				cardboard.gaze.Object().GetComponent<OnboardingUI>().IsGazedAt();
+	           
 
 	        }
         }
@@ -371,8 +387,10 @@ public class CardboardController : MonoBehaviour {
     	GameObject.Find("Main Camera").GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
         StartCoroutine(FadeAudio(fadeDur, Fade.Out));
 		yield return new WaitForSeconds(fadeDur);
+		GameObject.Find("Main Camera").SetActive(false);
+
         
-		//cache current time of song
+		print("cache current time of song");
 		if (node != null)
 		{
             float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
