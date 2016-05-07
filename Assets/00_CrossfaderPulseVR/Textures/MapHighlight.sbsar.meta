@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: befcaf55a4d8ea84b862b1066a0b1530
-timeCreated: 1462462616
+timeCreated: 1462579551
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -8,6 +8,7 @@ SubstanceImporter:
   - serializedVersion: 16
     name: MapHighlight
     prototypeName: MapHighlight
+    shaderName: 
     shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
     shaderKeywords: 
     renderQueue: 3000
@@ -33,6 +34,13 @@ SubstanceImporter:
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: input_number
+      value:
+        scalar[0]: 5
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
         texture: {instanceID: 0}
     materialInformation:
       serializedVersion: 5
@@ -66,6 +74,10 @@ SubstanceImporter:
           second: 0.5
         data:
           first:
+            name: _Parallax
+          second: 0.02
+        data:
+          first:
             name: _InvFade
           second: 0.51
         data:
@@ -74,16 +86,12 @@ SubstanceImporter:
           second: 0
         data:
           first:
-            name: _Parallax
-          second: 0.02
+            name: _Glossiness
+          second: 0.5
         data:
           first:
             name: _ZWrite
           second: 1
-        data:
-          first:
-            name: _Glossiness
-          second: 0.5
         data:
           first:
             name: _BumpScale
