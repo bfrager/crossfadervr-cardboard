@@ -178,21 +178,21 @@ public class CardboardAudioSource : MonoBehaviour {
     audioSource.bypassReverbZones = true;
     
     // BRIAN - ROUTE THROUGH MIXER GROUP
-    if (gameObject.name == "Diamond")
-    {
-        audioSource.outputAudioMixerGroup = mixes;
-        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to mixes group");
-    }
-    else if (gameObject.name.Contains("Heart"))
-    {
-        audioSource.outputAudioMixerGroup = heartbeat;
-        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to heart group");
-    }
-    else
-    {
-        audioSource.outputAudioMixerGroup = sfx;
-        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to SFX group");
-    } 
+    // if (gameObject.name == "Diamond")
+    // {
+    //     audioSource.outputAudioMixerGroup = mixes;
+    //     Debug.Log("Adding cardboard audio source from " + gameObject.name + "to mixes group");
+    // }
+    // else if (gameObject.name.Contains("Heart"))
+    // {
+    //     audioSource.outputAudioMixerGroup = heartbeat;
+    //     Debug.Log("Adding cardboard audio source from " + gameObject.name + "to heart group");
+    // }
+    // else
+    // {
+    //     audioSource.outputAudioMixerGroup = sfx;
+    //     Debug.Log("Adding cardboard audio source from " + gameObject.name + "to SFX group");
+    // } 
     
     #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7
         audioSource.panLevel = 0.0f;
@@ -211,8 +211,8 @@ public class CardboardAudioSource : MonoBehaviour {
 
   void Start () {
     // // BRIAN - ADDED TO ENABLE MUSIC VISUALIZATION FUNCTIONALITY FOR INDIVIDUAL AUDIO SOURCES (AUDIOLISTENER AS SOURCE ADDED LATER INSTEAD)
-    // AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
-    // Debug.Log("Adding cardboard audio source from " + gameObject);
+    AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
+    Debug.Log("Adding cardboard audio source from " + gameObject);
     
     if (playOnAwake && !isPlaying) {
       Play();

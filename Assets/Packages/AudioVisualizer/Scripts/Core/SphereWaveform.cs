@@ -49,6 +49,7 @@ namespace AudioVisualizer
 			startRadius = radius;
 			InitializeAxes(); // initialize rotaiton axes, needed for Rand, or Cross
 			rotSpeed = rotationSpeed;
+			
 		}
 		
 		// Update is called once per frame

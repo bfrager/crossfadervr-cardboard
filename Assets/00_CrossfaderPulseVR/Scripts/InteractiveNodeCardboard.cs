@@ -15,6 +15,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+using AudioVisualizer;
 
 [RequireComponent(typeof(Collider))]
 public class InteractiveNodeCardboard : MonoBehaviour {
@@ -29,6 +31,10 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject cc;
     private GameObject earth;
     private bool heart = false;
+    public Component[] nodeVisuals;
+    public List<AudioSource> audioSources;
+    public int audioSourceIndex;
+
     
     public Slider buttonFill;
     public float buttonFillTime = 1.0F;
@@ -52,6 +58,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     {
         buttonFill = gameObject.transform.parent.Find("Dj_Info_Canvas/Slider").GetComponent<Slider>();
     }
+    
   }
   
 //   void LateUpdate() {
@@ -78,6 +85,27 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     if (!heart)
     {
         earth.GetComponent<SpinFree>().spin = false;
+        
+        // select audio source index from audiosampler array based on dj node name
+        audioSources = AudioVisualizer.AudioSampler.instance.audioSources;
+        for (int i = 0; i < audioSources.Count; i++)
+        {
+            string clipName = audioSources[i].clip.name.ToString();
+            string nodeName = gameObject.transform.parent.name.ToString();
+            Debug.Log(clipName + " + " + nodeName);
+            if (clipName == nodeName)
+            {
+                audioSourceIndex = i;
+                Debug.Log("Audio source index for " + gameObject.transform.parent.name + " = " + i);
+            }
+        }
+        
+        // set visuals to audio source index
+        nodeVisuals = gameObject.transform.parent.Find("Visuals").GetComponentsInChildren<SphereWaveform>();
+        foreach (SphereWaveform sphereWaveform in nodeVisuals) {
+            sphereWaveform.audioSource = audioSourceIndex;
+        }
+        
         if (!(cc.GetComponent<CardboardController>().locked))
         {
             StopAllCoroutines();
