@@ -8,6 +8,7 @@ public class OnboardingUI : MonoBehaviour {
 	public float buttonFillAmount;
 	public Slider buttonFill;
 	public CanvasGroup introCanvas;
+	public int selectionTime = 1;
 
 
 	public void IsGazedAt()
@@ -23,13 +24,13 @@ public class OnboardingUI : MonoBehaviour {
   	ResetButton();
   }
 
-	IEnumerator IEFillButton()
+  IEnumerator IEFillButton()
   {
   	while (gazedAt)
   	{
 	  	if (buttonFillAmount < 1)
 	  	{
-	  		buttonFillAmount += Time.deltaTime / 2;
+	  		buttonFillAmount += Time.deltaTime / selectionTime;
 	  		buttonFill.value = buttonFillAmount;
 	  	}
 	  	else if (buttonFillAmount >= 1)
@@ -40,7 +41,6 @@ public class OnboardingUI : MonoBehaviour {
 	  	}
 	  	yield return new WaitForSeconds(0.02f);
   	}
-
   }
 
   IEnumerator FadeCanvas()

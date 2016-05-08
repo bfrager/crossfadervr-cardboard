@@ -30,13 +30,8 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject cc;
     private GameObject earth;
     
-    private Coroutine buttonFillRoutine = null;
-
-    private Coroutine audioFade1 = null;
-    private Coroutine audioFade2 = null;
-    private Coroutine audioFade3 = null;
-
     public Slider buttonFill;
+    public float buttonFillTime = 1.0f;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
@@ -50,7 +45,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     earth = GameObject.Find("EarthLow");
   }
   
-
 //   void LateUpdate() {
 //     Cardboard.SDK.UpdateState();
 //     if (Cardboard.SDK.BackButtonPressed) {
@@ -135,7 +129,7 @@ public void Reset() {
                 // GetComponent<CardboardAudioSource>().spatialize = true;
                 child.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
                 // child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = false;
-                if (child.Find("Diamond").GetComponent<CardboardAudioSource>().volume == 0) 
+                if (child.Find("Diamond").GetComponent<CardboardAudioSource>().volume == 0)
                 {
                     StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
                 }
@@ -181,8 +175,8 @@ public void Reset() {
   	{
 	  	if (buttonFillAmount < 2)
 	  	{
-	  		buttonFillAmount += Time.deltaTime;
-	  		buttonFill.value = buttonFillAmount/2;
+	  		buttonFillAmount += Time.deltaTime / buttonFillTime;
+	  		buttonFill.value = buttonFillAmount / 2;
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
@@ -200,18 +194,18 @@ public void Reset() {
 
   }
 
-    IEnumerator FadeAudio (float timer, Fade fadeType, Transform gameObject) 
+    IEnumerator FadeAudio (float timer, Fade fadeType, Transform djNode) 
     {
         // float start = fadeType == Fade.In? 0.0F : 1.0F;
         float end = fadeType == Fade.In? 1.0F : 0.0F;
         float i = 0.0F;
         float step = 1.0F/timer;
-        float currentVolume = gameObject.GetComponent<CardboardAudioSource>().volume;
+        float currentVolume = djNode.GetComponent<CardboardAudioSource>().volume;
 
         while (i <= 1.0F) 
         {
             i += step * Time.deltaTime;
-            gameObject.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
+            djNode.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
             yield return new WaitForSeconds(step * Time.deltaTime);
         }
     }
