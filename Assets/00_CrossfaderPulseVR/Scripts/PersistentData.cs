@@ -59,9 +59,10 @@ public class PersistentData : MonoBehaviour {
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
 			// print (GameObject.Find("DJ_Room").transform.name);
-			GameObject.Find("AudioSampler").GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
-			GameObject.Find("AudioSampler").GetComponent<AudioSource>().time = curSongTime;
-			GameObject.Find("AudioSampler").GetComponent<AudioSource>().Play();
+			GameObject audioSampler = GameObject.Find("AudioSampler");
+			audioSampler.GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
+			audioSampler.GetComponent<AudioSource>().time = curSongTime;
+			audioSampler.GetComponent<AudioSource>().Play();
 			mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
 			iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
 			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();			
