@@ -12,8 +12,6 @@ public class CountryHighlighter : MonoBehaviour {
 
 	private ProceduralMaterial substance;
 
-
-
 	// Use this for initialization
 	void Start () 
 	{

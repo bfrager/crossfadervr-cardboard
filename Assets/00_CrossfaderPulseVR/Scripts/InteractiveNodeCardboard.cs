@@ -20,18 +20,19 @@ using System.Collections;
 public class InteractiveNodeCardboard : MonoBehaviour {
     
     public float fadeTime = 1.0F;
-    public float sceneStartFade = 5.0F;
+    public float sceneStartFade = 3.0F;
     private GameObject djInfo;
     private GameObject visuals;
     private GameObject planet;
     enum Fade {In, Out};
-    public float buttonFillAmount;
     public bool gazedAt;
     private GameObject cc;
     private GameObject earth;
+    private bool heart = false;
     
     public Slider buttonFill;
-    public float buttonFillTime = 1.0f;
+    public float buttonFillTime = 1.0F;
+    public float buttonFillAmount;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
@@ -43,6 +44,14 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     cc = GameObject.Find("CardboardControlManager");
     planet = GameObject.Find("Planet960tris");
     earth = GameObject.Find("EarthLow");
+    if (gameObject.name.Contains("Heart"))
+    {
+        heart = true;
+    }
+    if (!heart)
+    {
+        buttonFill = gameObject.transform.parent.Find("Dj_Info_Canvas/Slider").GetComponent<Slider>();
+    }
   }
   
 //   void LateUpdate() {
@@ -66,33 +75,41 @@ public class InteractiveNodeCardboard : MonoBehaviour {
   }
 
   public void Highlight() {
-    earth.GetComponent<SpinFree>().spin = false;
-    if (!(cc.GetComponent<CardboardController>().locked))
+    if (!heart)
     {
-        StopAllCoroutines();
-        foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
+        earth.GetComponent<SpinFree>().spin = false;
+        if (!(cc.GetComponent<CardboardController>().locked))
         {
-            if (child.name != this.transform.parent.name)
+            StopAllCoroutines();
+            foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
             {
-                StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
-            }
-            else
-            {
-                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
-                child.Find("Dj_Info_Canvas").gameObject.SetActive(true);
-                child.Find("Visuals").gameObject.SetActive(true);
+                if (child.name != this.transform.parent.name)
+                {
+                    StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
+                }
+                else
+                {
+                    StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
+                    child.Find("Dj_Info_Canvas").gameObject.SetActive(true);
+                    child.Find("Visuals").gameObject.SetActive(true);
 
-                //activate highlight collider
-                child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
+                    //activate highlight collider
+                    child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
+                }
             }
+            gameObject.GetComponent<Spin_Node>().enabled = true;
+            gameObject.transform.localScale = 5 * Vector3.one;
+
+            // If we want to move country highlighting here...
+            int countryID = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
+            planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
         }
-        gameObject.GetComponent<Spin_Node>().enabled = true;
-        gameObject.transform.localScale = 5 * Vector3.one;
-
-        // If we want to move country highlighting here...
-        int countryID = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
-        planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
     }
+    else
+    {
+        
+    }
+    
   }
   
 public void Reset() {

@@ -20,10 +20,11 @@ public class CardboardController : MonoBehaviour {
     public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
     enum Fade {In, Out};
     public string scene;
-    public float countdownValue = 3;
-    private float countdown;
     public bool locked = false;
     private bool isFading = false;
+    private IEnumerator countdownTimer;
+    public int countdownLength = 3;
+    private int countdown;
     
 	// Use this for initialization
 	void Awake()
@@ -43,10 +44,7 @@ public class CardboardController : MonoBehaviour {
 
 		planet = GameObject.Find("Planet960tris");
         scene = SceneManager.GetActiveScene().name;
-        if (scene == "02_Cardboard_DJLevel_v2")
-        {
-            cardboard.reticle.Hide();
-        }
+        Debug.Log(scene);
         
         textMesh.GetComponent<Renderer>().enabled = false;
         textMesh2.GetComponent<Renderer>().enabled = false;
@@ -69,6 +67,12 @@ public class CardboardController : MonoBehaviour {
 
         // When we rotate the device into portrait mode
         cardboard.box.OnTilt += CardboardMagnetReset;
+        
+        if (scene == "02_Cardboard_DJLevel_v2")
+        {
+            cardboard.reticle.Hide();
+            print("hiding reticle");
+        }
     }
         
     private void CardboardDown(object sender) {
@@ -86,12 +90,14 @@ public class CardboardController : MonoBehaviour {
         if (cardboard.gaze.IsHeld())
         { 
             curNode.GetComponent<InteractiveNodeCardboard>().PlaySolo();
-            ToggleLock();            
+            ToggleLock();
+            Debug.Log("locked = " + locked);            
         }
         else if (cardboard.gaze.WasHeld())
         {
             cardboard.gaze.PreviousObject().GetComponent<InteractiveNodeCardboard>().PlaySolo();
-            ToggleLock();            
+            ToggleLock();
+            Debug.Log("locked = " + locked);                       
         }
         else
         {
@@ -109,23 +115,21 @@ public class CardboardController : MonoBehaviour {
 
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-        if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "ButtonCollider")
-        {
-        	curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
-        }
+        Debug.Log(cardboard.gaze.Object());
+        Debug.Log(gaze.Object());
         
-        else if (gaze.PreviousObject() != null && gaze.PreviousObject().name == "Slider")
-        {
-        	//print("reset button");
-        	gaze.PreviousObject().GetComponent<OnboardingUI>().NotGazedAt();
-        }
-
+        Debug.Log(cardboard.gaze.PreviousObject());
+        Debug.Log(gaze.PreviousObject());
+        Debug.Log("------------------------------");
 
 		if (cardboard.gaze.Object() == null)
         {
         	if (curNode != null)
         	{
-        		curNode.GetComponent<InteractiveNodeCardboard>().Reset();
+        		if (curNode.name == "Diamond")
+                {
+                    curNode.GetComponent<InteractiveNodeCardboard>().Reset();                    
+                }
         	}
         	curNode = null;
         }
@@ -174,17 +178,46 @@ public class CardboardController : MonoBehaviour {
                         //				curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                         cardboard.gaze.Object().GetComponent<OnboardingUI>().IsGazedAt();
                     }
-
             }
-            // else if (scene == "02_Cardboard_DJLevel_v2")
-            // {
-            //     Debug.Log(cardboard.gaze.Object().name);
-            //     if (cardboard.gaze.Object().name.Contains("Heart"))
-            //     {
-                    
-            //     }
-            // }
+            else if (scene == "02_Cardboard_DJLevel_v2")
+            {
+                if (cardboard.gaze.Object().name.Contains("Heart"))
+                {
+                    Debug.Log("HEART SELECTED");
+                    curNode = cardboard.gaze.Object();
+                    // curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    cardboard.reticle.Show();
+                    cardboard.reticle.Highlight(textColor);
+                    textMesh2.GetComponent<Renderer>().enabled = true;
+                    textMesh.GetComponent<Renderer>().enabled = true;
+                    countdownTimer = StartCountdown(countdownLength);
+                    StartCoroutine(countdownTimer);
+                }
+            }
+        }            
+            
+        if (cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name == "ButtonCollider")
+        {
+            curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
         }
+        
+        else if (cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name == "Slider")
+        {
+            //print("reset button");
+            gaze.PreviousObject().GetComponent<OnboardingUI>().NotGazedAt();
+        }
+        
+        else if (scene == "02_Cardboard_DJLevel_v2" && cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name.Contains("Heart"))
+        {
+            print("HEART DESELECTED");
+            cardboard.reticle.Hide();
+            cardboard.reticle.ClearHighlight();
+            textMesh.GetComponent<Renderer>().enabled = false;
+            textMesh2.GetComponent<Renderer>().enabled = false;
+            StopCoroutine(countdownTimer);  
+        }            
+            
+
 
         //		else if (cardboard.gaze.Object().name.Contains("Dj_Info_Canvas"))
         //		{
@@ -224,43 +257,45 @@ public class CardboardController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //Countdown timer on GUI
         if (cardboard.gaze.IsHeld()) {
-            //DJ LEVEL CONTROLS:
-			if (scene == "02_Cardboard_DJLevel_v2")
-            {
-                if (cardboard.gaze.Object().name.Contains("Heart"))
-                {
-                    cardboard.reticle.Show();
-                    cardboard.reticle.Highlight(textColor);
-                    if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 3) 
-                    {
+            // Debug.Log(cardboard.gaze.Object());
+            Debug.Log(cardboard.gaze.Hit());
+        }
+        //Countdown timer on GUI
+        // if (cardboard.gaze.IsHeld()) {
+        //     //DJ LEVEL CONTROLS:
+		// 	if (scene == "02_Cardboard_DJLevel_v2")
+        //     {
+        //         if (cardboard.gaze.Object().name.Contains("Heart"))
+        //         {
+        //             if (cardboard.gaze.SecondsHeld() > 0 && cardboard.gaze.SecondsHeld() < 3) 
+        //             {
 
-                        textMesh2.GetComponent<Renderer>().enabled = true;          
-                        textMesh.GetComponent<Renderer>().enabled = true;
-                        textMesh2.text = "Back to Global Beat";
-                        textMesh.text = (3 - cardboard.gaze.SecondsHeld()).ToString("#"); 
-                    }
-                    else if (cardboard.gaze.SecondsHeld() > 3) {
-                        //Gavin: Fade out camera before changing scenes
-                        //Send scene name to load and the fade duration
-                        if (!isFading)
-                        {
-                            StartCoroutine(FadeLevelChange(0, 2f, null));
-                            textMesh.GetComponent<Renderer>().enabled = false;
-                            textMesh2.GetComponent<Renderer>().enabled = false; 
-                        }
-                    }
-                }
-                else
-                {
-                    cardboard.reticle.Hide();
-                    cardboard.reticle.ClearHighlight();
-                    textMesh.GetComponent<Renderer>().enabled = false;
-                    textMesh2.GetComponent<Renderer>().enabled = false;    
-                }
+        //                 textMesh2.GetComponent<Renderer>().enabled = true;          
+        //                 textMesh.GetComponent<Renderer>().enabled = true;
+        //                 textMesh2.text = "Back to Global Beat";
+        //                 textMesh.text = (3 - cardboard.gaze.SecondsHeld()).ToString("#"); 
+        //             }
+        //             else if (cardboard.gaze.SecondsHeld() > 3) {
+        //                 //Gavin: Fade out camera before changing scenes
+        //                 //Send scene name to load and the fade duration
+        //                 if (!isFading)
+        //                 {
+        //                     StartCoroutine(FadeLevelChange(0, 2f, null));
+        //                     textMesh.GetComponent<Renderer>().enabled = false;
+        //                     textMesh2.GetComponent<Renderer>().enabled = false;
+        //                 }
+        //             }
+        //         }
+        //         else
+        //         {
+        //             cardboard.reticle.Hide();
+        //             cardboard.reticle.ClearHighlight();
+        //             textMesh.GetComponent<Renderer>().enabled = false;
+        //             textMesh2.GetComponent<Renderer>().enabled = false;    
+        //         }
                 
-            }
+        //     }
             
             //ROOT LEVEL CONTROLS (MOVED UP TO ONGAZECHANGE FUNCTION):
 			// if (scene == "01_Cardboard_RootLevel_v1")
@@ -337,7 +372,7 @@ public class CardboardController : MonoBehaviour {
                 //     }
                 // }
         //  }
-        }
+        // }
 
         // // Check on gaze and add radial to reticle
         // if (cardboard.gaze.IsHeld())
@@ -416,15 +451,16 @@ public class CardboardController : MonoBehaviour {
         }  
     }
     
-    //TODO: replace heart update with countdown coroutine
-    IEnumerator StartCountdown()
+    IEnumerator StartCountdown(int startingNum)
     {
-        countdown = countdownValue;
+        countdown = startingNum;
         while (countdown > 0)
         {
+            textMesh.text = countdown.ToString("#"); 
             yield return new WaitForSeconds(1.0f);
             countdown --;
         }
+        StartCoroutine(FadeLevelChange(0, 2f, null));
     }
     
     

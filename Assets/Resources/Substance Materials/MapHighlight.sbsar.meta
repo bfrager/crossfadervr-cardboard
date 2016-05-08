@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 68624415b13180946b626311b8ac158f
-timeCreated: 1462462859
+timeCreated: 1462682495
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -66,10 +66,6 @@ SubstanceImporter:
           second: 0.5
         data:
           first:
-            name: _Metallic
-          second: 0
-        data:
-          first:
             name: _Parallax
           second: 0.02
         data:
@@ -99,6 +95,10 @@ SubstanceImporter:
         data:
           first:
             name: _Mode
+          second: 0
+        data:
+          first:
+            name: _Metallic
           second: 0
       colors:
         data:

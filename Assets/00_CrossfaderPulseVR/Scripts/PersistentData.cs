@@ -43,7 +43,7 @@ public class PersistentData : MonoBehaviour {
 	
 	void LoadPerformanceData()
 	{
-		StartCoroutine("_LoadAvatarUserName");
+		StartCoroutine("_LoadName");
 		StartCoroutine("_LoadAvatarFromUrl");
 		StartCoroutine("_LoadBGFromUrl");
 	}
@@ -51,19 +51,15 @@ public class PersistentData : MonoBehaviour {
 	void OnLevelWasLoaded()
 	{
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
-
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudio(5, Fade.In));
-		print ("listener: " + AudioListener.volume);
 		
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
-			print (GameObject.Find("DJ_Room").transform.name);
+			// print (GameObject.Find("DJ_Room").transform.name);
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().time = curSongTime;
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().Play();
-
-			Debug.Log("perf id = " + performanceId);
 			
 			//sammoh loading...
 			LoadPerformanceData();
