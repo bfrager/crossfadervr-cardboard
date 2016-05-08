@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Reflection;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 //Gavin: added for Cardboard camera fade
 using VRStandardAssets.Utils;
 
@@ -25,12 +26,37 @@ public class CardboardController : MonoBehaviour {
     private IEnumerator countdownTimer;
     public int countdownLength = 3;
     private int countdown;
+    private GameObject[] cardboardAudioSources;
+    public UnityEngine.Audio.AudioMixerGroup mixes;
+    public UnityEngine.Audio.AudioMixerGroup heartbeat;
+    public UnityEngine.Audio.AudioMixerGroup sfx;
     
 	// Use this for initialization
 	void Awake()
     {
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
         textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
+        
+        cardboardAudioSources = GameObject.FindGameObjectsWithTag("Audio");
+        foreach (GameObject cardboardAudioSource in cardboardAudioSources)
+        {
+            if (cardboardAudioSource.name == "Diamond")
+            {
+                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = mixes;
+                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to mixes group");
+            }
+            else if (cardboardAudioSource.name.Contains("Heart"))
+            {
+                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = heartbeat;
+                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to heart group");
+            }
+            else
+            {
+                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = sfx;
+                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to SFX group");
+            } 
+        }
+        Debug.Log(audioSources);
     }
     
     void Start () 
@@ -39,6 +65,7 @@ public class CardboardController : MonoBehaviour {
         cardboard = gameObject.GetComponent<CardboardControl>();
 
         // Cardboard.SDK.VRModeEnabled = true;        
+        
         // AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
         // Debug.Log(audioSources);
 
