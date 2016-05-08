@@ -445,13 +445,13 @@ public class CardboardController : MonoBehaviour {
     IEnumerator StartCountdown(int startingNum)
     {
         countdown = startingNum;
-        while (countdown >= 0)
+        while (countdown > 0)
         {
             textMesh.text = countdown.ToString("#"); 
             yield return new WaitForSeconds(1.0f);
             countdown --;
         }
-        // textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;
+        textMesh.text = "0";
         StartCoroutine(FadeLevelChange(0, 1f, null));
     }
     
