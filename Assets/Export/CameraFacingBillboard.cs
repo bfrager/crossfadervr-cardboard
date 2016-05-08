@@ -16,15 +16,15 @@ public class CameraFacingBillboard : MonoBehaviour
 		/*transform.LookAt(transform.position + m_Camera.transform.rotation * Vector3.forward,
 		                 m_Camera.transform.rotation * Vector3.up);*/
 
-		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(transform.position - m_Camera.transform.position),0.2f);
+		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(transform.position - m_Camera.transform.position),0.001f);
 	}
 
 
 	IEnumerator InitialRotation()
 	{
 		//initial delay
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(0.0f);
 		transform.rotation = Quaternion.LookRotation(transform.position - m_Camera.transform.position);
-		gameObject.SetActive(false);
+		// gameObject.SetActive(false);
 	}
 }
