@@ -15,7 +15,6 @@ public class CardboardController : MonoBehaviour {
 	public Image radialFill;
     private TextMesh textMesh;
     private TextMesh textMesh2;
-    private AudioSource[] audioSources;
     public GameObject planet;
     public GameObject curNode;
     public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
@@ -26,7 +25,6 @@ public class CardboardController : MonoBehaviour {
     private IEnumerator countdownTimer;
     public int countdownLength = 3;
     private int countdown;
-    private GameObject[] cardboardAudioSources;
     public UnityEngine.Audio.AudioMixerGroup mixes;
     public UnityEngine.Audio.AudioMixerGroup heartbeat;
     public UnityEngine.Audio.AudioMixerGroup sfx;
@@ -36,27 +34,6 @@ public class CardboardController : MonoBehaviour {
     {
         textMesh = GameObject.Find("Counter").GetComponent<TextMesh>();
         textMesh2 = GameObject.Find("Message").GetComponent<TextMesh>();
-        
-        cardboardAudioSources = GameObject.FindGameObjectsWithTag("Audio");
-        foreach (GameObject cardboardAudioSource in cardboardAudioSources)
-        {
-            if (cardboardAudioSource.name == "Diamond")
-            {
-                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = mixes;
-                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to mixes group");
-            }
-            else if (cardboardAudioSource.name.Contains("Heart"))
-            {
-                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = heartbeat;
-                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to heart group");
-            }
-            else
-            {
-                cardboardAudioSource.GetComponent<AudioSource>().outputAudioMixerGroup = sfx;
-                Debug.Log("Adding cardboard audio source from " + cardboardAudioSource.name + "to SFX group");
-            } 
-        }
-        Debug.Log(audioSources);
     }
     
     void Start () 

@@ -27,6 +27,11 @@ using System.Collections.Generic;
 /// features.
 [AddComponentMenu("Cardboard/Audio/CardboardAudioSource")]
 public class CardboardAudioSource : MonoBehaviour {
+  // BRIAN - ADDING AUDIO MIXERS
+  public UnityEngine.Audio.AudioMixerGroup mixes;
+  public UnityEngine.Audio.AudioMixerGroup heartbeat;
+  public UnityEngine.Audio.AudioMixerGroup sfx;
+  
   /// Directivity pattern shaping factor.
   public float directivityAlpha = 0.0f;
 
@@ -171,12 +176,30 @@ public class CardboardAudioSource : MonoBehaviour {
     audioSource.hideFlags = HideFlags.HideInInspector;
     audioSource.playOnAwake = false;
     audioSource.bypassReverbZones = true;
-#if UNITY_4_5 || UNITY_4_6 || UNITY_4_7
-    audioSource.panLevel = 0.0f;
-#else
-    audioSource.spatialBlend = 0.0f;
-#endif
-    OnValidate();
+    
+    // BRIAN - ROUTE THROUGH MIXER GROUP
+    if (gameObject.name == "Diamond")
+    {
+        audioSource.outputAudioMixerGroup = mixes;
+        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to mixes group");
+    }
+    else if (gameObject.name.Contains("Heart"))
+    {
+        audioSource.outputAudioMixerGroup = heartbeat;
+        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to heart group");
+    }
+    else
+    {
+        audioSource.outputAudioMixerGroup = sfx;
+        Debug.Log("Adding cardboard audio source from " + gameObject.name + "to SFX group");
+    } 
+    
+    #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7
+        audioSource.panLevel = 0.0f;
+    #else
+        audioSource.spatialBlend = 0.0f;
+    #endif
+        OnValidate();
   }
 
   void OnEnable () {
@@ -187,8 +210,10 @@ public class CardboardAudioSource : MonoBehaviour {
   }
 
   void Start () {
-    AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
+    // // BRIAN - ADDED TO ENABLE MUSIC VISUALIZATION FUNCTIONALITY FOR INDIVIDUAL AUDIO SOURCES (AUDIOLISTENER AS SOURCE ADDED LATER INSTEAD)
+    // AudioVisualizer.AudioSampler.instance.audioSources.Add(audioSource);
     // Debug.Log("Adding cardboard audio source from " + gameObject);
+    
     if (playOnAwake && !isPlaying) {
       Play();
     }
