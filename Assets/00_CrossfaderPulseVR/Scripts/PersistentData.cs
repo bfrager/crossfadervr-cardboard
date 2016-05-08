@@ -22,10 +22,10 @@ public class PersistentData : MonoBehaviour {
 	public MeshRenderer mr;
 	public MeshRenderer iconMr;
 	public MeshRenderer boothMr;
-	public string url = "https://dxzw8fe3xavok.cloudfront.net/performances/550352/550352-background-performancePhoto.jpeg?1449747147";
+	public TextMesh djName;
 	public string AvatarURL; 
 	public string trackName;
-	public string djName;
+
 	public Material avatarMat;
 
 	// Use this for initialization
@@ -65,7 +65,7 @@ public class PersistentData : MonoBehaviour {
 			audioSampler.GetComponent<AudioSource>().Play();
 			mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
 			iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
-			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();			
+			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();	djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();		
 			
 			//sammoh loading...
 			LoadPerformanceData();
@@ -95,7 +95,7 @@ public class PersistentData : MonoBehaviour {
 	{
 		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
 		yield return name;
-		djName = name;
+		djName.text = name;
 	}
 
 	IEnumerator _LoadAvatarFromUrl()
