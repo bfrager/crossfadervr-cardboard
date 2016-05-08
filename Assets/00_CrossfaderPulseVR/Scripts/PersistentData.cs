@@ -21,6 +21,7 @@ public class PersistentData : MonoBehaviour {
 	//utility
 	public MeshRenderer mr;
 	public MeshRenderer iconMr;
+	public MeshRenderer boothMr;
 	public string url = "https://dxzw8fe3xavok.cloudfront.net/performances/550352/550352-background-performancePhoto.jpeg?1449747147";
 	public string AvatarURL; 
 	public string trackName;
@@ -46,6 +47,7 @@ public class PersistentData : MonoBehaviour {
 		StartCoroutine("_LoadName");
 		StartCoroutine("_LoadAvatarFromUrl");
 		StartCoroutine("_LoadBGFromUrl");
+		StartCoroutine("_LoadProfArtFromUrl");
 	}
 
 	void OnLevelWasLoaded()
@@ -60,18 +62,17 @@ public class PersistentData : MonoBehaviour {
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().time = curSongTime;
 			GameObject.Find("AudioSampler").GetComponent<AudioSource>().Play();
+			mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
+			iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
+			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();			
 			
 			//sammoh loading...
 			LoadPerformanceData();
-
 		}
-		else{
+		else
+		{
 			curSongTime = 0;
 		}
-
-		mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
-		iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
-
 	}
 
 	IEnumerator FadeAudio (float timer, Fade fadeType) 
@@ -96,7 +97,6 @@ public class PersistentData : MonoBehaviour {
 		djName = name;
 	}
 
-
 	IEnumerator _LoadAvatarFromUrl()
 	{
 		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
@@ -109,13 +109,21 @@ public class PersistentData : MonoBehaviour {
 
 	IEnumerator _LoadBGFromUrl()
 	{
-
 		string bgUrl = api.performancesDict[performanceId]["performance"]["background_image"].ToString();
 		string[] temp = bgUrl.Split('\"');
 		bgUrl = temp[1];
 		WWW imgUrl = new WWW(bgUrl);
 		yield return imgUrl;
 		mr.material.mainTexture = imgUrl.texture;
-		StartCoroutine("_LoadAvatarFromUrl");
+	}
+	
+	IEnumerator _LoadProfArtFromUrl()
+	{
+		string coverUrl = api.performancesDict[performanceId]["users"][0]["cover_photo"].ToString();
+		string[] temp = coverUrl.Split('\"');
+		coverUrl = temp[1];
+		WWW imgUrl = new WWW(coverUrl);
+		yield return imgUrl;
+		boothMr.material.mainTexture = imgUrl.texture;
 	}
 }

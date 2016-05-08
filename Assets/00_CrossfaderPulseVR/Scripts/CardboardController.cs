@@ -44,7 +44,6 @@ public class CardboardController : MonoBehaviour {
 
 		planet = GameObject.Find("Planet960tris");
         scene = SceneManager.GetActiveScene().name;
-        Debug.Log(scene);
         
         textMesh.GetComponent<Renderer>().enabled = false;
         textMesh2.GetComponent<Renderer>().enabled = false;
@@ -115,12 +114,6 @@ public class CardboardController : MonoBehaviour {
 
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-        Debug.Log(cardboard.gaze.Object());
-        Debug.Log(gaze.Object());
-        
-        Debug.Log(cardboard.gaze.PreviousObject());
-        Debug.Log(gaze.PreviousObject());
-        Debug.Log("------------------------------");
 
 		if (cardboard.gaze.Object() == null)
         {
@@ -183,7 +176,6 @@ public class CardboardController : MonoBehaviour {
             {
                 if (cardboard.gaze.Object().name.Contains("Heart"))
                 {
-                    Debug.Log("HEART SELECTED");
                     curNode = cardboard.gaze.Object();
                     // curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     cardboard.reticle.Show();
@@ -209,7 +201,6 @@ public class CardboardController : MonoBehaviour {
         
         else if (scene == "02_Cardboard_DJLevel_v2" && cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name.Contains("Heart"))
         {
-            print("HEART DESELECTED");
             cardboard.reticle.Hide();
             cardboard.reticle.ClearHighlight();
             textMesh.GetComponent<Renderer>().enabled = false;
@@ -454,13 +445,14 @@ public class CardboardController : MonoBehaviour {
     IEnumerator StartCountdown(int startingNum)
     {
         countdown = startingNum;
-        while (countdown > 0)
+        while (countdown >= 0)
         {
             textMesh.text = countdown.ToString("#"); 
             yield return new WaitForSeconds(1.0f);
             countdown --;
         }
-        StartCoroutine(FadeLevelChange(0, 2f, null));
+        // textMesh2.GetComponent<Renderer>().enabled = Time.time % 1 < 0.5;
+        StartCoroutine(FadeLevelChange(0, 1f, null));
     }
     
     
