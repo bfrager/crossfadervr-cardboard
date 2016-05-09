@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using System.Reflection;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
-//Gavin: added for Cardboard camera fade
+// added for Cardboard camera fade
 using VRStandardAssets.Utils;
 
 public class CardboardController : MonoBehaviour {
@@ -21,7 +21,6 @@ public class CardboardController : MonoBehaviour {
     enum Fade {In, Out};
     public string scene;
     public bool locked = false;
-    private bool isFading = false;
     private IEnumerator countdownTimer;
     public int countdownLength = 3;
     private int countdown;
@@ -251,10 +250,10 @@ public class CardboardController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (cardboard.gaze.IsHeld()) {
-            // Debug.Log(cardboard.gaze.Object());
-            Debug.Log(cardboard.gaze.Hit());
-        }
+        // if (cardboard.gaze.IsHeld()) {
+        //     // Debug.Log(cardboard.gaze.Object());
+        //     Debug.Log(cardboard.gaze.Hit());
+        // }
         //Countdown timer on GUI
         // if (cardboard.gaze.IsHeld()) {
         //     //DJ LEVEL CONTROLS:
@@ -406,29 +405,39 @@ public class CardboardController : MonoBehaviour {
         locked = !locked;
     }
 
-	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
-	{
-		StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
-	}
+    // MOVED TO PERSISTENTDATA
+	// public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
+	// {
+	// 	StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
+	// }
 
-    IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
-    {
-    	isFading = true;
-        GameObject camera = GameObject.Find("Main Camera");
-        camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
-        StartCoroutine(FadeAudio(fadeDur, Fade.Out));
-		yield return new WaitForSeconds(fadeDur);
-        camera.SetActive(false);
-		//cache current time of song
-		if (node != null)
-		{
-            float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
-            PersistentData.PD.curSongTime = playHead;
-            PersistentData.PD.performanceId = node.transform.parent.name;
-        }
-        SceneManager.LoadScene(sceneBuild); 
-        isFading = false;
-    }
+    // IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
+    // {
+    // 	isFading = true;
+    //     GameObject camera = GameObject.Find("Main Camera");
+    //     camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+    //     StartCoroutine(FadeAudio(fadeDur, Fade.Out));
+	// 	yield return new WaitForSeconds(fadeDur);
+		
+    //     //cache current time of song
+	// 	if (node != null)
+	// 	{
+    //         if (scene == "01_Cardboard_RootLevel_v1")
+    //         {
+    //             float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
+    //             PersistentData.PD.curSongTime = playHead;
+    //             PersistentData.PD.performanceId = node.transform.parent.name;
+    //         }
+    //         else if (scene == "02_Cardboard_DJLevel_v2")
+    //         {
+    //             float playHead = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
+    //             PersistentData.PD.curSongTime = playHead;
+    //         }
+    //     }
+    //     camera.SetActive(false);
+    //     SceneManager.LoadScene(sceneBuild); 
+    //     isFading = false;
+    // }
     
     IEnumerator FadeAudio (float timer, Fade fadeType) 
     {
@@ -455,7 +464,7 @@ public class CardboardController : MonoBehaviour {
             countdown --;
         }
         textMesh.text = "0";
-        StartCoroutine(FadeLevelChange(0, 1f, null));
+        PersistentData.PD.ChangeLevel(0, 1f, null);
     }
     
     

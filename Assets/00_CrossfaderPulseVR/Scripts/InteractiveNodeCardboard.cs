@@ -34,7 +34,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     public Component[] nodeVisuals;
     public List<AudioSource> audioSources;
     public int audioSourceIndex;
-
     
     public Slider buttonFill;
     public float buttonFillTime = 1.0F;
@@ -50,14 +49,26 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     cc = GameObject.Find("CardboardControlManager");
     planet = GameObject.Find("Planet960tris");
     earth = GameObject.Find("EarthLow");
+    
     if (gameObject.name.Contains("Heart"))
     {
         heart = true;
     }
+    
+    // DJ Node only Start functions
     if (!heart)
     {
         buttonFill = gameObject.transform.parent.Find("Dj_Info_Canvas/Slider").GetComponent<Slider>();
+        
+        Debug.Log("CURSONGTIME = " + PersistentData.PD.curSongTime);
+        
+        if (PersistentData.PD.curSongTime != null)
+        {
+            gameObject.GetComponent<CardboardAudioSource>().audioSource.time = PersistentData.PD.curSongTime;
+        }
     }
+    
+    StartCoroutine(SetAudioVisualizerIndexes());
     
   }
   
@@ -86,26 +97,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     {
         earth.GetComponent<SpinFree>().spin = false;
         
-        // select audio source index from audiosampler array based on dj node name
-        audioSources = AudioVisualizer.AudioSampler.instance.audioSources;
-        for (int i = 0; i < audioSources.Count; i++)
-        {
-            string clipName = audioSources[i].clip.name.ToString();
-            string nodeName = gameObject.transform.parent.name.ToString();
-            Debug.Log(clipName + " + " + nodeName);
-            if (clipName == nodeName)
-            {
-                audioSourceIndex = i;
-                Debug.Log("Audio source index for " + gameObject.transform.parent.name + " = " + i);
-            }
-        }
-        
-        // set visuals to audio source index
-        nodeVisuals = gameObject.transform.parent.Find("Visuals").GetComponentsInChildren<SphereWaveform>();
-        foreach (SphereWaveform sphereWaveform in nodeVisuals) {
-            sphereWaveform.audioSource = audioSourceIndex;
-        }
-        
         if (!(cc.GetComponent<CardboardController>().locked))
         {
             StopAllCoroutines();
@@ -133,36 +124,35 @@ public class InteractiveNodeCardboard : MonoBehaviour {
             planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
         }
     }
-    else
-    {
-        
-    }
     
   }
   
 public void Reset() {
-    earth.GetComponent<SpinFree>().spin = true;
-    if (!(cc.GetComponent<CardboardController>().locked))
+    if (!heart)
     {
-        StopAllCoroutines();
-        foreach (Transform child in transform.parent.parent)
+        earth.GetComponent<SpinFree>().spin = true;
+        if (!(cc.GetComponent<CardboardController>().locked))
         {
-            if (child.name != this.transform.parent.name) 
+            StopAllCoroutines();
+            foreach (Transform child in transform.parent.parent)
             {
-                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
+                if (child.name != this.transform.parent.name) 
+                {
+                    StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
+                }
+                else 
+                {
+                    child.Find("Dj_Info_Canvas").gameObject.SetActive(false);
+                    child.Find("Visuals").gameObject.SetActive(false);
+                    StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
+                    //deactivate highlight collider
+                    child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
+                }
             }
-            else 
-            {
-                child.Find("Dj_Info_Canvas").gameObject.SetActive(false);
-                child.Find("Visuals").gameObject.SetActive(false);
-                StartCoroutine(FadeAudio(fadeTime, Fade.In, child.Find("Diamond")));
-				//deactivate highlight collider
-                child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
-            }
+            gameObject.GetComponent<Spin_Node>().enabled = false;
+            gameObject.transform.localScale = 3 * Vector3.one;
+            // planet.GetComponent<CountryHighlighter>().updateCountry(0);
         }
-        gameObject.GetComponent<Spin_Node>().enabled = false;
-        gameObject.transform.localScale = 3 * Vector3.one;
-        // planet.GetComponent<CountryHighlighter>().updateCountry(0);
     }
   }
   
@@ -193,7 +183,6 @@ public void Reset() {
                 // child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = true;
                 if (child.name != this.transform.parent.name)
                 {
-                    // Debug.Log ("Pausing "+ child.Find("Diamond").name);
                     // GetComponent<CardboardAudioSource>().spatialize = true;
                     StartCoroutine(FadeAudio(fadeTime, Fade.Out, child.Find("Diamond")));
                     child.Find("Diamond").GetComponent<CardboardAudioSource>().Pause();
@@ -225,7 +214,7 @@ public void Reset() {
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
-            CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
+            PersistentData.PD.ChangeLevel(1,0.8f, gameObject);
 	  	}
 	  	yield return new WaitForSeconds(0.02f);
   	}
@@ -237,6 +226,29 @@ public void Reset() {
   	buttonFillAmount = 0.001f;
   	buttonFill.value = buttonFillAmount;
 
+  }
+  
+  IEnumerator SetAudioVisualizerIndexes ()
+  {
+    yield return new WaitForSeconds(2);
+    // select audio source index from audiosampler array based on dj node name
+    audioSources = AudioVisualizer.AudioSampler.instance.audioSources;
+    for (int i = 0; i < audioSources.Count; i++)
+    {
+        string clipName = audioSources[i].clip.name.ToString();
+        string nodeName = gameObject.transform.parent.name.ToString();
+        if (clipName == nodeName)
+        {
+            audioSourceIndex = i;
+            Debug.Log("Audio source index for " + gameObject.transform.parent.name + " = " + i);
+        }
+    }
+    
+    // set sphere waveform visuals to audio source index
+    nodeVisuals = gameObject.transform.parent.Find("Visuals").GetComponentsInChildren<SphereWaveform>();
+    foreach (SphereWaveform sphereWaveform in nodeVisuals) {
+        sphereWaveform.audioSource = audioSourceIndex;
+    }
   }
 
     IEnumerator FadeAudio (float timer, Fade fadeType, Transform djNode) 
