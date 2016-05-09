@@ -104,7 +104,7 @@ public class LoadAvatarImage : MonoBehaviour {
 	{
 		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
 		yield return name;
-		djName.text = name;
+		djName.text = name.Trim('"');
 	}
 	
 	IEnumerator _LoadListens()
@@ -119,7 +119,7 @@ public class LoadAvatarImage : MonoBehaviour {
 	{
 		string firstTag = api.performancesDict[performanceId]["performance"]["tags"][0].ToString();
 		yield return firstTag;
-		tags.text = firstTag;
+		tags.text = firstTag.Trim('"');
 	}
 	
 	// TURNED OFF BECAUSE MOST CROSSFADER PROFILES DO NOT CONTAIN LOCATION INFO, MUST REFERENCE INTERCOM API INSTEAD
