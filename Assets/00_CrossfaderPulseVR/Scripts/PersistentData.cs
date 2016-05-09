@@ -9,6 +9,7 @@ public class PersistentData : MonoBehaviour {
 	public static PersistentData PD;
 	public float curSongTime;
 	public string performanceId;
+	public int loadNum = 0;
 
 
 	enum Fade {In, Out};
@@ -52,6 +53,14 @@ public class PersistentData : MonoBehaviour {
 
 	void OnLevelWasLoaded()
 	{
+		loadNum++;
+		Debug.Log(loadNum);
+		
+		if (loadNum > 1)
+		{
+			GameObject.Find("OnboardingUI").SetActive(false);
+		}
+		
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudio(5, Fade.In));
@@ -88,7 +97,6 @@ public class PersistentData : MonoBehaviour {
 			AudioListener.volume = Mathf.Lerp(start, end, i);
 			yield return new WaitForSeconds(step * Time.deltaTime);
 		}
-		
 	}
 
 	IEnumerator _LoadName()
