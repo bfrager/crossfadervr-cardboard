@@ -20,6 +20,8 @@ public class LoadAvatarImage : MonoBehaviour {
 	//utility
 	public MeshRenderer mr;
 	public Material avatarMat;
+	public MeshRenderer canvasBG;
+	public Texture2D texture;
 
 
 	void Awake ()
@@ -27,7 +29,10 @@ public class LoadAvatarImage : MonoBehaviour {
 		// add DJ node objects
 		performanceId = gameObject.name;
 		mr = gameObject.transform.Find("Diamond").GetComponentInChildren<MeshRenderer>();
+		
         canvas = gameObject.transform.Find("Dj_Info_Canvas");
+		
+		canvasBG = canvas.transform.Find("Backdrop").GetComponent<MeshRenderer>();
         djName = canvas.transform.Find("Dj_Name").GetComponent<Text>();
         location = canvas.transform.Find("Location").GetComponent<Text>();
         listens = canvas.transform.Find("Hearts").GetComponent<Text>();
@@ -81,10 +86,11 @@ public class LoadAvatarImage : MonoBehaviour {
 	IEnumerator LoadDjNode()
     {
  	    loading = true;
+		StartCoroutine("_LoadProfArtFromUrl");
 		StartCoroutine("_LoadName");
 		StartCoroutine("_LoadTags");
 		StartCoroutine("_LoadListens");		
-		yield return StartCoroutine("_LoadAvatarTexture"); 
+		yield return StartCoroutine("_LoadAvatarTexture");
 		StartCoroutine(ScaleUpNode(1f, 0.35f));
 		loading = false;
     }
@@ -120,6 +126,20 @@ public class LoadAvatarImage : MonoBehaviour {
 		string firstTag = api.performancesDict[performanceId]["performance"]["tags"][0].ToString();
 		yield return firstTag;
 		tags.text = firstTag.Trim('"');
+	}
+	
+	IEnumerator _LoadProfArtFromUrl()
+	{
+		string coverUrl = api.performancesDict[performanceId]["users"][0]["cover_photo"].ToString();
+		string[] temp = coverUrl.Split('\"');
+		coverUrl = temp[1];
+		WWW imgUrl = new WWW(coverUrl);
+		yield return imgUrl;
+		canvasBG.material.mainTexture = imgUrl.texture;
+		
+		// imgUrl.LoadImageIntoTexture(texture);
+		// Sprite image = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+		// canvasBG.sprite = image;
 	}
 	
 	// TURNED OFF BECAUSE MOST CROSSFADER PROFILES DO NOT CONTAIN LOCATION INFO, MUST REFERENCE INTERCOM API INSTEAD
