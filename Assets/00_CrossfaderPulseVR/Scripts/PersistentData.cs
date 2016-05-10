@@ -58,7 +58,6 @@ public class PersistentData : MonoBehaviour {
 	void OnLevelWasLoaded()
 	{
 		loadNum++;
-		Debug.Log(loadNum);
 		
 		if (loadNum > 1)
 		{
@@ -114,7 +113,7 @@ public class PersistentData : MonoBehaviour {
         	StartCoroutine(FadeAudioListener(fadeDur, Fade.Out));
 		}
 		yield return new WaitForSeconds(fadeDur);
-		
+		camera.SetActive(false);
         //cache current time of song
 		if (scene == "01_Cardboard_RootLevel_v1")
 		{
@@ -134,7 +133,6 @@ public class PersistentData : MonoBehaviour {
 		}
 		Debug.Log("Playhead = " + curSongTime);
 		
-        camera.SetActive(false);
         SceneManager.LoadScene(sceneBuild); 
         isFading = false;
     }

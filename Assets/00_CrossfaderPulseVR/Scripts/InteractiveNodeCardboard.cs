@@ -58,6 +58,8 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     // DJ Node only Start functions
     if (!heart)
     {
+        StartCoroutine(SetAudioVisualizerIndexes());
+
         buttonFill = gameObject.transform.parent.Find("Dj_Info_Canvas/Slider").GetComponent<Slider>();
         
         Debug.Log("CURSONGTIME = " + PersistentData.PD.curSongTime);
@@ -66,9 +68,9 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         {
             gameObject.GetComponent<CardboardAudioSource>().audioSource.time = PersistentData.PD.curSongTime;
         }
+        
     }
     
-    StartCoroutine(SetAudioVisualizerIndexes());
     
   }
   
