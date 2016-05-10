@@ -90,22 +90,27 @@ public class CardboardController : MonoBehaviour {
     private void CardboardClick(object sender) {
         // With the cardboard object, we can grab information from various controls
         // If the raycast doesn't find anything then the focused object will be null
+        Debug.Log("Clicked " + sender);
         
-        if (cardboard.gaze.IsHeld())
-        { 
-            curNode.GetComponent<InteractiveNodeCardboard>().PlaySolo();
-            ToggleLock();
-            Debug.Log("locked = " + locked);            
-        }
-        else if (cardboard.gaze.WasHeld())
+        // Lock onto node audio track with cardboard click event
+        if (scene == "01_Cardboard_RootLevel_v1")
         {
-            cardboard.gaze.PreviousObject().GetComponent<InteractiveNodeCardboard>().PlaySolo();
-            ToggleLock();
-            Debug.Log("locked = " + locked);                       
-        }
-        else
-        {
-            Debug.Log("Please select a track to lock onto");    
+            if (cardboard.gaze.IsHeld() && cardboard.gaze.Object().name == "Diamond")
+            { 
+                curNode.GetComponent<InteractiveNodeCardboard>().PlaySolo();
+                ToggleLock();
+                Debug.Log("locked = " + locked);            
+            }
+            else if (cardboard.gaze.WasHeld() && cardboard.gaze.PreviousObject().name == "Diamond")
+            {
+                cardboard.gaze.PreviousObject().GetComponent<InteractiveNodeCardboard>().PlaySolo();
+                ToggleLock();
+                Debug.Log("locked = " + locked);                  
+            }
+            else
+            {
+                Debug.Log("Please select a track to lock onto");    
+            }           
         }
         
         // If you need more raycast data from cardboard.gaze, the RaycastHit is exposed as gaze.Hit()

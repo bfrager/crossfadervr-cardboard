@@ -28,7 +28,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private GameObject planet;
     enum Fade {In, Out};
     public bool gazedAt;
-    private GameObject cc;
     private GameObject earth;
     private bool heart = false;
     public Component[] nodeVisuals;
@@ -47,7 +46,6 @@ public class InteractiveNodeCardboard : MonoBehaviour {
   {
 	//NotGazedAt();
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
-    cc = GameObject.Find("CardboardControlManager");
     planet = GameObject.Find("Planet960tris");
     earth = GameObject.Find("EarthLow");
     
@@ -98,7 +96,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     {
         earth.GetComponent<SpinFree>().spin = false;
         
-        if (!(cc.GetComponent<CardboardController>().locked))
+        if (!(CardboardController.cardboardController.locked))
         {
             StopAllCoroutines();
             foreach (Transform child in transform.parent.parent) //for each DJ node in Nodes
@@ -132,7 +130,7 @@ public void Reset() {
     if (!heart)
     {
         earth.GetComponent<SpinFree>().spin = true;
-        if (!(cc.GetComponent<CardboardController>().locked))
+        if (!(CardboardController.cardboardController.locked))
         {
             StopAllCoroutines();
             foreach (Transform child in transform.parent.parent)
@@ -158,7 +156,7 @@ public void Reset() {
   }
   
   public void PlaySolo() {
-        if (cc.GetComponent<CardboardController>().locked)
+        if (CardboardController.cardboardController.locked)
         {
             foreach (Transform child in transform.parent.parent)
             {
@@ -177,7 +175,7 @@ public void Reset() {
         
             }
         }
-        else if (!(cc.GetComponent<CardboardController>().locked))
+        else if (!(CardboardController.cardboardController.locked))
         {
             foreach (Transform child in transform.parent.parent)
             {
