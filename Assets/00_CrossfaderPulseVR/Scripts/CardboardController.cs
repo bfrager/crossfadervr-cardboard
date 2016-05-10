@@ -119,8 +119,8 @@ public class CardboardController : MonoBehaviour {
 
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-        Debug.Log("Object = " + cardboard.gaze.Object());
-        Debug.Log("PrevObject = " + cardboard.gaze.PreviousObject());
+        // Debug.Log("Object = " + cardboard.gaze.Object());
+        // Debug.Log("PrevObject = " + cardboard.gaze.PreviousObject());
 		
         if (cardboard.gaze.Object() == null)
         {
@@ -151,7 +151,7 @@ public class CardboardController : MonoBehaviour {
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
                     int countryId = cardboard.gaze.Object().GetComponentInParent<LoadingInNewFlags>().countryID;
-                    Debug.Log("country id = " + countryId);
+                    // Debug.Log("country id = " + countryId);
                     planet.GetComponent<CountryHighlighter>().updateCountry(countryId);
                 }
                 //

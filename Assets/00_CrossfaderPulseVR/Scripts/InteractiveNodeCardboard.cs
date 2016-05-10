@@ -59,7 +59,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     // DJ Node only Start functions
     if (!heart)
     {
-        StartCoroutine(SetAudioVisualizerIndexes());
+        // StartCoroutine(SetAudioVisualizerIndexes());
 
         buttonFill = gameObject.transform.parent.Find("Dj_Info_Canvas/Slider").GetComponent<Slider>();
         
