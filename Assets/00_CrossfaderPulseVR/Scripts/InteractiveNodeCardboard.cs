@@ -129,8 +129,8 @@ public class InteractiveNodeCardboard : MonoBehaviour {
             gameObject.transform.localScale = 5 * Vector3.one;
 
             // If we want to move country highlighting here...
-            int countryID = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
-            planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
+//            int countryID = gameObject.GetComponentInParent<LoadingInNewFlags>().countryID;
+//            planet.GetComponent<CountryHighlighter>().updateCountry(countryID);
         }
     }
     else
@@ -162,7 +162,7 @@ public void Reset() {
         }
         gameObject.GetComponent<Spin_Node>().enabled = false;
         gameObject.transform.localScale = 3 * Vector3.one;
-        // planet.GetComponent<CountryHighlighter>().updateCountry(0);
+        planet.GetComponent<CountryHighlighter>().updateCountry(0);
     }
   }
   

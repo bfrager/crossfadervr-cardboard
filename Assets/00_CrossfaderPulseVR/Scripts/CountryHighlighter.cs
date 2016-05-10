@@ -8,7 +8,7 @@ public class CountryHighlighter : MonoBehaviour {
 	public int countryID = 0;
 	public float maxOpacity = 0.3f;
 	public bool triggerPing;
-	private float pingTime = 1f;
+	public float pingTime = 3f;
 
 	private ProceduralMaterial substance;
 
@@ -24,13 +24,13 @@ public class CountryHighlighter : MonoBehaviour {
 	void Update () 
 	{
 
-		// if(countryID != 0)
-		// {
-		// 	substance.SetProceduralFloat("CountrySelection", countryID);
-		// 	substance.SetProceduralFloat("Mask_Opacity", Mathf.PingPong(Time.time, maxOpacity));
-		// 	StartCoroutine(WaitTime());
-		// 	substance.RebuildTextures ();
-		// }
+//		 if(countryID != 0)
+//		 {
+//			substance.SetProceduralFloat("input_number", countryID);
+//		 	substance.SetProceduralFloat("Mask_Opacity", Mathf.PingPong(Time.time, maxOpacity));
+//		 	//StartCoroutine(WaitTime());
+//		 	substance.RebuildTextures ();
+//		 }
 			
 	}
 
@@ -44,16 +44,18 @@ public class CountryHighlighter : MonoBehaviour {
 			substance.RebuildTextures ();
 		}
 	}
-	
+			
 	public void updateCountry(int countryID) 
 	{
 		if(countryID != 0)
 		{
-			substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;		
-			substance.SetProceduralFloat("CountrySelection", countryID);
+			//substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;		
+			substance.SetProceduralFloat("input_number", countryID);
+
 			substance.SetProceduralFloat("Mask_Opacity", maxOpacity);
-			StartCoroutine(WaitTime());
 			substance.RebuildTextures ();
+
+			StartCoroutine(WaitTime());
 		}
 	}
 

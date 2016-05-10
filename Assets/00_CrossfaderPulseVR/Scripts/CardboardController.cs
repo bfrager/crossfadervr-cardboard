@@ -159,7 +159,7 @@ public class CardboardController : MonoBehaviour {
                 else if (cardboard.gaze.Object().name.Contains("ButtonCollider"))
                 {
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
-                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    //curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     curNode.GetComponent<InteractiveNodeCardboard>().IsGazedAt();
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
@@ -176,7 +176,7 @@ public class CardboardController : MonoBehaviour {
                 if (cardboard.gaze.Object().name.Contains("Heart"))
                 {
                     curNode = cardboard.gaze.Object();
-                    // curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     cardboard.reticle.Show();
                     cardboard.reticle.Highlight(textColor);
                     textMesh2.GetComponent<Renderer>().enabled = true;
