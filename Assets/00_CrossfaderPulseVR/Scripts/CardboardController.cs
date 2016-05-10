@@ -145,7 +145,7 @@ public class CardboardController : MonoBehaviour {
             {
                 if (cardboard.gaze.Object().name.Contains("Diamond"))
                 {
-                    if (cardboard.gaze.PreviousObject() != null) 
+                    if (cardboard.gaze.PreviousObject() != null && curNode != null) 
                     {
                         //print("reset button");
                         curNode.GetComponent<InteractiveNodeCardboard>().Reset();  
@@ -205,7 +205,7 @@ public class CardboardController : MonoBehaviour {
             }
         }            
             
-        if (cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name == "ButtonCollider")
+        if (cardboard.gaze.PreviousObject() != null && cardboard.gaze.PreviousObject().name == "ButtonCollider" && curNode != null)
         {
             curNode.GetComponent<InteractiveNodeCardboard>().NotGazedAt();
         }

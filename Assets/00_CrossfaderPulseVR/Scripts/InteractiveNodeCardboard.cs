@@ -215,7 +215,7 @@ public void Reset() {
 	  	{
             CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
-	  	yield return new WaitForSeconds(0.02f);
+	  	yield return new WaitForSeconds(0.01f);
   	}
 
   }
