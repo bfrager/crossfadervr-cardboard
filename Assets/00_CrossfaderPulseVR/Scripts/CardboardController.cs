@@ -17,10 +17,12 @@ public class CardboardController : MonoBehaviour {
     private TextMesh textMesh2;
     public GameObject planet;
     public GameObject curNode;
+    public AudioSource[] audioSources;
     public Color textColor = new Color(255/255.0f, 255/255.0f, 0/255.0f, 255/255.0f);
     enum Fade {In, Out};
     public string scene;
     public bool locked = false;
+    private bool isFading = false;
     private IEnumerator countdownTimer;
     public int countdownLength = 3;
     private int countdown;
@@ -42,8 +44,8 @@ public class CardboardController : MonoBehaviour {
 
         // Cardboard.SDK.VRModeEnabled = true;        
         
-        // AudioSource[] audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
-        // Debug.Log(audioSources);
+        audioSources = Object.FindObjectsOfType(typeof(AudioSource)) as AudioSource[];
+        Debug.Log(audioSources);
 
 		planet = GameObject.Find("Planet960tris");
         scene = SceneManager.GetActiveScene().name;
@@ -117,8 +119,10 @@ public class CardboardController : MonoBehaviour {
 
         // We also can access to the last object we looked at
         // gaze.WasHeld() will make sure the gaze.PreviousObject() isn't null
-
-		if (cardboard.gaze.Object() == null)
+        Debug.Log("Object = " + cardboard.gaze.Object());
+        Debug.Log("PrevObject = " + cardboard.gaze.PreviousObject());
+		
+        if (cardboard.gaze.Object() == null)
         {
         	if (curNode != null)
         	{
@@ -136,6 +140,12 @@ public class CardboardController : MonoBehaviour {
             {
                 if (cardboard.gaze.Object().name.Contains("Diamond"))
                 {
+                    if (cardboard.gaze.PreviousObject() != null) 
+                    {
+                        //print("reset button");
+                        curNode.GetComponent<InteractiveNodeCardboard>().Reset();  
+                    }
+                    
                     curNode = cardboard.gaze.Object();
                     curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
@@ -149,7 +159,7 @@ public class CardboardController : MonoBehaviour {
                 else if (cardboard.gaze.Object().name.Contains("HighLightCollider"))
                 {
                     curNode = cardboard.gaze.Object().transform.parent.parent.Find("Diamond").gameObject;
-                    curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
+                    // curNode.GetComponent<InteractiveNodeCardboard>().Highlight();
                     
                     //HIGHLIGHT CONTINENT BY COUNTRYID CODE
                     int countryId = cardboard.gaze.Object().transform.parent.parent.GetComponent<LoadingInNewFlags>().countryID;
@@ -405,39 +415,54 @@ public class CardboardController : MonoBehaviour {
         locked = !locked;
     }
 
-    // MOVED TO PERSISTENTDATA
-	// public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
-	// {
-	// 	StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
-	// }
+	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
+	{
+		StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
+	}
 
-    // IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
-    // {
-    // 	isFading = true;
-    //     GameObject camera = GameObject.Find("Main Camera");
-    //     camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
-    //     StartCoroutine(FadeAudio(fadeDur, Fade.Out));
-	// 	yield return new WaitForSeconds(fadeDur);
+    IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
+    {
+    	isFading = true;
+        
+        GameObject camera = GameObject.Find("Main Camera");
+        camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+        
+        if (scene == "01_Cardboard_RootLevel_v1")
+		{	
+			// for (int i = 0; i < audioSources.Count; i++)
+			foreach (AudioSource audioSource in audioSources)
+			{
+				StartCoroutine(FadeAudioSource(fadeDur, Fade.Out, audioSource));
+				Debug.Log("Fading audio source at " + audioSource);
+			}
+		}
+		else if (scene == "02_Cardboard_DJLevel_v2")
+		{
+            StartCoroutine(FadeAudio(fadeDur, Fade.Out));
+		}
+        
+		yield return new WaitForSeconds(fadeDur);
 		
-    //     //cache current time of song
-	// 	if (node != null)
-	// 	{
-    //         if (scene == "01_Cardboard_RootLevel_v1")
-    //         {
-    //             float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
-    //             PersistentData.PD.curSongTime = playHead;
-    //             PersistentData.PD.performanceId = node.transform.parent.name;
-    //         }
-    //         else if (scene == "02_Cardboard_DJLevel_v2")
-    //         {
-    //             float playHead = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
-    //             PersistentData.PD.curSongTime = playHead;
-    //         }
-    //     }
-    //     camera.SetActive(false);
-    //     SceneManager.LoadScene(sceneBuild); 
-    //     isFading = false;
-    // }
+        //cache current time of song
+
+        if (scene == "01_Cardboard_RootLevel_v1")
+        {
+            if (node != null)
+            {
+                float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
+                PersistentData.PD.curSongTime = playHead;
+                PersistentData.PD.performanceId = node.transform.parent.name;
+            }
+        }
+        else if (scene == "02_Cardboard_DJLevel_v2")
+        {
+            float playHead = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
+            PersistentData.PD.curSongTime = playHead;
+        }
+        camera.SetActive(false);
+        SceneManager.LoadScene(sceneBuild); 
+        isFading = false;
+    }
     
     IEnumerator FadeAudio (float timer, Fade fadeType) 
     {
@@ -454,6 +479,22 @@ public class CardboardController : MonoBehaviour {
         }  
     }
     
+    IEnumerator FadeAudioSource (float timer, Fade fadeType, AudioSource audioSource) 
+    {
+        // float start = fadeType == Fade.In? 0.0F : 1.0F;
+        float end = fadeType == Fade.In? 1.0F : 0.0F;
+        float i = 0.0F;
+        float step = 1.0F/timer;
+        float currentVolume = audioSource.volume;
+
+        while (i <= 1.0F) 
+        {
+            i += step * Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(currentVolume, end, i);
+            yield return new WaitForSeconds(step * Time.deltaTime);
+        }
+    }
+    
     IEnumerator StartCountdown(int startingNum)
     {
         countdown = startingNum;
@@ -464,7 +505,7 @@ public class CardboardController : MonoBehaviour {
             countdown --;
         }
         textMesh.text = "0";
-        PersistentData.PD.ChangeLevel(0, 1f, null);
+        ChangeLevel(0, 1f, null);
     }
     
     

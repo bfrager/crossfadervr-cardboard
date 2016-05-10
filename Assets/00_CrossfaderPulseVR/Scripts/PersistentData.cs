@@ -12,9 +12,10 @@ public class PersistentData : MonoBehaviour {
 	public float curSongTime;
 	public string performanceId;
 	public int loadNum = 0;
-	private bool isFading = false;
+	// private bool isFading = false;
 	public string scene;
-	public List<AudioSource> audioSources;
+	public GameObject[] audioSources;
+	public GameObject camera;
 
 	enum Fade {In, Out};
 
@@ -58,15 +59,16 @@ public class PersistentData : MonoBehaviour {
 	void OnLevelWasLoaded()
 	{
 		loadNum++;
-		
 		if (loadNum > 1)
 		{
 			GameObject.Find("OnboardingUI").SetActive(false);
 		}
 		
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
+		
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudioListener(5, Fade.In));
+		Debug.Log("Playhead in = " + curSongTime);
 		
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
@@ -83,89 +85,13 @@ public class PersistentData : MonoBehaviour {
 			//sammoh loading...
 			LoadPerformanceData();
 		}
+		
 		// else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
 		// {
 		// 	curSongTime = 0;
 		// }
 	}
-
-	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
-	{
-		StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
-	}
-
-    IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
-    {
-    	isFading = true;
-		scene = SceneManager.GetActiveScene().name;
-        GameObject camera = GameObject.Find("Main Camera");
-        camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
-		if (scene == "01_Cardboard_RootLevel_v1")
-		{
-			audioSources = AudioVisualizer.AudioSampler.instance.audioSources;
-    		for (int i = 0; i < audioSources.Count; i++)
-			{
-				StartCoroutine(FadeAudioSource(fadeDur, Fade.Out, audioSources[i]));
-			}
-		}
-		else if (scene == "02_Cardboard_DJLevel_v2")
-		{
-        	StartCoroutine(FadeAudioListener(fadeDur, Fade.Out));
-		}
-		yield return new WaitForSeconds(fadeDur);
-		camera.SetActive(false);
-        //cache current time of song
-		if (scene == "01_Cardboard_RootLevel_v1")
-		{
-			if (node != null)
-			{
-				curSongTime = node.GetComponent<CardboardAudioSource>().audioSource.time;
-			performanceId = node.transform.parent.name;
-			}
-			else
-			{
-				Debug.Log("Node has already been destroyed");
-			}
-		}
-		else if (scene == "02_Cardboard_DJLevel_v2")
-		{
-			curSongTime = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
-		}
-		Debug.Log("Playhead = " + curSongTime);
-		
-        SceneManager.LoadScene(sceneBuild); 
-        isFading = false;
-    }
-
-	IEnumerator FadeAudioListener (float timer, Fade fadeType) 
-	{
-		float start = fadeType == Fade.In? 0.0F : 1.0F;
-		float end = fadeType == Fade.In? 1.0F : 0.0F;
-		float i = 0.0F;
-		float step = 1.0F/timer;
 	
-		while (i <= 1.0F) {
-			i += step * Time.deltaTime;
-			AudioListener.volume = Mathf.Lerp(start, end, i);
-			yield return new WaitForSeconds(step * Time.deltaTime);
-		}
-	}
-	
-	IEnumerator FadeAudioSource (float timer, Fade fadeType, AudioSource audioSource) 
-    {
-        // float start = fadeType == Fade.In? 0.0F : 1.0F;
-        float end = fadeType == Fade.In? 1.0F : 0.0F;
-        float i = 0.0F;
-        float step = 1.0F/timer;
-        float currentVolume = audioSource.volume;
-
-        while (i <= 1.0F) 
-        {
-            i += step * Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(currentVolume, end, i);
-            yield return new WaitForSeconds(step * Time.deltaTime);
-        }
-    }
 
 	IEnumerator _LoadName()
 	{
@@ -202,5 +128,89 @@ public class PersistentData : MonoBehaviour {
 		WWW imgUrl = new WWW(coverUrl);
 		yield return imgUrl;
 		boothMr.material.mainTexture = imgUrl.texture;
+	}	
+
+	IEnumerator FadeAudioListener (float timer, Fade fadeType) 
+	{
+		float start = fadeType == Fade.In? 0.0F : 1.0F;
+		float end = fadeType == Fade.In? 1.0F : 0.0F;
+		float i = 0.0F;
+		float step = 1.0F/timer;
+	
+		while (i <= 1.0F) {
+			i += step * Time.deltaTime;
+			AudioListener.volume = Mathf.Lerp(start, end, i);
+			yield return new WaitForSeconds(step * Time.deltaTime);
+		}
 	}
+
+
+	// KEPT IN CARDBOADCONTROLLER.CS INSTEAD
+	// public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
+	// {
+	// 	camera = GameObject.Find("Main Camera");
+	// 	scene = SceneManager.GetActiveScene().name;
+	// 	StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
+	// }
+
+    // IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
+    // {
+    // 	isFading = true;
+    //     camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+	// 	if (scene == "01_Cardboard_RootLevel_v1")
+	// 	{
+	// 		audioSources = GameObject.FindGameObjectsWithTag("Audio");
+    		
+	// 		// for (int i = 0; i < audioSources.Count; i++)
+	// 		foreach (GameObject audioSource in audioSources)
+	// 		{
+	// 			StartCoroutine(FadeAudioSource(fadeDur, Fade.Out, audioSource.transform));
+	// 			Debug.Log("Fading audio source at " + audioSource);
+	// 		}
+	// 	}
+	// 	else if (scene == "02_Cardboard_DJLevel_v2")
+	// 	{
+    //     	StartCoroutine(FadeAudioListener(fadeDur, Fade.Out));
+	// 	}
+	// 	yield return new WaitForSeconds(fadeDur);
+	// 	camera.SetActive(false);
+    //     //cache current time of song
+	// 	if (scene == "01_Cardboard_RootLevel_v1")
+	// 	{
+	// 		if (node != null)
+	// 		{
+	// 			curSongTime = node.GetComponent<CardboardAudioSource>().audioSource.time;
+	// 			performanceId = node.transform.parent.name;
+	// 		}
+	// 		else
+	// 		{
+	// 			Debug.Log("Node has already been destroyed");
+	// 		}
+	// 	}
+	// 	else if (scene == "02_Cardboard_DJLevel_v2")
+	// 	{
+	// 		curSongTime = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
+	// 	}
+	// 	Debug.Log("Playhead out = " + curSongTime);
+		
+    //     SceneManager.LoadScene(sceneBuild); 
+    //     isFading = false;
+    // }
+	
+	// IEnumerator FadeAudioSource (float timer, Fade fadeType, Transform djNode) 
+    // {
+    //     // float start = fadeType == Fade.In? 0.0F : 1.0F;
+    //     float end = fadeType == Fade.In? 1.0F : 0.0F;
+    //     float i = 0.0F;
+    //     float step = 1.0F/timer;
+    //     float currentVolume = djNode.GetComponent<CardboardAudioSource>().volume;
+
+    //     while (i <= 1.0F) 
+    //     {
+    //         i += step * Time.deltaTime;
+    //         djNode.GetComponent<CardboardAudioSource>().volume = Mathf.Lerp(currentVolume, end, i);
+    //         yield return new WaitForSeconds(step * Time.deltaTime);
+    //     }
+    // }
+
 }

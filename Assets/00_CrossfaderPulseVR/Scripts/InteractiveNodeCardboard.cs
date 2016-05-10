@@ -43,7 +43,8 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 	public LoadingInNewFlags _country;
 
 
-  void Start() {
+  void Start() 
+  {
 	//NotGazedAt();
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
     cc = GameObject.Find("CardboardControlManager");
@@ -64,14 +65,12 @@ public class InteractiveNodeCardboard : MonoBehaviour {
         
         Debug.Log("CURSONGTIME = " + PersistentData.PD.curSongTime);
         
-        if (PersistentData.PD.curSongTime != null)
+        if (PersistentData.PD.curSongTime != null && PersistentData.PD.curSongTime != 0)
         {
+            Debug.Log("Setting audio playhead to " + PersistentData.PD.curSongTime);
             gameObject.GetComponent<CardboardAudioSource>().audioSource.time = PersistentData.PD.curSongTime;
-        }
-        
+        } 
     }
-    
-    
   }
   
 //   void LateUpdate() {
@@ -216,7 +215,7 @@ public void Reset() {
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
-            PersistentData.PD.ChangeLevel(1,0.8f, gameObject);
+            CardboardController.cardboardController.ChangeLevel(1,0.8f, gameObject);
 	  	}
 	  	yield return new WaitForSeconds(0.02f);
   	}

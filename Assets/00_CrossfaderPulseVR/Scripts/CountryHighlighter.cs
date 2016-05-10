@@ -21,17 +21,17 @@ public class CountryHighlighter : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
+	// void Update () 
+	// {
 		
-		 if(countryID != 0)
-		 {
-			substance.SetProceduralFloat("input_number", countryID);
-			//StartCoroutine("Glow");
-		 	substance.RebuildTextures();
-		 }
+	// 	 if(countryID != 0)
+	// 	 {
+	// 		substance.SetProceduralFloat("input_number", countryID);
+	// 		//StartCoroutine("Glow");
+	// 	 	substance.RebuildTextures();
+	// 	 }
 			
-	}
+	// }
 
 //	IEnumerator Wait()
 //	{
