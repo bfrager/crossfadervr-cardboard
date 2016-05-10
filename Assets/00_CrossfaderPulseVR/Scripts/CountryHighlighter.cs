@@ -23,24 +23,36 @@ public class CountryHighlighter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-
-//		 if(countryID != 0)
-//		 {
-//			substance.SetProceduralFloat("input_number", countryID);
-//		 	substance.SetProceduralFloat("Mask_Opacity", Mathf.PingPong(Time.time, maxOpacity));
-//		 	//StartCoroutine(WaitTime());
-//		 	substance.RebuildTextures ();
-//		 }
+		
+		 if(countryID != 0)
+		 {
+			substance.SetProceduralFloat("input_number", countryID);
+			//StartCoroutine("Glow");
+		 	substance.RebuildTextures();
+		 }
 			
 	}
 
-	IEnumerator WaitTime()
+//	IEnumerator Wait()
+//	{
+//		while (true) 
+//		{
+//			yield return new WaitForSeconds(pingTime);
+//			countryID = 0;
+//			substance.SetProceduralFloat("Mask_Opacity", 0);
+//			substance.RebuildTextures ();
+//		}
+//	}
+
+	IEnumerator Glow()
 	{
 		while (true) 
 		{
 			yield return new WaitForSeconds(pingTime);
-			countryID = 0;
-			substance.SetProceduralFloat("Mask_Opacity", 0);
+
+			float mGlow = Mathf.PingPong(pingTime, maxOpacity);
+
+			substance.SetProceduralFloat("Mask_Opacity", mGlow);
 			substance.RebuildTextures ();
 		}
 	}
@@ -55,7 +67,8 @@ public class CountryHighlighter : MonoBehaviour {
 			substance.SetProceduralFloat("Mask_Opacity", maxOpacity);
 			substance.RebuildTextures ();
 
-			StartCoroutine(WaitTime());
+			//StartCoroutine(WaitTime());
+			Invoke("Glow", pingTime);
 		}
 	}
 
