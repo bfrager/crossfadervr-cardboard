@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+// added for Cardboard camera fade
+using VRStandardAssets.Utils;
 
 
 public class PersistentData : MonoBehaviour {
@@ -10,7 +12,9 @@ public class PersistentData : MonoBehaviour {
 	public float curSongTime;
 	public string performanceId;
 	public int loadNum = 0;
-
+	private bool isFading = false;
+	public string scene;
+	public List<AudioSource> audioSources;
 
 	enum Fade {In, Out};
 
@@ -54,7 +58,6 @@ public class PersistentData : MonoBehaviour {
 	void OnLevelWasLoaded()
 	{
 		loadNum++;
-		Debug.Log(loadNum);
 		
 		if (loadNum > 1)
 		{
@@ -63,7 +66,7 @@ public class PersistentData : MonoBehaviour {
 		
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
 		AudioListener.volume = 0;
-		StartCoroutine(FadeAudio(5, Fade.In));
+		StartCoroutine(FadeAudioListener(5, Fade.In));
 		
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
 		{
@@ -72,6 +75,7 @@ public class PersistentData : MonoBehaviour {
 			audioSampler.GetComponent<AudioSource>().clip = Resources.Load("Mixes/"+performanceId, typeof (AudioClip)) as AudioClip;
 			audioSampler.GetComponent<AudioSource>().time = curSongTime;
 			audioSampler.GetComponent<AudioSource>().Play();
+			
 			mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
 			iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
 			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();	djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();		
@@ -79,13 +83,61 @@ public class PersistentData : MonoBehaviour {
 			//sammoh loading...
 			LoadPerformanceData();
 		}
-		else
-		{
-			curSongTime = 0;
-		}
+		// else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
+		// {
+		// 	curSongTime = 0;
+		// }
 	}
 
-	IEnumerator FadeAudio (float timer, Fade fadeType) 
+	public void ChangeLevel (int sceneBuild, float fadeDur, GameObject node)
+	{
+		StartCoroutine(FadeLevelChange(sceneBuild, fadeDur, node));
+	}
+
+    IEnumerator FadeLevelChange(int sceneBuild, float fadeDur, GameObject node)
+    {
+    	isFading = true;
+		scene = SceneManager.GetActiveScene().name;
+        GameObject camera = GameObject.Find("Main Camera");
+        camera.GetComponent<VRCameraFade>().FadeOut(fadeDur, false);
+		if (scene == "01_Cardboard_RootLevel_v1")
+		{
+			audioSources = AudioVisualizer.AudioSampler.instance.audioSources;
+    		for (int i = 0; i < audioSources.Count; i++)
+			{
+				StartCoroutine(FadeAudioSource(fadeDur, Fade.Out, audioSources[i]));
+			}
+		}
+		else if (scene == "02_Cardboard_DJLevel_v2")
+		{
+        	StartCoroutine(FadeAudioListener(fadeDur, Fade.Out));
+		}
+		yield return new WaitForSeconds(fadeDur);
+		camera.SetActive(false);
+        //cache current time of song
+		if (scene == "01_Cardboard_RootLevel_v1")
+		{
+			if (node != null)
+			{
+				curSongTime = node.GetComponent<CardboardAudioSource>().audioSource.time;
+			performanceId = node.transform.parent.name;
+			}
+			else
+			{
+				Debug.Log("Node has already been destroyed");
+			}
+		}
+		else if (scene == "02_Cardboard_DJLevel_v2")
+		{
+			curSongTime = GameObject.Find("AudioSampler").GetComponent<AudioSource>().time;
+		}
+		Debug.Log("Playhead = " + curSongTime);
+		
+        SceneManager.LoadScene(sceneBuild); 
+        isFading = false;
+    }
+
+	IEnumerator FadeAudioListener (float timer, Fade fadeType) 
 	{
 		float start = fadeType == Fade.In? 0.0F : 1.0F;
 		float end = fadeType == Fade.In? 1.0F : 0.0F;
@@ -98,12 +150,28 @@ public class PersistentData : MonoBehaviour {
 			yield return new WaitForSeconds(step * Time.deltaTime);
 		}
 	}
+	
+	IEnumerator FadeAudioSource (float timer, Fade fadeType, AudioSource audioSource) 
+    {
+        // float start = fadeType == Fade.In? 0.0F : 1.0F;
+        float end = fadeType == Fade.In? 1.0F : 0.0F;
+        float i = 0.0F;
+        float step = 1.0F/timer;
+        float currentVolume = audioSource.volume;
+
+        while (i <= 1.0F) 
+        {
+            i += step * Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(currentVolume, end, i);
+            yield return new WaitForSeconds(step * Time.deltaTime);
+        }
+    }
 
 	IEnumerator _LoadName()
 	{
 		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
 		yield return name;
-		djName.text = name;
+		djName.text = name.Trim('"');
 	}
 
 	IEnumerator _LoadAvatarFromUrl()
