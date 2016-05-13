@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: befcaf55a4d8ea84b862b1066a0b1530
-timeCreated: 1462832500
+timeCreated: 1463167653
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -124,7 +124,7 @@ SubstanceImporter:
         data:
           first:
             name: _TintColor
-          second: {r: 1, g: 1, b: 1, a: 0.5}
+          second: {r: 0.7352941, g: 0.7352941, b: 0.7352941, a: 1}
     textureParameters:
     - name: MapHighlight_basecolor
       alphaSource: 6
