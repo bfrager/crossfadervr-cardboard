@@ -39,7 +39,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     public float buttonFillTime = 1.0F;
     public float buttonFillAmount;
     
-    public float audioDivisor = 5.0F;
+    private float audioDivisor = 2.0F;
 
 	//sammoh this is where I'm gonna ping the country script
 	public LoadingInNewFlags _country;
