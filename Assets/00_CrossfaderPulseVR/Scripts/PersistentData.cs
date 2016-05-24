@@ -9,20 +9,20 @@ using VRStandardAssets.Utils;
 public class PersistentData : MonoBehaviour {
 
 	public static PersistentData PD;
+	private ApiCall api;
+	
+	// variables passed between scenes
 	public float curSongTime;
 	public string performanceId;
+	public string name;
 	public int loadNum = 0;
 	// private bool isFading = false;
+	
 	public string scene;
 	public GameObject[] audioSources;
 	public GameObject camera;
 
 	enum Fade {In, Out};
-
-	private ApiCall api;
-	public Texture avatarTexture;
-	public Texture bgTexture;
-
 
 	//utility
 	public MeshRenderer mr;
@@ -37,20 +37,19 @@ public class PersistentData : MonoBehaviour {
 	// Use this for initialization
 	void Awake () 
 	{
-		DontDestroyOnLoad(gameObject);
-		PD = this;
+		if (PD == null)
+		{
+			PD = this;
+			DontDestroyOnLoad(gameObject);
+			Debug.Log("PD instance created");
+		}
+		
 		api = gameObject.GetComponent<ApiCall>();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-
 	}
 	
 	void LoadPerformanceData()
 	{
-		StartCoroutine("_LoadName");
+		// StartCoroutine("_LoadName");
 		StartCoroutine("_LoadAvatarFromUrl");
 		StartCoroutine("_LoadBGFromUrl");
 		StartCoroutine("_LoadProfArtFromUrl");
@@ -59,7 +58,8 @@ public class PersistentData : MonoBehaviour {
 	void OnLevelWasLoaded()
 	{
 		loadNum++;
-		if (loadNum > 1)
+		GameObject onboardingUI = GameObject.Find("OnboardingUI");
+		if (onboardingUI != null && loadNum > 1)
 		{
 			GameObject.Find("OnboardingUI").SetActive(false);
 		}
@@ -68,6 +68,7 @@ public class PersistentData : MonoBehaviour {
 		
 		AudioListener.volume = 0;
 		StartCoroutine(FadeAudioListener(5, Fade.In));
+		
 		Debug.Log("Playhead in = " + curSongTime);
 		
 		if (SceneManager.GetActiveScene().name == "02_Cardboard_DJLevel_v2")
@@ -80,7 +81,9 @@ public class PersistentData : MonoBehaviour {
 			
 			mr = GameObject.FindGameObjectWithTag("Stage").GetComponent<MeshRenderer>();
 			iconMr = GameObject.FindGameObjectWithTag("DjIcon").GetComponent<MeshRenderer>();
-			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();	djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();		
+			boothMr = GameObject.FindGameObjectWithTag("DjBooth").GetComponent<MeshRenderer>();	
+			djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();	
+			djName.text = name;	
 			
 			//sammoh loading...
 			LoadPerformanceData();
@@ -93,15 +96,17 @@ public class PersistentData : MonoBehaviour {
 	}
 	
 
-	IEnumerator _LoadName()
-	{
-		string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
-		yield return name;
-		djName.text = name.Trim('"');
-	}
+	// IEnumerator _LoadName()
+	// {
+	// 	string name = api.performancesDict[performanceId]["users"][0]["dj_name"].ToString();
+	// 	yield return name;
+	// 	djName.text = name.Trim('"');
+	// }
 
 	IEnumerator _LoadAvatarFromUrl()
 	{
+		Debug.Log(api);
+		Debug.Log(performanceId);
 		string avatarUrl = api.performancesDict[performanceId]["users"][0]["avatar"].ToString();
 		string[] temp = avatarUrl.Split('\"');
 		avatarUrl = temp[1];

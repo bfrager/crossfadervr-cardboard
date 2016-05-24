@@ -32,6 +32,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     private bool heart = false;
     public Component[] nodeVisuals;
     public List<AudioSource> audioSources;
+    public GameObject[] djNodes;
     public int audioSourceIndex;
     
     public Slider buttonFill;
@@ -48,6 +49,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
     StartCoroutine(FadeAudio(sceneStartFade, Fade.In, gameObject.transform));
     planet = GameObject.Find("Planet960tris");
     earth = GameObject.Find("EarthLow");
+    djNodes = GameObject.FindGameObjectsWithTag("djNode");
     
     if (gameObject.name.Contains("Heart"))
     {

@@ -74,8 +74,8 @@ public class CardboardController : MonoBehaviour {
         
         if (scene == "02_Cardboard_DJLevel_v2")
         {
-            cardboard.reticle.Hide();
-            print("hiding reticle");
+            // cardboard.reticle.Hide();
+            // print("hiding reticle");
         }
     }
         
@@ -455,8 +455,10 @@ public class CardboardController : MonoBehaviour {
             if (node != null)
             {
                 float playHead = node.GetComponent<CardboardAudioSource>().audioSource.time;
+                string djName = node.transform.parent.Find("Dj_Info_Canvas/Dj_Name").GetComponent<Text>().text;
                 PersistentData.PD.curSongTime = playHead;
                 PersistentData.PD.performanceId = node.transform.parent.name;
+                PersistentData.PD.name = djName;
             }
         }
         else if (scene == "02_Cardboard_DJLevel_v2")
