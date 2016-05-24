@@ -94,7 +94,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
   public void Highlight() {
     if (!heart)
     {
-        earth.GetComponent<SpinFree>().spin = false;
+        // earth.GetComponent<SpinFree>().spin = false;
         
         if (!(CardboardController.cardboardController.locked))
         {
@@ -129,7 +129,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
 public void Reset() {
     if (!heart)
     {
-        earth.GetComponent<SpinFree>().spin = true;
+        // earth.GetComponent<SpinFree>().spin = true;
         if (!(CardboardController.cardboardController.locked))
         {
             StopAllCoroutines();
