@@ -3,10 +3,10 @@ using System.Collections;
 
 public class BillboardScript : MonoBehaviour
 {
-	public Camera m_Camera;
+	public GameObject target;
 
 	void Update()
 	{
-		transform.LookAt(m_Camera.transform.position, Vector3.up);
+		transform.LookAt(target.transform.position, Vector3.up);
 	}
 }
