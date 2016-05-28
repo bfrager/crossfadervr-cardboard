@@ -123,7 +123,7 @@ public class InteractiveNodeCardboard : MonoBehaviour {
                     child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(true);
                 }
             }
-            gameObject.GetComponent<Spin_Node>().enabled = true;
+            // gameObject.GetComponent<Spin_Node>().enabled = true;
             gameObject.transform.localScale = 5 * Vector3.one;
 
             // If we want to move country highlighting here...
@@ -156,7 +156,7 @@ public void Reset() {
                     child.Find("Dj_Info_Canvas/HighLightCollider").gameObject.SetActive(false);
                 }
             }
-            gameObject.GetComponent<Spin_Node>().enabled = false;
+            // gameObject.GetComponent<Spin_Node>().enabled = false;
             gameObject.transform.localScale = 3 * Vector3.one;
             planet.GetComponent<CountryHighlighter>().updateCountry(0);
         }
