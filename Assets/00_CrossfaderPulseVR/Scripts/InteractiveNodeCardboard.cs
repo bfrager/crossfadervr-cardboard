@@ -215,10 +215,10 @@ public void Reset() {
   {
   	while (gazedAt)
   	{
-	  	if (buttonFillAmount < 2)
+	  	if (buttonFillAmount < 1)
 	  	{
 	  		buttonFillAmount += Time.deltaTime / buttonFillTime;
-	  		buttonFill.value = buttonFillAmount / 2;
+	  		buttonFill.value = buttonFillAmount;
 	  	}
 	  	else if (buttonFillAmount >= 1)
 	  	{
