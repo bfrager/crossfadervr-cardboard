@@ -39,7 +39,7 @@ public class OnboardingUI : MonoBehaviour {
 				//Fade Panel
 				StartCoroutine(FadeCanvas());
 	  	}
-	  	yield return new WaitForSeconds(0.02f);
+	  	yield return new WaitForSeconds(0.01f);
   	}
   }
 

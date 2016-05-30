@@ -48,11 +48,6 @@ public class LoadAvatarImage : MonoBehaviour {
 		api = ApiCall.instance;
 		api.djLoaded += djLoaded;
 		
-		//Set Canvas Style
-		// djName.font = Gravity;
-		// location.font = Gravity;
-		// listens.font = Gravity;
-		// tags.font = Gravity;
 	}
 
     void djLoaded(string perfId)
