@@ -61,7 +61,7 @@ public class CountryHighlighter : MonoBehaviour {
 	{
 		if(countryID != 0)
 		{
-			//substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;		
+			// substance = Resources.Load("Substance Materials/MapHighlight", typeof(ProceduralMaterial)) as ProceduralMaterial;	
 			substance.SetProceduralFloat("input_number", countryID);
 
 			substance.SetProceduralFloat("Mask_Opacity", maxOpacity);
