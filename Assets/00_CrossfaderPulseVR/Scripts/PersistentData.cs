@@ -80,7 +80,6 @@ public class PersistentData : MonoBehaviour {
 		if (onboardingUI != null && loadNum > 1)
 		{
 			GameObject.Find("OnboardingUI").SetActive(false);
-			GameObject.Find("ErrorCanvas").SetActive(false);
 		}
 		
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
@@ -110,10 +109,14 @@ public class PersistentData : MonoBehaviour {
 			}
 		}
 		
-		// else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
-		// {
-		// 	curSongTime = 0;
-		// }
+		else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
+		{
+			GameObject errorCanvas = GameObject.Find("ErrorCanvas");
+			if (errorCanvas != null && loadNum > 1)
+			{
+				GameObject.Find("ErrorCanvas").SetActive(false);
+			}
+		}
 	}
 	
 
