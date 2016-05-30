@@ -169,7 +169,7 @@ public void Reset() {
         {
             foreach (Transform child in transform.parent.parent)
             {
-                // GetComponent<CardboardAudioSource>().spatialize = true;
+                GetComponent<AudioSource>().spatialize = true;
                 // child.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
                 // child.Find("Diamond").GetComponent<InteractiveNodeCardboard>().locked = false;
                 if (child.Find("Diamond").GetComponent<CardboardAudioSource>().volume == 0)
@@ -198,7 +198,7 @@ public void Reset() {
                 else if (child.name == this.transform.parent.name)
                 {
                     // Debug.Log ("Unpausing "+child.name);
-                    // GetComponent<CardboardAudioSource>().spatialize = false;
+                    GetComponent<AudioSource>().spatialize = false;
                     StartCoroutine(FadeAudio(fadeTime, 1.0F, child.Find("Diamond")));
                     // child.Find("Diamond").GetComponent<CardboardAudioSource>().UnPause();
                 }
