@@ -8,7 +8,7 @@ public class OnboardingUI : MonoBehaviour {
 	public float buttonFillAmount;
 	public Slider buttonFill;
 	public CanvasGroup introCanvas;
-	public float selectionTime = 2.0f;
+	public float selectionTime = 1.0f;
 
 
 	public void IsGazedAt()
