@@ -46,8 +46,15 @@ public class LoadAvatarImage : MonoBehaviour {
 	void Start () 
 	{
 		api = ApiCall.instance;
-		api.djLoaded += djLoaded;
-		
+		if(PersistentData.PD.netVerified)
+		{
+			api.djLoaded += djLoaded;
+		}
+		else
+		{
+			StartCoroutine(ScaleUpNode(1f, 0.35f));
+			// TODO: Add error message to load connect to internet in order to load custom assets
+		}
 	}
 
     void djLoaded(string perfId)

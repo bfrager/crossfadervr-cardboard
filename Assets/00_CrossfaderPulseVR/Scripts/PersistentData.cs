@@ -18,6 +18,7 @@ public class PersistentData : MonoBehaviour {
 	public int loadNum = 0;
 	// private bool isFading = false;
 	
+	public bool netVerified;
 	public string scene;
 	public GameObject[] audioSources;
 	public GameObject camera;
@@ -45,6 +46,12 @@ public class PersistentData : MonoBehaviour {
 		}
 		
 		api = gameObject.GetComponent<ApiCall>();
+	}
+	
+	void Start ()
+	{
+		netVerified = (InternetReachabilityVerifier.Instance.status == InternetReachabilityVerifier.Status.NetVerified);
+		Debug.Log(netVerified);
 	}
 	
 	void LoadPerformanceData()
@@ -85,8 +92,10 @@ public class PersistentData : MonoBehaviour {
 			djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();	
 			djName.text = name;	
 			
-			//sammoh loading...
-			LoadPerformanceData();
+			if (netVerified)
+			{
+				LoadPerformanceData();
+			}
 		}
 		
 		// else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
