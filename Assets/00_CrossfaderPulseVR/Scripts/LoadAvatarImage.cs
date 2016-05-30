@@ -53,6 +53,7 @@ public class LoadAvatarImage : MonoBehaviour {
 		else
 		{
 			StartCoroutine(ScaleUpNode(1f, 0.35f));
+			GameObject.Find("ErrorCanvas/IntroCanvas").GetComponent<Canvas>().enabled = true;
 			// TODO: Add error message to load connect to internet in order to load custom assets
 		}
 	}

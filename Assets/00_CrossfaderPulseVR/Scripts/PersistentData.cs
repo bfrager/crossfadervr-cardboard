@@ -52,6 +52,16 @@ public class PersistentData : MonoBehaviour {
 	{
 		netVerified = (InternetReachabilityVerifier.Instance.status == InternetReachabilityVerifier.Status.NetVerified);
 		Debug.Log(netVerified);
+		if (!netVerified && loadNum == 0)
+		{
+			Debug.Log("Warning");
+			GameObject.Find("ErrorCanvas/IntroCanvas").GetComponent<Canvas>().enabled = true;
+		}
+		// else
+		// {
+		// 	Debug.Log("No Warning");
+		// 	GameObject.Find("ErrorCanvas/IntroCanvas").GetComponent<Canvas>().enabled = false;
+		// }
 	}
 	
 	void LoadPerformanceData()
@@ -64,11 +74,13 @@ public class PersistentData : MonoBehaviour {
 
 	void OnLevelWasLoaded()
 	{
+		Debug.Log("Level Loaded");
 		loadNum++;
 		GameObject onboardingUI = GameObject.Find("OnboardingUI");
 		if (onboardingUI != null && loadNum > 1)
 		{
 			GameObject.Find("OnboardingUI").SetActive(false);
+			GameObject.Find("ErrorCanvas").SetActive(false);
 		}
 		
 		GameObject.Find("Planet960tris").GetComponent<MeshRenderer>().enabled = true;
