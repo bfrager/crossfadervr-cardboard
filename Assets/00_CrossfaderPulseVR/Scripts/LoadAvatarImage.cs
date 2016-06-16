@@ -46,14 +46,14 @@ public class LoadAvatarImage : MonoBehaviour {
 	void Start () 
 	{
 		api = ApiCall.instance;
-		if(PersistentData.PD.netVerified)
-		{
+		// if(PersistentData.PD.netVerified)
+		// {
 			api.djLoaded += djLoaded;
-		}
-		else
-		{
-			StartCoroutine(ScaleUpNode(1f, 0.35f));
-		}
+		// }
+		// else
+		// {
+		// 	StartCoroutine(ScaleUpNode(1f, 0.35f));
+		// }
 	}
 
     void djLoaded(string perfId)
@@ -91,7 +91,8 @@ public class LoadAvatarImage : MonoBehaviour {
 		StartCoroutine("_LoadName");
 		StartCoroutine("_LoadTags");
 		StartCoroutine("_LoadListens");		
-		yield return StartCoroutine("_LoadAvatarTexture");
+		StartCoroutine("_LoadAvatarTexture");
+		yield return new WaitForSeconds(1.0f);
 		StartCoroutine(ScaleUpNode(1f, 0.35f));
 		loading = false;
     }

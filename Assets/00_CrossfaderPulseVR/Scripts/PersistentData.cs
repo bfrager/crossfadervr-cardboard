@@ -50,13 +50,13 @@ public class PersistentData : MonoBehaviour {
 	
 	void Start ()
 	{
-		netVerified = (InternetReachabilityVerifier.Instance.status == InternetReachabilityVerifier.Status.NetVerified);
-		Debug.Log(netVerified);
-		if (!netVerified && loadNum == 0)
-		{
-			Debug.Log("Warning");
-			GameObject.Find("ErrorCanvas/IntroCanvas").GetComponent<Canvas>().enabled = true;
-		}
+		// netVerified = (InternetReachabilityVerifier.Instance.status == InternetReachabilityVerifier.Status.NetVerified);
+		// Debug.Log(netVerified);
+		// if (!netVerified && loadNum == 0)
+		// {
+		// 	Debug.Log("Warning");
+		// 	GameObject.Find("ErrorCanvas/IntroCanvas").GetComponent<Canvas>().enabled = true;
+		// }
 		// else
 		// {
 		// 	Debug.Log("No Warning");
@@ -103,10 +103,10 @@ public class PersistentData : MonoBehaviour {
 			djName = GameObject.FindGameObjectWithTag("DjName").GetComponent<TextMesh>();	
 			djName.text = name;	
 			
-			if (netVerified)
-			{
+			// if (netVerified)
+			// {
 				LoadPerformanceData();
-			}
+			// }
 		}
 		
 		else if (SceneManager.GetActiveScene().name == "01_Cardboard_RootLevel_v1")
